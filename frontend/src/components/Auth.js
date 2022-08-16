@@ -38,7 +38,43 @@ function Auth({auth,setAuth}) {
 			// Une erreur est survenue
 		  });
 	}
-
+	function loginUser(e){
+		e.preventDefault();
+		const formData = new FormData();
+		const formAuth = {
+			email:document.getElementById("loginEmail").value,
+			password:document.getElementById("loginPassword").value
+		}
+		formData.append('user',JSON.stringify(formAuth));
+		sendloginUser(formAuth).then((result) =>{
+			if(result!==undefined){
+				localStorage.setItem("userid",result.userId);
+				localStorage.setItem("token",result.token);
+				setAuth([1,result.userId,result.token]);
+			}
+		});
+	}
+	async function sendloginUser(formAuth){
+		return await fetch("http://localhost:3000/api/auth/login",{
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			method: 'POST',
+			body: JSON.stringify(formAuth)
+		  })
+		  .then(function(res) { 
+			if (res.ok) {
+			  return res.json();
+			}
+		  })
+		  .then(function(result) {
+			return result;
+		  })
+		  .catch(function(err) {
+			// Une erreur est survenue
+		  });
+	}
 	return (
 		state === 0 ?
 		<div className='formAuth'>
@@ -59,7 +95,15 @@ function Auth({auth,setAuth}) {
 			</form>
 		</div>
 		: state === 2 ?
-		null
+		<div className='formAuth'>
+			<h1>Login</h1>
+			<form>
+				<input type='email' placeholder='email' id="loginEmail"></input>
+				<input type='password' placeholder='Password' id="loginPassword"></input>
+				<button onClick={(e)=>loginUser(e)}>Login</button>
+				<button onClick={(e)=>setState(0)}>Retour</button>
+			</form>
+		</div>
 		:null
 	)
 }
