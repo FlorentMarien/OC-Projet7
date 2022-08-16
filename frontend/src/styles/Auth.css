@@ -1,0 +1,19 @@
+form{
+    align-items: center;
+}
+form input,form button{
+    display: block;
+    text-align:center;
+    margin: auto;
+}
+.buttonAuth{
+    width: 100px;
+    height: 30px;
+}
+.formAuth{
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

@@ -1,0 +1,10 @@
+body{
+    margin: 0;
+}
+h2{
+    width: 100%;
+    text-align: center;
+    border:solid 1px black;
+    margin: 0;
+    padding: 0;
+}
