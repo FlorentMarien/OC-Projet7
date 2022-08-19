@@ -10,6 +10,7 @@ import { createTheme,ThemeProvider } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import DeleteIcon from '@mui/icons-material/Delete';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
 library.add(fas)
 const theme = createTheme({
@@ -113,7 +114,9 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 					if(element._id===targetMessage){
 						reply=(
 							<>
-							<button onClick={()=>settargetMessage(0)}>Retour</button>
+							<IconButton onClick={(e)=>settargetMessage(0)} color="primary" aria-label="Back" component="label">
+								<KeyboardBackspaceIcon/>
+							</IconButton>
 							<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage}/>
 							</>
 						);
