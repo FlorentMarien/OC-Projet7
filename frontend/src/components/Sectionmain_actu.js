@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 library.add(fas)
 const theme = createTheme({
@@ -25,14 +26,27 @@ const theme = createTheme({
 		}*/
 	},
   });
-function Sectionmain_actu({auth,setAuth,indexPage,setindexPage}) {
+function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
 	const [listMessage,setListMessage] = useState([]);
 	const [listAnswer,setListAnswer] = useState([0]);
 	const [targetMessage,settargetMessage] = useState(0);
 	const [formText,setformText] = useState("Votre message ?");
 	const [formFile,setformFile] = useState("");
 
-
+	function getimgpreview(){
+		let urlFile = URL.createObjectURL(formFile);
+		return (
+		<div>
+		<span className='container_uploadimg'>
+		<img src={urlFile} alt={"Photo de "+ profilData.name + " " + profilData.prename}/>
+		
+		<IconButton onClick={(e)=>setformFile("")} color="primary" aria-label="delete picture" component="label">
+			<DeleteIcon/>
+		</IconButton>
+		</span>
+		</div>
+		)
+	}
 	function getreply2(messageid,replyLevel,reply){
 		if(listMessage.length!==0){
 			let parametre = {
@@ -54,6 +68,8 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage}) {
 							<form>
 							<ThemeProvider theme={theme}>
 							<TextField color="neutral" className="formText" label="Message" onChange={(e)=>setformText(e.target.value)} value={formText} multiline/>
+							{
+							formFile === "" ?
 							<div>
 								<IconButton color="primary" aria-label="upload picture" component="label">
 									<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files[0])} type="file" id="formFile"/>
@@ -61,6 +77,9 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage}) {
 								</IconButton>
 								<Button color="primary" variant="contained" onClick={(e)=>sendMessage(e,false)}>Envoyer</Button>
 							</div>
+							: 
+							getimgpreview()
+							}
 							</ThemeProvider>
 							</form>
 						</div>

@@ -77,3 +77,19 @@ main #main_container section{
 #blockactu_send form div label svg{
     fill: gray;
 }
+.container_uploadimg{
+    display: inline-block;
+    position: relative;
+}
+.container_uploadimg label{
+    fill: gray;
+    background-color: white;
+    border-radius: 25px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border: solid 1px gray;
+}
+.container_uploadimg label:hover{
+    border: solid 1px transparent;
+}

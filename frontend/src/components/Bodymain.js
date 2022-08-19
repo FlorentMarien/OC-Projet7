@@ -47,7 +47,7 @@ function Bodymain({auth,setAuth}) {
 				indexPage === 0 ?
 				<Sectionmain_profil auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: indexPage === 1 ?
-				<Sectionmain_actu auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage}/>
+				<Sectionmain_actu auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: null
 			}
 		</div>
