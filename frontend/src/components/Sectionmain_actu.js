@@ -66,11 +66,13 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 					<div id="blockactu">
 						<div id="blockactu_send">
 							<form>
+							<div>
 							<ThemeProvider theme={theme}>
+							
 							<TextField color="neutral" className="formText" label="Message" onChange={(e)=>setformText(e.target.value)} value={formText} multiline/>
 							{
 							formFile === "" ?
-							<div>
+							<div className='sendreply_uploadimg'>
 								<IconButton color="primary" aria-label="upload picture" component="label">
 									<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files[0])} type="file" id="formFile"/>
 									<PhotoCamera />
@@ -81,6 +83,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 							getimgpreview()
 							}
 							</ThemeProvider>
+							</div>
 							</form>
 						</div>
 					</div>);

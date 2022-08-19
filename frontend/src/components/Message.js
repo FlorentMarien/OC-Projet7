@@ -11,11 +11,44 @@ import ThumbUpOffIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import CommentIcon from '@mui/icons-material/Comment';
 import AddCommentIcon from '@mui/icons-material/AddComment';
+import TextField from '@mui/material/TextField';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { createTheme,ThemeProvider } from '@mui/material/styles';
 
 library.add(fas)
 function Message({parametre,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage}) {
 	const [disableButtonLike,setdisableButtonLike] = useState(element.arrayDislike.includes(auth[1]));
 	const [disableButtonDislike,setdisableButtonDislike] = useState(element.arrayLike.includes(auth[1]));
+	const [formFile,setformFile] = useState("");
+	const [formText,setformText] = useState("");
+	const theme = createTheme({
+		palette: {
+			neutral:{
+				color:'#fff',
+			},
+			text:{
+				primary:'#fff', // 
+				secondary:'#aaa', //
+			},
+			/*primary:{
+				main:'#000', // Button color
+			}*/
+		},
+	  });
+	function getimgpreview(){
+		let urlFile = URL.createObjectURL(formFile);
+		return (
+		<div>
+		<span className='container_uploadimg'>
+		<img src={urlFile} alt="Image preview"/>
+		
+		<IconButton onClick={(e)=>setformFile("")} color="primary" aria-label="delete picture" component="label">
+			<DeleteIcon/>
+		</IconButton>
+		</span>
+		</div>
+		)
+	}
 	function sendlike(e){
 		let likevalue=2;
 		e.preventDefault();
@@ -215,12 +248,23 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 				</div>
 				{
 				parametre.sendReply === 1 &&
+				
 				<div className='sendreply'>
-					<form>
-						<input type="text" className="formText"/>
-							<input type="file" className="formFile"/>
-						<button onClick={(e)=>sendAnswer(e,parametre.replyLevel)}>Envoyer</button>
-					</form>
+					<ThemeProvider theme={theme}>
+					<TextField color="neutral" className="formText" label="Message" onChange={(e)=>setformText(e.target.value)} value={formText} multiline/>
+					{
+					formFile === "" ?
+					<div className='sendreply_uploadimg'>
+						<IconButton color="primary" aria-label="upload picture" component="label">
+							<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files[0])} type="file" id="formFile"/>
+							<PhotoCamera />
+						</IconButton>
+						<Button color="primary" variant="contained" onClick={(e)=>sendAnswer(e,parametre.replyLevel)}>Envoyer</Button>
+					</div>
+					: 
+						getimgpreview()
+					}
+					</ThemeProvider>
 				</div>
 				}
 
