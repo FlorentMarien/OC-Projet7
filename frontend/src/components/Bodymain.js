@@ -2,7 +2,7 @@ import '../styles/Bodymain.css'
 import { useState,useEffect } from 'react'
 import Nav from './Nav'
 import Sectionmain_profil from './Sectionmain_profil'
-
+import Sectionmain_actu from './Sectionmain_actu'
 function Bodymain({auth,setAuth}) {
 	const [indexPage,setindexPage] = useState(0);
 	const [profilData,setprofilData] = useState(0);
@@ -45,7 +45,8 @@ function Bodymain({auth,setAuth}) {
 				indexPage === 0 ?
 				<Sectionmain_profil auth={auth} setAuth={setAuth} profilData={profilData} setprofilData={setprofilData}/>
 				: indexPage === 1 &&
-				<h1>Page 2</h1>
+				<Sectionmain_actu auth={auth} setAuth={setAuth} profilData={profilData} setprofilData={setprofilData}/>
+				
 			}
 		</div>
 	)

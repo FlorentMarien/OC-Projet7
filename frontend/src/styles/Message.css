@@ -1,0 +1,101 @@
+.formText{
+    width: 400px;
+}
+.message{
+    justify-content: space-between;
+    padding: 20px;
+    
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border: solid 1px white;
+    border-radius: 15px;
+}
+.message_content{
+    display: flex;
+    
+}
+.userInfo{
+    
+    width: 25%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-content: center;
+    text-align: center;
+}
+.userInfo img{
+    width: 75px;
+    height: 75px;
+    margin: auto;
+}
+.userMessage{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    flex-grow: 1;
+}
+.userMessage_ptext{
+    width: 100%;
+    height: 75%;
+    margin: 0;
+}
+.userMessage_pdate{
+    width: 100%;
+    height: 25%;
+    margin: 0;
+}
+.userImage{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 30px;
+}
+.answer{
+    height: 30px;
+    display: flex;
+    padding-left: 5%;
+    padding-right: 5%;
+    width: 100%;
+    height: 20%;
+}
+.answer button{
+    width: 30%;
+    height: 20%;
+    line-height: 10%;
+}
+.button_backMessage{
+    width: 8%;
+    float: left;
+    position: fixed;
+
+}
+.replylevel1{
+    margin-left: 13.3%;
+}
+.replylevel2{
+    margin-left: 16.6%;
+}
+.replylevel3{
+    margin-left: 20%;
+}
+.Mui-disabled{
+    color:gray !important;
+}
+.informationBox{
+    position: absolute;
+    margin: 0;
+    left: 0px;
+    top: 0px;
+    background: gray;
+    border-radius: 25px;
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    line-height: 15px;
+}
+.container_information{
+    position: relative;
+}
+
