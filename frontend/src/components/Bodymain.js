@@ -1,6 +1,8 @@
 import '../styles/Bodymain.css'
+
 import { useState,useEffect } from 'react'
 import Nav from './Nav'
+import Footer from './Footer'
 import Sectionmain_profil from './Sectionmain_profil'
 import Sectionmain_actu from './Sectionmain_actu'
 function Bodymain({auth,setAuth}) {
@@ -43,10 +45,10 @@ function Bodymain({auth,setAuth}) {
 			<Nav auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 			{
 				indexPage === 0 ?
-				<Sectionmain_profil auth={auth} setAuth={setAuth} profilData={profilData} setprofilData={setprofilData}/>
-				: indexPage === 1 &&
-				<Sectionmain_actu auth={auth} setAuth={setAuth} profilData={profilData} setprofilData={setprofilData}/>
-				
+				<Sectionmain_profil auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
+				: indexPage === 1 ?
+				<Sectionmain_actu auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage}/>
+				: null
 			}
 		</div>
 	)

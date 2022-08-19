@@ -1,9 +1,9 @@
 import '../styles/Header.css'
-
-function Header() {
+import logo from '../assets/logo/icon-left-font-monochrome-white.svg'
+function Header({auth,setAuth}) {
 	return (
 		<header>
-            <h2>Header:</h2>
+			<img src={logo} alt="Logo Groupomania"/>
         </header>
 	)
 }

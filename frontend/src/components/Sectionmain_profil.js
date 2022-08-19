@@ -1,6 +1,6 @@
 import '../styles/Sectionmain_profil.css'
 
-function Sectionmain_profil({auth,setAuth,profilData,setprofilData}) {
+function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
 	return (
 		<section>
 			<div id="blockprofil">

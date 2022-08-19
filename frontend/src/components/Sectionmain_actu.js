@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
-import PhotoCamera from '@mui/icons-material/PhotoCamera'; 
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 library.add(fas)
 const theme = createTheme({
