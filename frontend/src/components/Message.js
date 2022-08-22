@@ -126,16 +126,17 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 		objectData={
 			...objectData,
 			replyLevel:replyLevel,
-			answer:e.target.closest("div.message").attributes["messageid"].value
+			answer:e.target.closest("div.message").attributes["messageid"].value,
+			message:formText,
 		}
-		
 		let formData= new FormData();
 		formData.append('message',JSON.stringify(objectData));
-		if(e.target.parentElement.children[0].value!==""){
-			formData.append('image',e.target.parentElement.children[1].files[0])
+		if(formFile!==""){
+			formData.append('image',formFile);
 		}
+		console.log(formData);
 		sendAnswerApi(formData).then((result)=>{
-				element.answer.push(result.answerId)
+				element.answer.push(result.answerId);
 				getmes(0,1);
 			});
 	}
@@ -252,22 +253,26 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 				<div className='sendreply'>
 					<ThemeProvider theme={theme}>
 					<TextField color="neutral" className="formText" label="Message" onChange={(e)=>setformText(e.target.value)} value={formText} multiline/>
+					<div className='sendreply_uploadimg'>
 					{
 					formFile === "" ?
-					<div className='sendreply_uploadimg'>
+					<>
 						<IconButton color="primary" aria-label="upload picture" component="label">
 							<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files[0])} type="file" id="formFile"/>
 							<PhotoCamera />
 						</IconButton>
-						<Button color="primary" variant="contained" onClick={(e)=>sendAnswer(e,parametre.replyLevel)}>Envoyer</Button>
-					</div>
+					</>
 					: 
-						getimgpreview()
+					<>
+						{getimgpreview()}
+					</>
 					}
+					<Button color="primary" variant="contained" onClick={(e)=>sendAnswer(e,parametre.replyLevel)}>Envoyer</Button>
+					</div>
 					</ThemeProvider>
 				</div>
 				}
-
+				
 				<div className='answer'>
 				<ButtonGroup variant="text" aria-label="text button group">
 					<div className='container_information'>

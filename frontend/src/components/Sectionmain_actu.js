@@ -70,19 +70,20 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 							<div>
 							<ThemeProvider theme={theme}>
 							
-							<TextField color="neutral" className="formText" label="Message" onChange={(e)=>setformText(e.target.value)} value={formText} multiline/>
+							<TextField color="neutral" className="formText" label="Message" onBlur={(e)=>setformText(e.target.value)} defaultValue={formText} multiline/>
+							<div className='sendreply_uploadimg'>
 							{
 							formFile === "" ?
-							<div className='sendreply_uploadimg'>
 								<IconButton color="primary" aria-label="upload picture" component="label">
 									<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files[0])} type="file" id="formFile"/>
 									<PhotoCamera />
 								</IconButton>
-								<Button color="primary" variant="contained" onClick={(e)=>sendMessage(e,false)}>Envoyer</Button>
-							</div>
 							: 
-							getimgpreview()
+								getimgpreview()
 							}
+							<Button color="primary" variant="contained" onClick={(e)=>sendMessage(e,false)}>Envoyer</Button>
+							
+							</div>
 							</ThemeProvider>
 							</div>
 							</form>
