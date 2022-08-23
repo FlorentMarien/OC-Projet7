@@ -99,3 +99,39 @@
 .MuiButtonGroup-root div{
     display: flex;
 }
+.popupParametre{
+    background-color: #0a1929;
+    position: absolute;
+    top: 40px;
+    left: -40px;
+    border-radius: 5px;
+}
+.container_parametre{
+    position:relative
+}
+.popupParametre ul{
+    list-style: none;
+    padding: 0;
+    min-width: 100px;
+    text-align: center;
+    margin: 0;
+    padding: 5px;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+.popupParametre ul li{
+    
+}
+.popupParametre ul li button{
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    color: white;
+    margin: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.popupParametre ul li button:hover{
+    background-color: gray;
+    
+}

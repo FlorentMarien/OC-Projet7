@@ -1,3 +1,4 @@
+import * as React from 'react';
 import '../styles/Message.css'
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,8 +16,12 @@ import TextField from '@mui/material/TextField';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
-import Message_Parametres from './Message_Parametres';
 import DeleteForever from '@mui/icons-material/DeleteForever'
+import MenuUnstyled from '@mui/base/MenuUnstyled';
+import MenuItemUnstyled, {
+  menuItemUnstyledClasses,
+} from '@mui/base/MenuItemUnstyled';
+
 library.add(fas)
 function Message({parametre,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage,profilData}) {
 	const [disableButtonLike,setdisableButtonLike] = useState(element.arrayDislike.includes(auth[1]));
@@ -24,6 +29,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 	const [formFile,setformFile] = useState("");
 	const [formText,setformText] = useState("");
 	const [openReply,setopenReply] = useState(0);
+	const [openParametre,setopenParametre] = useState(0);
 	const theme = createTheme({
 		palette: {
 			neutral:{
@@ -37,7 +43,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 				main:'#000', // Button color
 			}*/
 		},
-	  });
+	});
 	function delMessage(e){
 		e.preventDefault();
 		let objectSend={
@@ -319,10 +325,19 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 					</div>
 					{
 					(element.userId === auth[1] || profilData.adminLevel===1) &&
-					<div>
-						<IconButton color="primary" aria-label="delete message" onClick={(e)=>{delMessage(e)}} component="label">
-							<DeleteForever color="error" />
+					<div className='container_parametre'>
+						<IconButton color="primary" aria-label="delete message" onClick={(e)=>{setopenParametre(openParametre === 0 ? 1 : 0)}} component="label">
+							<SettingsIcon/>
 						</IconButton>
+						{
+							openParametre === 1 &&
+							<div className="popupParametre">
+								<ul>
+									<li><button onClick={(e)=>{delMessage(e)}}>Delete</button></li>
+									<li><button>Edit</button></li>
+								</ul>
+							</div>
+						}
 					</div>
 					}
 				</ButtonGroup>

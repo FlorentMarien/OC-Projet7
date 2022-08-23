@@ -6,11 +6,7 @@ import MenuItemUnstyled, {
 import { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
 import PopperUnstyled from '@mui/base/PopperUnstyled';
 import { styled } from '@mui/system';
-import SettingsIcon from '@mui/icons-material/Settings';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { Icon } from '@mui/material';
+
 const blue = {
   100: '#DAECFF',
   200: '#99CCF3',
@@ -46,19 +42,17 @@ const StyledListbox = styled('ul')(
   color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
   overflow: auto;
   outline: 0px;
-  text-align:center;
-  line-height:40px;
-  
   `,
 );
 
 const StyledMenuItem = styled(MenuItemUnstyled)(
   ({ theme }) => `
   list-style: none;
-  padding: 0px;
+  padding: 8px;
   border-radius: 0.45em;
   cursor: default;
   user-select: none;
+
   &:last-of-type {
     border-bottom: none;
   }
@@ -67,7 +61,6 @@ const StyledMenuItem = styled(MenuItemUnstyled)(
     outline: 3px solid ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
     background-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[100]};
     color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-    
   }
 
   &.${menuItemUnstyledClasses.disabled} {
@@ -86,14 +79,15 @@ const TriggerButton = styled('button')(
   font-family: IBM Plex Sans, sans-serif;
   font-size: 0.875rem;
   box-sizing: border-box;
+  min-height: calc(1.5em + 22px);
   background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
   border: 1px solid ${theme.palette.mode === 'dark' ? grey[800] : grey[300]};
   border-radius: 0.75em;
-  margin: 0;
-  width:40px;
-  height:40px
-  padding: 0;
+  margin: 0.5em;
+  padding: 10px 20px;
+  line-height: 1.5;
   color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+
   &:hover {
     background: ${theme.palette.mode === 'dark' ? '' : grey[100]};
     border-color: ${theme.palette.mode === 'dark' ? grey[700] : grey[400]};
@@ -109,7 +103,7 @@ const Popper = styled(PopperUnstyled)`
   z-index: 1;
 `;
 
-export default function UnstyledMenuSimple() {
+export default function UnstyledMenuSimple({auth,profilData,parametre,targetMessage,settargetMessage}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const isOpen = Boolean(anchorEl);
   const buttonRef = React.useRef(null);
@@ -162,8 +156,8 @@ export default function UnstyledMenuSimple() {
 
   return (
     <div>
-      <IconButton 
-        color="primary"
+      <TriggerButton
+        type="button"
         onClick={handleButtonClick}
         onKeyDown={handleButtonKeyDown}
         onMouseDown={handleButtonMouseDown}
@@ -172,18 +166,25 @@ export default function UnstyledMenuSimple() {
         aria-expanded={isOpen || undefined}
         aria-haspopup="menu"
       >
-				<SettingsIcon />
-			</IconButton>
+        Dashboard
+      </TriggerButton>
+
       <MenuUnstyled
         actions={menuActions}
         open={isOpen}
-        //onClose={close}
+        onClose={close}
         anchorEl={anchorEl}
         components={{ Root: Popper, Listbox: StyledListbox }}
         componentsProps={{ listbox: { id: 'simple-menu' } }}
       >
-        <StyledMenuItem onClick={createHandleMenuClick('Delete')}>
+        <StyledMenuItem onClick={createHandleMenuClick('My account')}>
           Delete
+        </StyledMenuItem>
+        <StyledMenuItem onClick={createHandleMenuClick('My account')}>
+          My account
+        </StyledMenuItem>
+        <StyledMenuItem onClick={createHandleMenuClick('Log out')}>
+          Log out
         </StyledMenuItem>
       </MenuUnstyled>
     </div>
