@@ -13,10 +13,12 @@ import CommentIcon from '@mui/icons-material/Comment';
 import AddCommentIcon from '@mui/icons-material/AddComment';
 import TextField from '@mui/material/TextField';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
-
+import Message_Parametres from './Message_Parametres';
+import DeleteForever from '@mui/icons-material/DeleteForever'
 library.add(fas)
-function Message({parametre,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage}) {
+function Message({parametre,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage,profilData}) {
 	const [disableButtonLike,setdisableButtonLike] = useState(element.arrayDislike.includes(auth[1]));
 	const [disableButtonDislike,setdisableButtonDislike] = useState(element.arrayLike.includes(auth[1]));
 	const [formFile,setformFile] = useState("");
@@ -36,6 +38,11 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 			}*/
 		},
 	  });
+	function getParameter(e){
+		e.preventDefault();
+		let test=<h1 style="position:absolute">Test</h1>;
+		
+	}
 	function getimgpreview(){
 		let urlFile = URL.createObjectURL(formFile);
 		return (
@@ -79,8 +86,8 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 				setdisableButtonLike(true);
 			}
 			if(likevalue===0) {
-				e.target.closest("div.MuiButtonGroup-root").children[0].children[1].textContent=result.Like;
-				e.target.closest("div.MuiButtonGroup-root").children[1].children[1].textContent=result.Dislike;
+				e.target.closest("div.MuiButtonGroup-root").children[0].children[0].children[1].textContent=result.Like;
+				e.target.closest("div.MuiButtonGroup-root").children[0].children[1].children[1].textContent=result.Dislike;
 				element.Like=result.Like;
 				element.Dislike=result.Dislike
 				if(element.arrayLike.includes(auth[1])) element.arrayLike.splice(auth[1],1);
@@ -250,6 +257,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 				</div>
 				<div className='answer'>
 				<ButtonGroup variant="text" aria-label="text button group">
+					<div>
 					<div className='container_information'>
 					<IconButton disabled={disableButtonLike} color="primary" button-type="button_like" onClick={(e)=>{console.log(e.target);sendlike(e)}} aria-label="Like" component="label">
 						<ThumbUpOffIcon />
@@ -270,20 +278,25 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 					</div>
 					{
 						parametre.sendReply === 1 &&
-						
 						<div className='container_information'>
 							<IconButton color="primary" aria-label="Add commentary" onClick={(e)=>{setopenReply(openReply === 1 ? 0 : 1)}} component="label">
 								<AddCommentIcon />
 							</IconButton>
 						</div>
 					}
-					
+					</div>
+					{
+					(element.userId === auth[1] || profilData.adminLevel===1) &&
+					<div>
+						<IconButton color="primary" aria-label="delete message" onClick={(e)=>{getParameter(e)}} component="label">
+							<DeleteForever color="error" />
+						</IconButton>
+					</div>
+					}
 				</ButtonGroup>
 			</div>	
-		
 			{
-				 openReply === 1 &&
-				
+				openReply === 1 &&
 				<div className='sendreply'>
 					<ThemeProvider theme={theme}>
 					<TextField color="neutral" className="formText" label="Message" onChange={(e)=>setformText(e.target.value)} value={formText} multiline/>

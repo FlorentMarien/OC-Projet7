@@ -70,6 +70,7 @@ exports.getlogin = (req, res) => {
                 name: user.name,
                 prename: user.prename,
                 imageUrl: user.imageUrl,
+                adminLevel: user.adminLevel,
             });
         })
         .catch((error) => res.status(500).json({ error }));

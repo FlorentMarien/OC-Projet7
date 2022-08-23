@@ -38,12 +38,6 @@
     margin-bottom: 5px;
     border-radius: 30px;
 }
-
-.answer button{
-    width: 30%;
-    height: 20%;
-    line-height: 10%;
-}
 .button_backMessage{
     width: 8%;
     float: left;

@@ -36,7 +36,8 @@ function Bodymain({auth,setAuth}) {
 				state:1,
 				name:result.name,
 				prename:result.prename,
-				imageUrl:result.imageUrl
+				imageUrl:result.imageUrl,
+				adminLevel: result.adminLevel,
 			});
 		})
 	}, [auth]);

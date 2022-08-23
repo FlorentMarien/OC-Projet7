@@ -58,11 +58,6 @@
     width: 100%;
     height: 20%;
 }
-.answer button{
-    width: 30%;
-    height: 20%;
-    line-height: 10%;
-}
 .button_backMessage{
     width: 8%;
     float: left;
@@ -96,4 +91,11 @@
 .container_information{
     position: relative;
 }
-
+.MuiButtonGroup-root{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.MuiButtonGroup-root div{
+    display: flex;
+}

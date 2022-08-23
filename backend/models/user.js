@@ -7,6 +7,7 @@ const userSchema = mongoose.Schema({
     name: { type: String, required: true },
     prename: { type: String, required: true },
     imageUrl: { type: String, required: true },
+    adminLevel: { type: Number, default: 0 },
 });
 
 userSchema.plugin(uniqueValidator);
