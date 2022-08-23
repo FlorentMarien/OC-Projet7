@@ -21,6 +21,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 	const [disableButtonDislike,setdisableButtonDislike] = useState(element.arrayLike.includes(auth[1]));
 	const [formFile,setformFile] = useState("");
 	const [formText,setformText] = useState("");
+	const [openReply,setopenReply] = useState(0);
 	const theme = createTheme({
 		palette: {
 			neutral:{
@@ -232,8 +233,8 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 			<div className='message_content'>								
 				<div className='userInfo'>
 					<img src={element.userImageUrl} alt={"Image de "+element.userName + " "+element.userPrename}/>
-						<p>{element.userName} {element.userPrename}</p>
-					</div>
+					<p>{element.userName} {element.userPrename}</p>
+				</div>
 					<div className='userMessage'>
 						<p className='userMessage_ptext'>{element.message}</p>
 						<p className='userMessage_pdate'>
@@ -247,8 +248,41 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 						<img src={element.imageUrl} alt={"Image de "+element.userName+" "+element.userPrename}/>
 					}
 				</div>
-				{
-				parametre.sendReply === 1 &&
+				<div className='answer'>
+				<ButtonGroup variant="text" aria-label="text button group">
+					<div className='container_information'>
+					<IconButton disabled={disableButtonLike} color="primary" button-type="button_like" onClick={(e)=>{console.log(e.target);sendlike(e)}} aria-label="Like" component="label">
+						<ThumbUpOffIcon />
+					</IconButton>
+					<p className="informationBox">{element.Like}</p>
+					</div>
+					<div className='container_information'>
+					<IconButton disabled={disableButtonDislike} color="primary" button-type="button_dislike" onClick={(e)=>{sendlike(e)}}aria-label="Dislike" component="label">
+						<ThumbDownIcon />
+					</IconButton>
+					<p className="informationBox">{element.Dislike}</p>
+					</div>
+					<div className='container_information'>
+					<IconButton color="primary" aria-label="Show commentary" onClick={(e)=>{getCommentaire(e)}} component="label">
+						<CommentIcon />
+					</IconButton>
+					<p className="informationBox">{element.answer.length}</p>
+					</div>
+					{
+						parametre.sendReply === 1 &&
+						
+						<div className='container_information'>
+							<IconButton color="primary" aria-label="Add commentary" onClick={(e)=>{setopenReply(openReply === 1 ? 0 : 1)}} component="label">
+								<AddCommentIcon />
+							</IconButton>
+						</div>
+					}
+					
+				</ButtonGroup>
+			</div>	
+		
+			{
+				 openReply === 1 &&
 				
 				<div className='sendreply'>
 					<ThemeProvider theme={theme}>
@@ -271,36 +305,8 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 					</div>
 					</ThemeProvider>
 				</div>
-				}
-				
-				<div className='answer'>
-				<ButtonGroup variant="text" aria-label="text button group">
-					<div className='container_information'>
-					<IconButton disabled={disableButtonLike} color="primary" button-type="button_like" onClick={(e)=>{console.log(e.target);sendlike(e)}} aria-label="Like" component="label">
-						<ThumbUpOffIcon />
-					</IconButton>
-					<p className="informationBox">{element.Like}</p>
-					</div>
-					<div className='container_information'>
-					<IconButton disabled={disableButtonDislike} color="primary" button-type="button_dislike" onClick={(e)=>{sendlike(e)}}aria-label="Dislike" component="label">
-						<ThumbDownIcon />
-					</IconButton>
-					<p className="informationBox">{element.Dislike}</p>
-					</div>
-					<div className='container_information'>
-					<IconButton color="primary" aria-label="Show commentary" onClick={(e)=>{getCommentaire(e)}} component="label">
-						<CommentIcon />
-					</IconButton>
-					<p className="informationBox">{element.answer.length}</p>
-					</div>
-					<div className='container_information'>
-					<IconButton color="primary" aria-label="Add commentary" component="label">
-						<AddCommentIcon />
-					</IconButton>
-					</div>
-				</ButtonGroup>
-				</div>
-			</div>
+			}
+		</div>
 	</>
 	)
 }

@@ -1,5 +1,5 @@
 .formText{
-    width: 400px;
+    width: 100%;
 }
 .message{
     justify-content: space-between;
@@ -55,8 +55,6 @@
 .answer{
     height: 30px;
     display: flex;
-    padding-left: 5%;
-    padding-right: 5%;
     width: 100%;
     height: 20%;
 }
