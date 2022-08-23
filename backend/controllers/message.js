@@ -90,3 +90,15 @@ exports.sendLike = (req, res) => {
             .catch(() => res.status(400));
     });
 };
+exports.deleteMessage = (req, res) => {
+    User.findOne({ _id: req.auth.userId }).then((resultUser) => {
+        let adminLevel = resultUser.adminLevel;
+        Message.findOne({ _id: req.body.messageId }).then((result) => {
+            if (result.userId === req.auth.userId || adminLevel === 1) {
+                Message.deleteOne({ _id: req.body.messageId })
+                    .then(() => res.status(200).json('Suppresion Ok'))
+                    .catch((error) => error);
+            }
+        });
+    });
+};

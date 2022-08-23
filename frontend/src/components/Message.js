@@ -38,10 +38,42 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 			}*/
 		},
 	  });
-	function getParameter(e){
+	function delMessage(e){
 		e.preventDefault();
-		let test=<h1 style="position:absolute">Test</h1>;
-		
+		let objectSend={
+			messageId:e.target.closest('div.message').attributes['messageid'].value
+		}
+		senddelMessage(JSON.stringify(objectSend)).then((result)=>{
+			if(parametre.replyLevel===0) {
+				getmes(1,0);
+				if(targetMessage===objectSend.messageId) settargetMessage(0);
+			}
+			else getmes(0,1);
+		})
+	}
+	async function senddelMessage(formData){
+		let adresse;
+		parametre.replyLevel===0 ? adresse="http://localhost:3000/api/message/deleteMessage" : adresse="http://localhost:3000/api/answer/deleteMessage";
+		return await fetch(adresse,{
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'Authorization': "Bearer "+auth[2]
+			},
+			method: 'DELETE',
+			body:formData
+		  })
+		  .then(function(res) { 
+			if (res.ok) {
+			  return res.json();
+			}
+		  })
+		  .then(function(result) {
+			return result;
+		  })
+		  .catch(function(err) {
+			// Une erreur est survenue
+		  });
 	}
 	function getimgpreview(){
 		let urlFile = URL.createObjectURL(formFile);
@@ -98,7 +130,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 			}
 		});
 	}
-	async function sendLikeApi(formData,typemessage){
+	async function sendLikeApi(formData){
 		let adresse;
 		parametre.replyLevel===0 ? adresse="http://localhost:3000/api/message/sendlike" : adresse="http://localhost:3000/api/answer/sendlike";
 		return await fetch(adresse,{
@@ -288,7 +320,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 					{
 					(element.userId === auth[1] || profilData.adminLevel===1) &&
 					<div>
-						<IconButton color="primary" aria-label="delete message" onClick={(e)=>{getParameter(e)}} component="label">
+						<IconButton color="primary" aria-label="delete message" onClick={(e)=>{delMessage(e)}} component="label">
 							<DeleteForever color="error" />
 						</IconButton>
 					</div>

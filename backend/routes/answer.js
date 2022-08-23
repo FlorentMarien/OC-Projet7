@@ -8,4 +8,5 @@ const router = express.Router();
 router.post('/get', auth, messageCtrl.getAnswer);
 router.post('/send', auth, multer, messageCtrl.sendAnswer);
 router.post('/sendlike', auth, messageCtrl.sendLike);
+router.delete('/deleteMessage', auth, messageCtrl.deleteMessage);
 module.exports = router;
