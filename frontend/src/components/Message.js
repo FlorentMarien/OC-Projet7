@@ -1,7 +1,6 @@
 import * as React from 'react';
 import '../styles/Message.css'
 import { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -16,11 +15,6 @@ import TextField from '@mui/material/TextField';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
-import DeleteForever from '@mui/icons-material/DeleteForever'
-import MenuUnstyled from '@mui/base/MenuUnstyled';
-import MenuItemUnstyled, {
-  menuItemUnstyledClasses,
-} from '@mui/base/MenuItemUnstyled';
 
 library.add(fas)
 function Message({parametre,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage,profilData}) {
@@ -44,6 +38,33 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 			}*/
 		},
 	});
+	function modifAnswer(e,replyLevel=0){
+		e.preventDefault();
+		
+		let objectData={
+			message:element.message,
+			dateTime:element.dateTime,
+		}
+		console.log(objectData);
+		console.log(element);
+		/*objectData={
+			...objectData,
+			replyLevel:replyLevel,
+			answer:e.target.closest("div.message").attributes["messageid"].value,
+			message:formText,
+		}
+		let formData= new FormData();
+		formData.append('message',JSON.stringify(objectData));
+		if(formFile!==""){
+			formData.append('image',formFile);
+		}
+		console.log(formData);
+		sendAnswerApi(formData).then((result)=>{
+				element.answer.push(result.answerId);
+				getmes(0,1);
+			});
+		*/
+	}
 	function delMessage(e){
 		e.preventDefault();
 		let objectSend={
@@ -82,7 +103,12 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 		  });
 	}
 	function getimgpreview(){
-		let urlFile = URL.createObjectURL(formFile);
+		let urlFile;
+		if(String(formFile)){
+			urlFile=formFile;
+		}
+		else urlFile = URL.createObjectURL(formFile);
+		
 		return (
 		<div>
 		<span className='container_uploadimg'>
@@ -326,7 +352,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 					{
 					(element.userId === auth[1] || profilData.adminLevel===1) &&
 					<div className='container_parametre'>
-						<IconButton color="primary" aria-label="delete message" onClick={(e)=>{setopenParametre(openParametre === 0 ? 1 : 0)}} component="label">
+						<IconButton color="primary" aria-label="delete message"  onClick={(e)=>{setopenParametre(openParametre === 0 ? 1 : 0)}} component="label">
 							<SettingsIcon/>
 						</IconButton>
 						{
@@ -334,7 +360,12 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 							<div className="popupParametre">
 								<ul>
 									<li><button onClick={(e)=>{delMessage(e)}}>Delete</button></li>
-									<li><button>Edit</button></li>
+									<li><button onClick={(e)=>{
+										setopenReply(2);
+										setformText(element.message);
+										e.target.closest("div.message").children[0].children.length === 3 &&
+										setformFile(e.target.closest("div.message").children[0].children[2].src);
+										}}>Edit</button></li>
 								</ul>
 							</div>
 						}
@@ -343,7 +374,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 				</ButtonGroup>
 			</div>	
 			{
-				openReply === 1 &&
+				openReply >= 1 &&
 				<div className='sendreply'>
 					<ThemeProvider theme={theme}>
 					<TextField color="neutral" className="formText" label="Message" onChange={(e)=>setformText(e.target.value)} value={formText} multiline/>
@@ -361,7 +392,13 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 						{getimgpreview()}
 					</>
 					}
-					<Button color="primary" variant="contained" onClick={(e)=>sendAnswer(e,parametre.replyLevel)}>Envoyer</Button>
+					{
+						openReply === 1 ?
+						<Button color="primary" variant="contained" onClick={(e)=>sendAnswer(e,parametre.replyLevel)}>Envoyer</Button>
+						:
+						<Button color="primary" variant="contained" onClick={(e)=>modifAnswer(e,parametre.replyLevel)}>Modifier</Button>
+					}
+					
 					</div>
 					</ThemeProvider>
 				</div>
