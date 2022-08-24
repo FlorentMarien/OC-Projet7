@@ -116,3 +116,33 @@ exports.deleteMessage = (req, res) => {
         });
     });
 };
+exports.modifMessage = (req, res) => {
+    let message = JSON.parse(req.body.message);
+    User.findOne({ _id: req.auth.userId }).then((resultUser) => {
+        let adminLevel = resultUser.adminLevel;
+        Answer.findOne({ _id: message.messageId }).then((result) => {
+            if (result.userId === req.auth.userId || adminLevel === 1) {
+                const messageObject = req.file
+                    ? {
+                          imageUrl: `${req.protocol}://${req.get(
+                              'host'
+                          )}/images/${req.file.filename}`,
+                      }
+                    : req.file === undefined
+                    ? {
+                          imageUrl: '',
+                      }
+                    : { imageUrl: result.imageUrl };
+                Answer.updateOne(
+                    { _id: message.messageId },
+                    {
+                        message: message.message,
+                        imageUrl: messageObject.imageUrl,
+                    }
+                )
+                    .then(() => res.status(200).json('Modif Ok'))
+                    .catch((error) => error);
+            }
+        });
+    });
+};

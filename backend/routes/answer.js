@@ -9,4 +9,5 @@ router.post('/get', auth, messageCtrl.getAnswer);
 router.post('/send', auth, multer, messageCtrl.sendAnswer);
 router.post('/sendlike', auth, messageCtrl.sendLike);
 router.delete('/deleteMessage', auth, messageCtrl.deleteMessage);
+router.put('/modifMessage', auth, multer, messageCtrl.modifMessage);
 module.exports = router;

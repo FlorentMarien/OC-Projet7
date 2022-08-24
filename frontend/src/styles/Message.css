@@ -105,6 +105,7 @@
     top: 40px;
     left: -40px;
     border-radius: 5px;
+    z-index: 1300;
 }
 .container_parametre{
     position:relative
@@ -132,6 +133,5 @@
     padding-bottom: 5px;
 }
 .popupParametre ul li button:hover{
-    background-color: gray;
-    
+    background-color: rgba(100,100,100,0.8);
 }

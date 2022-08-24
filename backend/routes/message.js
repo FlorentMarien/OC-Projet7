@@ -5,8 +5,9 @@ const messageCtrl = require('../controllers/message');
 
 const router = express.Router();
 
-router.post('/send', auth, multer, messageCtrl.sendMessage);
 router.post('/get', auth, messageCtrl.getMessages);
+router.post('/send', auth, multer, messageCtrl.sendMessage);
 router.post('/sendlike', auth, messageCtrl.sendLike);
 router.delete('/deleteMessage', auth, messageCtrl.deleteMessage);
+router.put('/modifMessage', auth, multer, messageCtrl.modifMessage);
 module.exports = router;

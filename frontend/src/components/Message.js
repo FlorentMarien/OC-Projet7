@@ -40,48 +40,67 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 	});
 	function modifAnswer(e,replyLevel=0){
 		e.preventDefault();
+		setopenReply(3);
 		let objectData={
-			message:element.message,
-			dateTime:element.dateTime,
-		}
-		if(typeof formFile==="object"){
-			// Image modifié
-			objectData={
-				...objectData,
-				imageUrl:formFile,
-			}
-		}
-		console.log(objectData);
-		console.log(element);
-		/*objectData={
-			...objectData,
-			replyLevel:replyLevel,
-			answer:e.target.closest("div.message").attributes["messageid"].value,
+			messageId:element._id,
 			message:formText,
+			dateTime:element.dateTime,
 		}
 		let formData= new FormData();
 		formData.append('message',JSON.stringify(objectData));
-		if(formFile!==""){
+		if(typeof formFile==="object"){
+			// Image modifié
 			formData.append('image',formFile);
 		}
-		console.log(formData);
-		sendAnswerApi(formData).then((result)=>{
-				element.answer.push(result.answerId);
-				getmes(0,1);
-			});
-		*/
+		else if(formFile===""){
+			// Ajout image vide pour reset
+			formData.append('image',"");
+		}
+		
+		modifMessageApi(formData).then((result)=>{
+				if(parametre.replyLevel===0){
+					getmes(1,0).then(()=>{setopenReply(0);});
+				}
+				else getmes(0,1).then(()=>{setopenReply(0);});
+		});
+	}
+	async function modifMessageApi(formData){
+		let adresse;
+		parametre.replyLevel===0 ? adresse="http://localhost:3000/api/message/modifMessage" : adresse="http://localhost:3000/api/answer/modifMessage";
+		return await fetch(adresse,{
+			headers: {
+				'Authorization': "Bearer "+auth[2]
+			},
+			method: 'PUT',
+			body:formData
+		  })
+		  .then(function(res) { 
+			if (res.ok) {
+			  return res.json();
+			}
+		  })
+		  .then(function(result) {
+			return result;
+		  })
+		  .catch(function(err) {
+			// Une erreur est survenue
+		  });
 	}
 	function delMessage(e){
 		e.preventDefault();
+		e.target.closest("div.message").children[0].children[1].children[0].textContent="Suppression en cours...";
 		let objectSend={
 			messageId:e.target.closest('div.message').attributes['messageid'].value
 		}
 		senddelMessage(JSON.stringify(objectSend)).then((result)=>{
 			if(parametre.replyLevel===0) {
-				getmes(1,0);
-				if(targetMessage===objectSend.messageId) settargetMessage(0);
+				getmes(1,0).then(()=>{
+					if(targetMessage===objectSend.messageId) settargetMessage(0);
+				});
 			}
-			else getmes(0,1);
+			else {
+				getmes(0,1);
+			}
 		})
 	}
 	async function senddelMessage(formData){
@@ -278,12 +297,12 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 	}
 	async function getmes(message,answer){
 		if(message===1){
-			getMessageApi().then((result)=>{
+			return getMessageApi().then((result)=>{
 			setListMessage(result);
 		});
 		}
 		if(answer===1){
-		getAnswerApi().then((result)=>{
+			return getAnswerApi().then((result)=>{
 			setListAnswer(result);
 		});
 		}
@@ -362,15 +381,16 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 							<SettingsIcon/>
 						</IconButton>
 						{
-							openParametre === 1 &&
+							openParametre === 1  &&
 							<div className="popupParametre">
 								<ul>
-									<li><button onClick={(e)=>{delMessage(e)}}>Delete</button></li>
+									<li><button onClick={(e)=>{delMessage(e);setopenParametre(0);}}>Delete</button></li>
 									<li><button onClick={(e)=>{
 										setopenReply(2);
 										setformText(element.message);
 										e.target.closest("div.message").children[0].children.length === 3 &&
 										setformFile(e.target.closest("div.message").children[0].children[2].src);
+										setopenParametre(0);
 										}}>Edit</button></li>
 								</ul>
 							</div>
@@ -380,19 +400,17 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 				</ButtonGroup>
 			</div>	
 			{
-				openReply >= 1 &&
+				openReply === 1 || openReply === 2 ?
 				<div className='sendreply'>
 					<ThemeProvider theme={theme}>
 					<TextField color="neutral" className="formText" label="Message" onChange={(e)=>setformText(e.target.value)} value={formText} multiline/>
 					<div className='sendreply_uploadimg'>
 					{
 					formFile === "" ?
-					<>
 						<IconButton color="primary" aria-label="upload picture" component="label">
 							<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files[0])} type="file" id="formFile"/>
 							<PhotoCamera />
 						</IconButton>
-					</>
 					: 
 					<>
 						{getimgpreview()}
@@ -401,13 +419,16 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 					{
 						openReply === 1 ?
 						<Button color="primary" variant="contained" onClick={(e)=>sendAnswer(e,parametre.replyLevel)}>Envoyer</Button>
-						:
+						: openReply === 2 &&
 						<Button color="primary" variant="contained" onClick={(e)=>modifAnswer(e,parametre.replyLevel)}>Modifier</Button>
 					}
 					
 					</div>
 					</ThemeProvider>
 				</div>
+				: openReply === 3 &&
+				<div className='sendreply'>Load...</div>
+				
 			}
 		</div>
 	</>
