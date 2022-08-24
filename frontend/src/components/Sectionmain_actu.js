@@ -32,6 +32,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 	const [targetMessage,settargetMessage] = useState(0);
 	const [formText,setformText] = useState("Votre message ?");
 	const [formFile,setformFile] = useState("");
+	const [openActuSend,setopenActuSend] = useState(0);
 
 	function getimgpreview(){
 		let urlFile = URL.createObjectURL(formFile);
@@ -53,7 +54,6 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				sendMessageGloabal:1,
 				buttonCommentaire:1,
 				sendReply:1,
-				
 			}
 			if(messageid === "all"){
 				parametre={
@@ -65,27 +65,32 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				let blockactusend=(
 					<div id="blockactu">
 						<div id="blockactu_send">
-							<form>
-							<div>
-							<ThemeProvider theme={theme}>
-							
-							<TextField color="neutral" className="formText" label="Message" onBlur={(e)=>setformText(e.target.value)} defaultValue={formText} multiline/>
-							<div className='sendreply_uploadimg'>
 							{
-							formFile === "" ?
-								<IconButton color="primary" aria-label="upload picture" component="label">
-									<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files[0])} type="file" id="formFile"/>
-									<PhotoCamera />
-								</IconButton>
-							: 
-								getimgpreview()
+								openActuSend === 0 ?
+								<form>
+								<div>
+								<ThemeProvider theme={theme}>
+								
+								<TextField color="neutral" className="formText" label="Message" onBlur={(e)=>setformText(e.target.value)} defaultValue={formText} multiline/>
+								<div className='sendreply_uploadimg'>
+								{
+								formFile === "" ?
+									<IconButton color="primary" aria-label="upload picture" component="label">
+										<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files[0])} type="file" id="formFile"/>
+										<PhotoCamera />
+									</IconButton>
+								: 
+									getimgpreview()
+								}
+								<Button color="primary" variant="contained" onClick={(e)=>sendMessage(e,false)}>Envoyer</Button>
+								
+								</div>
+								</ThemeProvider>
+								</div>
+								</form>
+								: openActuSend === 1 &&
+								<p>Load...</p>
 							}
-							<Button color="primary" variant="contained" onClick={(e)=>sendMessage(e,false)}>Envoyer</Button>
-							
-							</div>
-							</ThemeProvider>
-							</div>
-							</form>
 						</div>
 					</div>);
 				
@@ -173,6 +178,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 	}
 	function sendMessage(e){
 		e.preventDefault();
+		setopenActuSend(1);
 		let objectData={
 			message:formText,
 			messageId:Date.now(),
@@ -184,8 +190,13 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			//formData.append('image',e.target.parentElement.children[0].children[0].files[0]);
 			formData.append('image',formFile);
 		}
+		
 		sendMessageApi(formData).then((result)=>{
-			getmes();
+			getmes().then(()=>{
+				setformText("");
+				setformFile("");
+				setopenActuSend(0);
+			});
 		});
 	}
 	async function sendMessageApi(formData){
@@ -246,13 +257,10 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			// Une erreur est survenue
 		});
 	}
-	function getmes(){
-		getMessageApi().then((result)=>{
+	async function getmes(){
+		return getMessageApi().then((result)=>{
 			setListMessage(result);
 		});
-		/*getAnswerApi().then((result)=>{
-			setListAnswer(result);
-		});*/
 	}
 	useEffect(() => {
 		getmes();
