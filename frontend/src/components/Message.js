@@ -40,10 +40,16 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 	});
 	function modifAnswer(e,replyLevel=0){
 		e.preventDefault();
-		
 		let objectData={
 			message:element.message,
 			dateTime:element.dateTime,
+		}
+		if(typeof formFile==="object"){
+			// Image modifié
+			objectData={
+				...objectData,
+				imageUrl:formFile,
+			}
 		}
 		console.log(objectData);
 		console.log(element);
@@ -104,10 +110,10 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 	}
 	function getimgpreview(){
 		let urlFile;
-		if(String(formFile)){
-			urlFile=formFile;
+		if(typeof formFile==="object"){
+			urlFile = URL.createObjectURL(formFile);
 		}
-		else urlFile = URL.createObjectURL(formFile);
+		else urlFile=formFile;
 		
 		return (
 		<div>
