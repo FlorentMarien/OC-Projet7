@@ -19,26 +19,32 @@ function Bodymain({auth,setAuth}) {
 				method: 'POST',
 			  })
 			  .then(function(res) { 
-				if (res.ok) {
-				  return res.json();
-				}
+				return res.json();
 			  })
 			  .then(function(result) {
 				return result;
 			  })
 			  .catch(function(err) {
-				// Une erreur est survenue
+				return err;
 			  });
 		}
+		
 		getUser().then((result)=>{
-			console.log(result);
-			setprofilData({
-				state:1,
-				name:result.name,
-				prename:result.prename,
-				imageUrl:result.imageUrl,
-				adminLevel: result.adminLevel,
-			});
+			
+			if(result.error){
+				if(result.error.name==="TokenExpiredError") {
+					setAuth([0]);					
+				}
+			}
+			else{
+				setprofilData({
+					state:1,
+					name:result.name,
+					prename:result.prename,
+					imageUrl:result.imageUrl,
+					adminLevel: result.adminLevel,
+				});	
+			}
 		})
 	}, [auth]);
 	return (
