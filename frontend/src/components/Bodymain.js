@@ -30,21 +30,25 @@ function Bodymain({auth,setAuth}) {
 		}
 		
 		getUser().then((result)=>{
-			
-			if(result.error){
-				if(result.error.name==="TokenExpiredError") {
-					setAuth([0]);					
-				}
+			if(!result.error){
+			setprofilData({
+				state:1,
+				name:result.name,
+				prename:result.prename,
+				imageUrl:result.imageUrl,
+				adminLevel: result.adminLevel,
+			});	
 			}
 			else{
-				setprofilData({
-					state:1,
-					name:result.name,
-					prename:result.prename,
-					imageUrl:result.imageUrl,
-					adminLevel: result.adminLevel,
-				});	
+				throw result;
 			}
+		})
+		.catch((err)=>{
+			console.log(err);
+			if(err.error.name==="TokenExpiredError") {
+				//setAuth([0]);					
+			}
+			setAuth([0]); // TokenExpired/ProblemeToken
 		})
 	}, [auth]);
 	return (

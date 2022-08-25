@@ -132,3 +132,13 @@ exports.modifMessage = (req, res) => {
         });
     });
 };
+exports.getuserMessage = (req, res) => {
+    Message.find({ userId: req.auth.userId })
+        .sort({ dateTime: -1 })
+        .then((result) => {
+            getUser(result).then((result) => {
+                res.status(200).json(result);
+            });
+        })
+        .catch((error) => res.status(404).json(error));
+};
