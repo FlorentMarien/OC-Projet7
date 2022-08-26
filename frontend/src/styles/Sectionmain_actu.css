@@ -1,5 +1,3 @@
-
-
 .message_content{
     display: flex;
 }
@@ -44,7 +42,7 @@
     position: fixed;
 
 }
-.replylevel1{
+/*.replylevel1{
     margin-left: 13.3%;
 }
 .replylevel2{
@@ -52,7 +50,7 @@
 }
 .replylevel3{
     margin-left: 20%;
-}
+}*/
 main #main_container section{
     padding: 3%;
 }

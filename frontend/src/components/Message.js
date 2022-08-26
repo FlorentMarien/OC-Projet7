@@ -17,7 +17,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
 
 library.add(fas)
-function Message({parametre,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage,profilData}) {
+function Message({parametre,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage,settampontargetMessage,tampontargetMessage,profilData}) {
 	const [disableButtonLike,setdisableButtonLike] = useState(element.arrayDislike.includes(auth[1]));
 	const [disableButtonDislike,setdisableButtonDislike] = useState(element.arrayLike.includes(auth[1]));
 	const [formFile,setformFile] = useState("");
@@ -313,10 +313,14 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 		}
 	}
 	function getCommentaire(e){
-		if(parametre.replyLevel===0){
+		if(parametre.replyLevel<2){
 			e.preventDefault();
 			let messageid=e.target.closest("div.message").attributes["messageid"].value;
-			settargetMessage(messageid);
+			let bistampontargetMessage=tampontargetMessage;
+			bistampontargetMessage.push({messageid:messageid,replyLevel:parametre.replyLevel});
+			console.log(bistampontargetMessage);
+			settampontargetMessage(bistampontargetMessage);
+			settargetMessage(bistampontargetMessage[bistampontargetMessage.length-1]);
 			getmes(0,1);
 		}
 	}
@@ -330,7 +334,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 	}
 	return (
 	<>
-		<div className={'message replylevel'+parametre.replyLevel} messageid={element._id}>
+		<div className={'message replylevel'+parametre.replyLevel+" "+parametre.messageFocus} messageid={element._id}>
 			<div className='message_content'>								
 				<div className='userInfo'>
 					<img src={element.userImageUrl} alt={"Image de "+element.userName + " "+element.userPrename}/>

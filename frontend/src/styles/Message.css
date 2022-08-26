@@ -4,15 +4,49 @@
 .message{
     justify-content: space-between;
     padding: 20px;
-    
     width: 80%;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 15px;
-    margin-bottom: 15px;
     border: solid 1px white;
     border-radius: 15px;
+    padding-bottom: 0px;
 }
+
+.messageFocus .answer::before,.answerFocus .answer::before{
+    content:"";
+    width: 25%;
+    width: 1px;
+    background-color: white;
+    margin-left:auto;
+    margin-right: auto;
+    
+}
+.answerFocus::before, .lastanswerFocus::before{
+    content: "";
+    height: 20px;
+    width: 1px;
+    background-color: white;
+    display: block;
+    margin-left: calc(12.5% - 0.5px);
+}
+.answerFocus{
+    border-top: black;
+}
+.lastanswerFocus .answer .MuiButtonGroup-root{
+    width: 75%;
+}
+.lastanswerFocus .answer::before{
+    content:"";
+    width: 25%;
+}
+
+.messageFocus{
+    padding-top: 20px !important;
+}
+.messageFocus .answer .MuiButtonGroup-root,.answerFocus .answer .MuiButtonGroup-root{
+    width: 75%;
+}
+
 .message_content{
     display: flex;
     
@@ -64,15 +98,6 @@
     position: fixed;
 
 }
-.replylevel1{
-    margin-left: 13.3%;
-}
-.replylevel2{
-    margin-left: 16.6%;
-}
-.replylevel3{
-    margin-left: 20%;
-}
 .Mui-disabled{
     color:gray !important;
 }
@@ -94,7 +119,12 @@
 .MuiButtonGroup-root{
     display: flex;
     justify-content: space-between;
+    padding-bottom: 20px;
     width: 100%;
+    padding-bottom: 20px;
+}
+.replylevel1, .replylevel2, .replylevel3{
+    padding-top: 0px;
 }
 .MuiButtonGroup-root div{
     display: flex;
@@ -119,9 +149,6 @@
     padding: 5px;
     border: 1px solid white;
     border-radius: 5px;
-}
-.popupParametre ul li{
-    
 }
 .popupParametre ul li button{
     width: 100%;

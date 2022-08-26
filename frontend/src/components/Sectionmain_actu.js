@@ -29,11 +29,20 @@ const theme = createTheme({
 function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
 	const [listMessage,setListMessage] = useState([]);
 	const [listAnswer,setListAnswer] = useState([0]);
-	const [targetMessage,settargetMessage] = useState(0);
-	const [formText,setformText] = useState("Votre message ?");
+	const [tampontargetMessage,settampontargetMessage] = useState([{messageid:"",replyLevel:0}]);
+	const [targetMessage,settargetMessage] = useState(tampontargetMessage[tampontargetMessage.length-1]);
+	const [formText,setformText] = useState("Votre message ");
 	const [formFile,setformFile] = useState("");
 	const [openActuSend,setopenActuSend] = useState(0);
-
+	function getBack(e){
+		e.preventDefault();
+		let bistampontargetMessage;
+		bistampontargetMessage=tampontargetMessage;
+		bistampontargetMessage.pop();
+		console.log(bistampontargetMessage);
+		settampontargetMessage(bistampontargetMessage);
+		settargetMessage(bistampontargetMessage[bistampontargetMessage.length-1]);
+	}
 	function getimgpreview(){
 		let urlFile = URL.createObjectURL(formFile);
 		return (
@@ -48,13 +57,15 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		</div>
 		)
 	}
-	function getreply2(messageid,replyLevel,reply){
+	function getreply2(messageid,replyLevel,boolEnd){
+		
 		if(listMessage.length!==0){
 			let parametre = {
 				sendMessageGloabal:1,
 				buttonCommentaire:1,
 				sendReply:1,
 			}
+			let reply;
 			if(messageid === "all"){
 				parametre={
 					...parametre,
@@ -98,7 +109,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 					reply=(
 					<>
 						{reply}
-						{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData}/>}
+						{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
 					</>)
 				});
 				reply=
@@ -113,27 +124,59 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				parametre={
 					buttonCommentaire:1,
 					sendReply:1,
-					replyLevel:replyLevel
+					replyLevel:replyLevel,
+					messageFocus:"messageFocus",
 				};
-				listMessage.forEach(element => {
-					if(element._id===targetMessage){
-						reply=(
-							<>
-							<IconButton onClick={(e)=>settargetMessage(0)} color="primary" aria-label="Back" component="label">
-								<KeyboardBackspaceIcon/>
-							</IconButton>
-							<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData}/>
-							</>
-						);
-						element.answer.forEach(element=>{
+				if(targetMessage.replyLevel===0){
+					listMessage.forEach(element => {
+						if(element._id===targetMessage.messageid){
+							
 							reply=(
 								<>
-									{reply}
-									{ getreply2(element,replyLevel+1) }
-								</>);
-						});
-					}
-				});
+								<IconButton onClick={(e)=>getBack(e)} color="primary" aria-label="Back" component="label">
+									<KeyboardBackspaceIcon/>
+								</IconButton>
+								<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>
+								</>
+							);
+							element.answer.forEach(result=>{
+								if(element.answer[element.answer.length-1]===result) {
+									boolEnd=true;
+								}
+								
+								reply=(
+									<>
+										{reply}
+										{ getreply2(result,replyLevel+1,boolEnd) }
+									</>);
+							});
+						}
+					});
+				}
+				else{
+					//Aucun resultat dans la liste de Message recherche dans les réponses...
+					parametre.replyLevel=targetMessage.replyLevel;
+					listAnswer.forEach(element => {
+						if(element._id===targetMessage.messageid){
+							reply=(
+								<>
+								<IconButton onClick={(e)=>getBack(e)} color="primary" aria-label="Back" component="label">
+									<KeyboardBackspaceIcon/>
+								</IconButton>
+								<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>
+								</>
+							);
+							element.answer.forEach(result=>{
+								if(element.answer[element.answer.length-1]===result) boolEnd=true;
+								reply=(
+									<>
+										{reply}
+										{ getreply2(result,parametre.replyLevel+1,boolEnd) }
+									</>);
+							});
+						}
+					});
+				}
 				reply=
 				<section>
 					<div className='blockactu_fil'>
@@ -146,7 +189,8 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				parametre={
 					buttonCommentaire:0,
 					sendReply:1,
-					replyLevel:replyLevel
+					replyLevel:replyLevel,
+					messageFocus:"answerFocus",
 				}
 				if(replyLevel>=maxReply){
 					parametre.sendReply=0;
@@ -154,13 +198,17 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				}
 				listAnswer.forEach(element => {
 					if(element._id===messageid){
+						if(boolEnd===true) {
+							parametre.messageFocus="lastanswerFocus"
+							
+						};
 						reply=(
 							<>
 							{reply}
-							{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData}/>}
+							{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
 							</>
 						);
-						if(replyLevel<maxReply){
+						/*if(replyLevel<maxReply){
 						element.answer.forEach(element=>{
 							reply=(
 								<>
@@ -168,7 +216,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 									{ getreply2(element,replyLevel+1) }
 								</>);
 						})
-						}
+						}*/
 					}
 				});
 			}
@@ -267,7 +315,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		
 	}, [auth])
 	return (
-		targetMessage === 0 ?
+		targetMessage.messageid === "" ?
 		getreply2("all",0)
 		: 
 		getreply2("one",0)

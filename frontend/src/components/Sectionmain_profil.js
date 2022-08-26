@@ -1,13 +1,24 @@
 import '../styles/Sectionmain_profil.css'
 import Message from './Message'
 import { useState,useEffect } from 'react'
+import IconButton from '@mui/material/IconButton';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
 function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
-	const [targetMessage,settargetMessage] = useState(0);
+	const [tampontargetMessage,settampontargetMessage] = useState([{messageid:"",replyLevel:0}]);
+	const [targetMessage,settargetMessage] = useState(tampontargetMessage[tampontargetMessage.length-1]);
 	const [listMessage,setListMessage] = useState([]);
 	const [listAnswer,setListAnswer] = useState([0]);
-
-	function getuserMessage(focusMessage,replyLevel=0){
+	function getBack(e){
+		e.preventDefault();
+		let bistampontargetMessage;
+		bistampontargetMessage=tampontargetMessage;
+		bistampontargetMessage.pop();
+		console.log(bistampontargetMessage);
+		settampontargetMessage(bistampontargetMessage);
+		settargetMessage(bistampontargetMessage[bistampontargetMessage.length-1]);
+	}
+	function getuserMessage(focusMessage,replyLevel=0,boolEnd=false){
 		let parametre = {
 			sendMessageGloabal:1,
 			buttonCommentaire:1,
@@ -21,36 +32,73 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 					listmessageprofil=(
 					<>
 						{listmessageprofil}
-						{<Message parametre={parametre} element={element} auth={auth} settargetMessage={settargetMessage} targetMessage={targetMessage} listMessage={listMessage} setListMessage={setListMessage} listAnswer={listAnswer} setListAnswer={setListAnswer} profilData={profilData}/>}
+						{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
 					</>);
 			});
 			return listmessageprofil;
 		}
 		if(focusMessage==="one"){
 			parametre.sendReply=1;
-			listMessage.forEach(element => {
-				if(element._id===targetMessage){
-					listmessageprofil=(
-					<>
-						{<Message parametre={parametre} element={element} auth={auth} settargetMessage={settargetMessage} targetMessage={targetMessage} listMessage={listMessage} setListMessage={setListMessage} listAnswer={listAnswer} setListAnswer={setListAnswer} profilData={profilData}/>}
-					</>);
-					if(element.answer.length !== 0){
-						element.answer.forEach((Answerelement)=>{
-							listmessageprofil=(
-								<>
-									{listmessageprofil}
-									{getuserMessage(Answerelement,replyLevel+1)}
-								</>
+			parametre.replyLevel=targetMessage.replyLevel;
+			parametre.messageFocus="messageFocus";
+			if(targetMessage.replyLevel===0){
+				listMessage.forEach(element => {
+					if(element._id===targetMessage.messageid){
+						listmessageprofil=(
+						<>
+							<IconButton onClick={(e)=>getBack(e)} color="primary" aria-label="Back" component="label">
+								<KeyboardBackspaceIcon/>
+							</IconButton>
+							{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
+						</>);
+						if(element.answer.length !== 0){
+							element.answer.forEach((Answerelement)=>{
+								if(element.answer[element.answer.length-1]===Answerelement){
+									boolEnd=true;
+								}
+								listmessageprofil=(
+									<>
+										{listmessageprofil}
+										{getuserMessage(Answerelement,replyLevel+1,boolEnd)}
+									</>
+								);
+							}
 							);
-							
 						}
-						);
 					}
-				}
-			});
+				});
+			}
+			else{
+				listAnswer.forEach(element => {
+					if(element._id===targetMessage.messageid){
+						listmessageprofil=(
+						<>
+							<IconButton onClick={(e)=>getBack(e)} color="primary" aria-label="Back" component="label">
+								<KeyboardBackspaceIcon/>
+							</IconButton>
+							{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
+						</>);
+						if(element.answer.length !== 0){
+							element.answer.forEach((Answerelement)=>{
+								if(element.answer[element.answer.length-1]===Answerelement){
+									boolEnd=true;
+								}
+								listmessageprofil=(
+									<>
+										{listmessageprofil}
+										{getuserMessage(Answerelement,replyLevel+1,boolEnd)}
+									</>
+								);
+							}
+							);
+						}
+					}
+				});
+			}
 		}
 		if((focusMessage !== "all") && (focusMessage !=="one")){
-			
+			if(boolEnd===true) parametre.messageFocus="lastanswerFocus";
+			else parametre.messageFocus="answerFocus";
 			listAnswer.forEach(element => {
 				if(element._id===focusMessage){
 					parametre.replyLevel=replyLevel;
@@ -58,18 +106,18 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 					listmessageprofil=(
 					<>
 						{listmessageprofil}
-						{<Message parametre={parametre} element={element} auth={auth} settargetMessage={settargetMessage} targetMessage={targetMessage} listAnswer={listAnswer} listMessage={listMessage} setListMessage={setListMessage} setListAnswer={setListAnswer} profilData={profilData}/>}
+						{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
 					</>);
+					/* Sous reponse
 					if(element.answer.length !== 0){
 						element.answer.forEach((Answerelement)=>
 							listmessageprofil=(
 								<>
 									{listmessageprofil}
-									{getuserMessage(Answerelement,replyLevel+1)}
 								</>
 							)
 						);
-					}
+					}*/
 				}
 			});
 		}
@@ -119,7 +167,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 				{
 					listMessage.length === 0 
 					? <p>Load...</p>
-					: targetMessage === 0 
+					: targetMessage.messageid === ""
 						?
 							getuserMessage("all")
 						:
