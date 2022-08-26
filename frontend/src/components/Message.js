@@ -90,7 +90,8 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 		e.preventDefault();
 		e.target.closest("div.message").children[0].children[1].children[0].textContent="Suppression en cours...";
 		let objectSend={
-			messageId:e.target.closest('div.message').attributes['messageid'].value
+			messageId:e.target.closest('div.message').attributes['messageid'].value,
+			replyLevel:parametre.replyLevel
 		}
 		senddelMessage(JSON.stringify(objectSend)).then((result)=>{
 			if(parametre.replyLevel===0) {
@@ -99,7 +100,11 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 				});
 			}
 			else {
-				getmes(0,1);
+				if(parametre.replyLevel===1) {
+					getmes(1,0);
+					getmes(0,1);
+				}
+				else getmes(0,1);
 			}
 		})
 	}

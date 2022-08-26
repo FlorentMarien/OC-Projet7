@@ -1,6 +1,7 @@
 const Answer = require('../models/Answer');
 const User = require('../models/User');
 const Message = require('../models/Message');
+
 exports.getAnswer = (req, res) => {
     Answer.find()
         .sort({ dateTime: -1 })
@@ -39,11 +40,10 @@ exports.sendAnswer = (req, res) => {
         Like: 0,
         Dislike: 0,
     });
-    console.log(answer);
     if (JSON.parse(req.body.message).replyLevel < 1) {
         Message.findOne({ _id: JSON.parse(req.body.message).answer }).then(
             (result) => {
-                result.answer.push(answer._id);
+                result.answer.push(answer._id.toString());
                 result
                     .save()
                     .then(() => console.log('Modif OK'))
@@ -53,8 +53,7 @@ exports.sendAnswer = (req, res) => {
     } else {
         Answer.findOne({ _id: JSON.parse(req.body.message).answer }).then(
             (result) => {
-                console.log(result);
-                result.answer.push(answer._id);
+                result.answer.push(answer._id.toString());
                 result
                     .save()
                     .then(() => console.log('Modif OK'))
@@ -109,12 +108,86 @@ exports.deleteMessage = (req, res) => {
         let adminLevel = resultUser.adminLevel;
         Answer.findOne({ _id: req.body.messageId }).then((result) => {
             if (result.userId === req.auth.userId || adminLevel === 1) {
-                Answer.deleteOne({ _id: req.body.messageId })
-                    .then(() => res.status(200).json('Suppresion Ok'))
-                    .catch((error) => error);
+                let replyLevel = req.body.replyLevel;
+                if (replyLevel === 1) {
+                    Message.findOne({ answer: req.body.messageId }).then(
+                        (messageBack) => {
+                            messageBack.answer.splice(
+                                messageBack.answer.indexOf(req.body.messageId),
+                                1
+                            );
+                            Message.updateOne(
+                                { answer: req.body.messageId },
+                                {
+                                    answer: messageBack.answer,
+                                }
+                            )
+                                .then((result) => {
+                                    console.log(result);
+                                    Answer.deleteOne({
+                                        _id: req.body.messageId,
+                                    })
+                                        .then(() =>
+                                            res
+                                                .status(200)
+                                                .json('Suppresion Ok')
+                                        )
+                                        .catch((error) => error);
+                                })
+                                .catch((error) => console.log(error));
+                        }
+                    );
+                } else if (replyLevel > 1) {
+                    console.log('child');
+                    Answer.findOne({ answer: req.body.messageId }).then(
+                        (messageBack) => {
+                            messageBack.answer.splice(
+                                messageBack.answer.indexOf(req.body.messageId),
+                                1
+                            );
+                            Answer.updateOne(
+                                { answer: req.body.messageId },
+                                {
+                                    answer: messageBack.answer,
+                                }
+                            )
+                                .then((result) => {
+                                    console.log(result);
+                                    Answer.deleteOne({
+                                        _id: req.body.messageId,
+                                    })
+                                        .then(() =>
+                                            res
+                                                .status(200)
+                                                .json('Suppresion Ok')
+                                        )
+                                        .catch((error) => error);
+                                })
+                                .catch((error) => console.log(error));
+                        }
+                    );
+                }
             }
         });
     });
+
+    /*Message.findOne({
+        answer: req.body.messageId,
+    }).then((messageBack) => {
+        messageBack.answer.splice(
+            messageBack.answer.indexOf(req.body.messageId),
+            1
+        );
+        Message.updateOne(
+            { answer: req.body.messageId },
+            {
+                answer: messageBack.answer,
+            }
+        )
+            .then((result) => console.log(result))
+            .catch((error) => console.log(error));
+    });
+    */
 };
 exports.modifMessage = (req, res) => {
     let message = JSON.parse(req.body.message);

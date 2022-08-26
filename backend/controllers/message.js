@@ -81,7 +81,6 @@ exports.sendLike = (req, res) => {
             arrayLike: result.arrayLike,
             arrayDislike: result.arrayDislike,
         };
-        console.log(returnLikeDislike);
         Message.updateOne(
             { _id: objectReq.messageid },
             { ...returnLikeDislike }

@@ -35,7 +35,6 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 						{<Message parametre={parametre} element={element} auth={auth} settargetMessage={settargetMessage} targetMessage={targetMessage} listMessage={listMessage} setListMessage={setListMessage} listAnswer={listAnswer} setListAnswer={setListAnswer} profilData={profilData}/>}
 					</>);
 					if(element.answer.length !== 0){
-						console.log(element.answer);
 						element.answer.forEach((Answerelement)=>{
 							listmessageprofil=(
 								<>
