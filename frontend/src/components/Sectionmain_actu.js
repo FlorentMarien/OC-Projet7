@@ -222,7 +222,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			}
 			return reply;
 		}
-		return (<section>Load...</section>);
+		return (<section><p>Load...</p></section>);
 	}
 	function sendMessage(e){
 		e.preventDefault();

@@ -38,6 +38,25 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 			}*/
 		},
 	});
+	async function getuserMessageApi(){
+		return await fetch("http://localhost:3000/api/message/getuserMessage",{
+			headers: {
+				'Authorization': "Bearer "+auth[2]
+			},
+			method: 'GET',
+		  })
+		  .then(function(res) { 
+			if (res.ok) {
+			  return res.json();
+			}
+		  })
+		  .then(function(result) {
+			return result;
+		  })
+		  .catch(function(err) {
+			// Une erreur est survenue
+		  });
+	}
 	function modifAnswer(e,replyLevel=0){
 		e.preventDefault();
 		setopenReply(3);
@@ -58,9 +77,13 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 		}
 		
 		modifMessageApi(formData).then((result)=>{
-				if(parametre.replyLevel===0){
-					getmes(1,0).then(()=>{setopenReply(0);});
+				if(parametre.replyLevel===0 && parametre.pageProfil===true){
+					getuserMessageApi().then((result)=>{
+						setopenReply(0);
+						setListMessage(result);
+					})
 				}
+				else if(parametre.replyLevel===0) getmes(1,0).then(()=>{setopenReply(0);});
 				else getmes(0,1).then(()=>{setopenReply(0);});
 		});
 	}
@@ -88,20 +111,38 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 	}
 	function delMessage(e){
 		e.preventDefault();
-		e.target.closest("div.message").children[0].children[1].children[0].textContent="Suppression en cours...";
+		let target = e.target.closest('div.message');
 		let objectSend={
-			messageId:e.target.closest('div.message').attributes['messageid'].value,
+			messageId:target.attributes['messageid'].value,
 			replyLevel:parametre.replyLevel
 		}
+		if(element._id===target.attributes["messageid"].value) target.children[0].children[1].children[0].textContent="Suppresion en cours";
 		senddelMessage(JSON.stringify(objectSend)).then((result)=>{
+			setopenParametre(0);
 			if(parametre.replyLevel===0) {
-				getmes(1,0).then(()=>{
-					if(targetMessage===objectSend.messageId) settargetMessage(0);
-				});
+				if(parametre.pageProfil===true){
+					getuserMessageApi().then((result)=>{
+						if(targetMessage.messageid===objectSend.messageId) {
+							settargetMessage(tampontargetMessage[0]);
+						}
+						setListMessage(result);
+					})
+				}
+				else{
+					getmes(1,0).then(()=>{
+						if(targetMessage.messageid===objectSend.messageId) settargetMessage(0);
+					});
+				}
 			}
 			else {
 				if(parametre.replyLevel===1) {
-					getmes(1,0);
+					if(parametre.pageProfil===true){
+						getuserMessageApi().then((result)=>{
+							if(targetMessage.messageid===objectSend.messageId) settargetMessage(0);
+							setListMessage(result);
+						})
+					}
+					else getmes(1,0);
 					getmes(0,1);
 				}
 				else getmes(0,1);
@@ -393,7 +434,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 							openParametre === 1  &&
 							<div className="popupParametre">
 								<ul>
-									<li><button onClick={(e)=>{delMessage(e);setopenParametre(0);}}>Delete</button></li>
+									<li><button onClick={(e)=>{delMessage(e);}}>Delete</button></li>
 									<li><button onClick={(e)=>{
 										setopenReply(2);
 										setformText(element.message);

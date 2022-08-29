@@ -24,6 +24,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			buttonCommentaire:1,
 			sendReply:0,
 			replyLevel:0,
+			pageProfil:true,
 		}
 		let listmessageprofil;
 		if(focusMessage==="all"){
@@ -59,7 +60,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 								listmessageprofil=(
 									<>
 										{listmessageprofil}
-										{getuserMessage(Answerelement,replyLevel+1,boolEnd)}
+										{getuserMessage(Answerelement,targetMessage.replyLevel+1,boolEnd)}
 									</>
 								);
 							}
@@ -86,7 +87,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 								listmessageprofil=(
 									<>
 										{listmessageprofil}
-										{getuserMessage(Answerelement,replyLevel+1,boolEnd)}
+										{getuserMessage(Answerelement,targetMessage.replyLevel+1,boolEnd)}
 									</>
 								);
 							}
@@ -152,28 +153,33 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	}, [auth])
 	return (
 		<section>
-			<div id="blockprofil">
-				{
-					profilData[0]!==0 &&
-					<>
-					<img src={ profilData.imageUrl } alt={profilData.name}/>
-					<ul>
-						<li>Nom: { profilData.name } Prenom: { profilData.prename }</li>
-					</ul>
-					</>
-				}
-			</div>
-			<div id="blocklistmessageprofil">
-				{
-					listMessage.length === 0 
-					? <p>Load...</p>
-					: targetMessage.messageid === ""
-						?
+			{
+				listMessage.length === 0 
+				? <p>Load...</p>
+				: 1 &&
+				<>
+				<div id="blockprofil">
+					{
+						profilData[0]!==0 &&
+						<>
+						<img src={ profilData.imageUrl } alt={profilData.name}/>
+						<ul>
+							<li>Nom: { profilData.name } Prenom: { profilData.prename }</li>
+						</ul>
+						</>
+					}
+				</div>
+				<div id="blocklistmessageprofil">
+					{
+						targetMessage.messageid === "" ?
 							getuserMessage("all")
 						:
 							getuserMessage("one")
-				}
-			</div>
+					}
+				</div>
+				</>
+			
+		}
 		</section>
 	)
 }
