@@ -38,6 +38,12 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 			}*/
 		},
 	});
+	function exitOnBlur(e){
+		if(e.target.closest("div.message") !== undefined){
+			if(openParametre!==0) setopenParametre(0);
+			if(openReply!==0) setopenReply(0);
+		}
+	}
 	async function getuserMessageApi(){
 		return await fetch("http://localhost:3000/api/message/getuserMessage",{
 			headers: {
@@ -354,6 +360,8 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 		}
 	}
 	function getCommentaire(e){
+		if(openReply===1) setopenReply(0);
+		if(openParametre===1) setopenParametre(0);
 		if(parametre.replyLevel<2){
 			e.preventDefault();
 			let messageid=e.target.closest("div.message").attributes["messageid"].value;
@@ -375,7 +383,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 	}
 	return (
 	<>
-		<div className={'message replylevel'+parametre.replyLevel+" "+parametre.messageFocus} messageid={element._id}>
+		<div className={'message replylevel'+parametre.replyLevel+" "+parametre.messageFocus} messageid={element._id} onMouseLeave={(e)=>{exitOnBlur(e)}}>
 			<div className='message_content'>								
 				<div className='userInfo'>
 					<img src={element.userImageUrl} alt={"Image de "+element.userName + " "+element.userPrename}/>
@@ -432,7 +440,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 						</IconButton>
 						{
 							openParametre === 1  &&
-							<div className="popupParametre">
+							<div className="popupParametre" onMouseLeave={(e)=>{setopenParametre(0);e.target.closest("div.message")}}>
 								<ul>
 									<li><button onClick={(e)=>{delMessage(e);}}>Delete</button></li>
 									<li><button onClick={(e)=>{
@@ -440,7 +448,6 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 										setformText(element.message);
 										e.target.closest("div.message").children[0].children.length === 3 &&
 										setformFile(e.target.closest("div.message").children[0].children[2].src);
-										setopenParametre(0);
 										}}>Edit</button></li>
 								</ul>
 							</div>

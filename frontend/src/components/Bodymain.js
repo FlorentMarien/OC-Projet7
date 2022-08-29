@@ -6,7 +6,7 @@ import Footer from './Footer'
 import Sectionmain_profil from './Sectionmain_profil'
 import Sectionmain_actu from './Sectionmain_actu'
 function Bodymain({auth,setAuth}) {
-	const [indexPage,setindexPage] = useState(0);
+	const [indexPage,setindexPage] = useState(1);
 	const [profilData,setprofilData] = useState(0);
 	useEffect(() => {
 		async function getUser(){
