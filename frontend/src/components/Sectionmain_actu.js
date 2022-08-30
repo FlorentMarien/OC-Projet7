@@ -71,7 +71,8 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 					...parametre,
 					buttonCommentaire:1,
 					sendReply:0,
-					replyLevel:replyLevel
+					replyLevel:replyLevel,
+					messageFocus:"messageAll",
 				}
 				let blockactusend=(
 					<div id="blockactu">
@@ -125,12 +126,11 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 					buttonCommentaire:1,
 					sendReply:1,
 					replyLevel:replyLevel,
-					messageFocus:"messageFocus",
+					messageFocus:"messageAll",
 				};
 				if(targetMessage.replyLevel===0){
 					listMessage.forEach(element => {
 						if(element._id===targetMessage.messageid){
-							
 							reply=(
 								<>
 								<IconButton onClick={(e)=>getBack(e)} color="primary" aria-label="Back" component="label">
@@ -140,38 +140,10 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 								</>
 							);
 							element.answer.forEach(result=>{
-								if(element.answer[element.answer.length-1]===result) {
-									boolEnd=true;
-								}
-								
 								reply=(
 									<>
 										{reply}
-										{ getreply2(result,replyLevel+1,boolEnd) }
-									</>);
-							});
-						}
-					});
-				}
-				else{
-					//Aucun resultat dans la liste de Message recherche dans les réponses...
-					parametre.replyLevel=targetMessage.replyLevel;
-					listAnswer.forEach(element => {
-						if(element._id===targetMessage.messageid){
-							reply=(
-								<>
-								<IconButton onClick={(e)=>getBack(e)} color="primary" aria-label="Back" component="label">
-									<KeyboardBackspaceIcon/>
-								</IconButton>
-								<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>
-								</>
-							);
-							element.answer.forEach(result=>{
-								if(element.answer[element.answer.length-1]===result) boolEnd=true;
-								reply=(
-									<>
-										{reply}
-										{ getreply2(result,parametre.replyLevel+1,boolEnd) }
+										{ getreply2(result,replyLevel+1,1) }
 									</>);
 							});
 						}
@@ -188,9 +160,9 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				let maxReply=2;
 				parametre={
 					buttonCommentaire:0,
-					sendReply:1,
+					sendReply:0,
 					replyLevel:replyLevel,
-					messageFocus:"answerFocus",
+					messageFocus:"",
 				}
 				if(replyLevel>=maxReply){
 					parametre.sendReply=0;
@@ -198,25 +170,42 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				}
 				listAnswer.forEach(element => {
 					if(element._id===messageid){
-						if(boolEnd===true) {
-							parametre.messageFocus="lastanswerFocus"
-							
+						if(boolEnd === 1) {
+							if(element.answer.length >= 1 ) parametre.messageFocus="messageFocus";
+							else parametre.messageFocus="messageAll";
+							parametre.sendReply=1;
 						};
+						if(boolEnd === 2) parametre.messageFocus="answerFocus";
+						if(boolEnd === 3) parametre.messageFocus="lastanswerFocus";
+						
+						if(element.answer.length >= 1 ) parametre.messageFocus="messageFocus";
 						reply=(
 							<>
 							{reply}
 							{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
 							</>
 						);
-						/*if(replyLevel<maxReply){
-						element.answer.forEach(element=>{
-							reply=(
-								<>
-									{reply}
-									{ getreply2(element,replyLevel+1) }
-								</>);
-						})
-						}*/
+						if(replyLevel<maxReply){
+							let x=1;
+							element.answer.forEach(result=>{
+								if(x===element.answer.length) boolEnd=3
+								else boolEnd=2;
+								
+								reply=(
+									<>
+										{reply}
+										{ getreply2(result,replyLevel+1,boolEnd) }
+									</>);
+								if(x===element.answer.length) {
+									reply=(
+										<div className='blocklisteanswer'>
+											{reply}
+										</div>
+									);
+								}
+								x++;
+							})
+						}
 					}
 				});
 			}

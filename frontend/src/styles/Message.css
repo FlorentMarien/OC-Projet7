@@ -11,7 +11,17 @@
     border-radius: 15px;
     padding-bottom: 0px;
 }
+.replylevel1, .replylevel2{
+    width:70%;
+}
+.blocklisteanswer{
+    margin-top: 20px;
+    margin-bottom: 20px;
 
+}
+.blocklisteanswer div.message{
+    border-radius: 0;
+}
 .messageFocus .answer::before,.answerFocus .answer::before{
     content:"";
     width: 25%;
@@ -32,6 +42,10 @@
 .answerFocus{
     border-top: black;
 }
+.lastanswerFocus{
+    border-bottom-left-radius: 20px !important;
+    border-bottom-right-radius: 20px !important;
+}
 .lastanswerFocus .answer .MuiButtonGroup-root{
     width: 75%;
 }
@@ -42,6 +56,8 @@
 
 .messageFocus{
     padding-top: 20px !important;
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
 }
 .messageFocus .answer .MuiButtonGroup-root,.answerFocus .answer .MuiButtonGroup-root{
     width: 75%;
@@ -123,8 +139,19 @@
     width: 100%;
     padding-bottom: 20px;
 }
-.replylevel1, .replylevel2, .replylevel3{
+.answerFocus, .messageFocus, .lastanswerFocus{
     padding-top: 0px;
+}
+.messageAll{
+    margin-top: 20px;
+    margin-bottom: 2Opx;
+}
+.messageAll div.answer{
+    width: 75%;
+    margin-left: 25%;
+}
+.inblocklistanswer{
+    width:70%;
 }
 .MuiButtonGroup-root div{
     display: flex;
