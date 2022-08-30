@@ -3,6 +3,8 @@ import Message from './Message'
 import { useState,useEffect } from 'react'
 import IconButton from '@mui/material/IconButton';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
 	const [tampontargetMessage,settampontargetMessage] = useState([{messageid:"",replyLevel:0}]);
 	const [targetMessage,settargetMessage] = useState(tampontargetMessage[tampontargetMessage.length-1]);
@@ -38,11 +40,9 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		let reply;
 		if(focusMessage==="all"){
 			const resultlistanswer = listAnswer.filter(result => result.userId===userId);
-			console.log(resultlistanswer);
 			resultlistanswer.forEach((answer)=>{
 				let message=listMessage.find(result => result.answer.includes(answer._id));
 				if(message!==undefined && answer!==undefined){
-					//console.log(message);
 					reply=(
 						<>
 							{reply}
@@ -264,8 +264,13 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 					}
 				</div>
 				<div>
-					<button onClick={(e)=>{if(targetPage!==0){getmes().then(()=>settargetPage(0))}}}>Poste de l'utilisateur</button>
-					<button onClick={(e)=>{if(targetPage!==1){getmesall().then(()=>settargetPage(1))}}}>Réponse de l'utilisateur</button>
+					<div id="navprofil">
+						<ButtonGroup variant="outlined" aria-label="outlined button group">
+							<Button onClick={(e)=>{if(targetPage!==0){settargetPage(2);getmes().then(()=>settargetPage(0))}}}>Message</Button>
+							<Button onClick={(e)=>{if(targetPage!==1){settargetPage(2);getmesall().then(()=>settargetPage(1))}}}>Réponse</Button>
+						</ButtonGroup>
+					</div>
+					
 				</div>
 				<div id="blocklistmessageprofil">
 					{
@@ -274,11 +279,12 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 								getuserMessage("all")
 							:
 								getuserMessage("one")
-						: targetPage === 1 &&
+						: targetPage === 1 ?
 							targetMessage.messageid === "" ?
 								getuserAnswer("all")
 							:
-								getuserAnswer("one")
+								getuserMessage("one")
+						: <p>Load...</p>
 					}
 				</div>
 				</>

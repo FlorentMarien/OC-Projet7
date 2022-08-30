@@ -79,3 +79,7 @@ main #main_container section{
 margin-top: 5px;
 margin-bottom: 5px;
 }
+#navprofil .MuiButtonGroup-root{
+    display: flex;
+    justify-content: center;
+}
