@@ -233,14 +233,23 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	}
 
 	useEffect(() => {
-		getmesall();
+		if(targetPage===0){
+			getmes();
+		}
+		else{
+			getmesall();
+		}
 		getanswer();
 	}, [auth])
 	return (
 		<section>
 			{
 				listMessage.length === 0 
-				? <p>Load...</p>
+				? 
+				<>
+					<p>Load...</p>
+				</>
+
 				: 1 &&
 				<>
 				<div id="blockprofil">
@@ -255,8 +264,8 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 					}
 				</div>
 				<div>
-					<button onClick={(e)=>{settargetPage(0)}}>Poste de l'utilisateur</button>
-					<button onClick={(e)=>{settargetPage(1)}}>Réponse de l'utilisateur</button>
+					<button onClick={(e)=>{if(targetPage!==0){getmes().then(()=>settargetPage(0))}}}>Poste de l'utilisateur</button>
+					<button onClick={(e)=>{if(targetPage!==1){getmesall().then(()=>settargetPage(1))}}}>Réponse de l'utilisateur</button>
 				</div>
 				<div id="blocklistmessageprofil">
 					{
