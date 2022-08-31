@@ -1,0 +1,6 @@
+.errorinput div fieldset.MuiOutlinedInput-notchedOutline{
+    border-color: red !important;
+}
+.errorinput label{
+    color:red;
+}

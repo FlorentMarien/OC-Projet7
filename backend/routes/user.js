@@ -9,5 +9,6 @@ router.post('/signup', multer, userCtrl.signup);
 router.post('/login', userCtrl.login);
 router.post('/getlogin', auth, userCtrl.getlogin);
 router.post('/sendimg', auth, multer, userCtrl.sendimg);
+router.post('/modifpassword', auth, userCtrl.modifpassword);
 
 module.exports = router;

@@ -37,7 +37,8 @@ function Bodymain({auth,setAuth}) {
 				prename:result.prename,
 				imageUrl:result.imageUrl,
 				adminLevel: result.adminLevel,
-				imageArray: result.imageArray
+				imageArray: result.imageArray,
+				email:result.email
 			});	
 			}
 			else{

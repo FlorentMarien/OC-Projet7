@@ -72,6 +72,7 @@ exports.getlogin = (req, res) => {
                 imageUrl: user.imageUrl,
                 adminLevel: user.adminLevel,
                 imageArray: user.imageArray,
+                email: user.email,
             });
         })
         .catch((error) => res.status(500).json({ error }));
@@ -101,4 +102,21 @@ exports.sendimg = (req, res) => {
             }
         })
         .catch((error) => res.status(500).json({ error }));
+};
+exports.modifpassword = (req, res) => {
+    User.findOne({ _id: req.auth.userId }).then((user) => {
+        bcrypt.compare(req.body.backPassword, user.password).then((valid) => {
+            if (valid) {
+                bcrypt.hash(req.body.newPassword, 10).then((hash) => {
+                    User.updateOne({ _id: req.auth.userId }, { password: hash })
+                        .then(() =>
+                            res.status(200).json('Mots de passe modifié')
+                        )
+                        .catch((error) => res.status(500).json(error));
+                });
+            } else {
+                res.status(401).json("Erreur de l'ancien mots de passe");
+            }
+        });
+    });
 };
