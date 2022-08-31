@@ -1,9 +1,12 @@
 const Message = require('../models/Message');
 const User = require('../models/User');
 exports.sendMessage = (req, res) => {
-    const messageObject = req.file && {
+    console.log(
+        `${req.protocol}://${req.get('host')}/images/${req.files[0].filename}`
+    );
+    const messageObject = req.files && {
         imageUrl: `${req.protocol}://${req.get('host')}/images/${
-            req.file.filename
+            req.files[0].filename
         }`,
     };
     let message = new Message({
@@ -107,13 +110,13 @@ exports.modifMessage = (req, res) => {
         let adminLevel = resultUser.adminLevel;
         Message.findOne({ _id: message.messageId }).then((result) => {
             if (result.userId === req.auth.userId || adminLevel === 1) {
-                const messageObject = req.file
+                const messageObject = req.files
                     ? {
                           imageUrl: `${req.protocol}://${req.get(
                               'host'
-                          )}/images/${req.file.filename}`,
+                          )}/images/${req.files[0].filename}`,
                       }
-                    : req.file === undefined
+                    : req.files === undefined
                     ? {
                           imageUrl: '',
                       }

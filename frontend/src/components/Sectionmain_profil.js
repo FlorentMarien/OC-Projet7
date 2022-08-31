@@ -11,6 +11,8 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	const [targetPage,settargetPage] = useState(0);
 	const [listMessage,setListMessage] = useState([]);
 	const [listAnswer,setListAnswer] = useState([0]);
+	const [targetCarrousel,settargetCarrousel] = useState(0);
+	const [formFile,setformFile] = useState(0);
 	function getBack(e){
 		e.preventDefault();
 		let bistampontargetMessage;
@@ -19,6 +21,71 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		console.log(bistampontargetMessage);
 		settampontargetMessage(bistampontargetMessage);
 		settargetMessage(bistampontargetMessage[bistampontargetMessage.length-1]);
+	}
+	function sendImg(e){
+		e.preventDefault();
+		console.log(formFile);
+		let formData = new FormData();
+		let text={
+			name:"test",
+			prename:"test"
+		}
+		console.log(formFile.length);
+		for(let x = 0 ; x<formFile.length ; x++){
+			formData.append('image',formFile[x]);
+		}
+		formData.append('text',JSON.stringify(text));
+		console.log(formData);
+		sendImgApi(formData).then((result)=>{
+			let newprofilData=profilData;
+			newprofilData.imageArray=result;
+			setprofilData(newprofilData);
+		});
+	}
+	async function sendImgApi(formData){
+		return await fetch("http://localhost:3000/api/auth/sendimg",{
+			headers: {
+				'Authorization': "Bearer "+auth[2]
+			},
+			method: 'POST',
+			body: formData
+		  })
+		  .then(function(res) { 
+			if (res.ok) {
+			  return res.json();
+			}
+		  })
+		  .then(function(result) {
+			return result;
+		  })
+		  .catch(function(err) {
+			// Une erreur est survenue
+		  });
+	}
+	function galleryDisplayButton(e,boolLeave){
+			e.stopPropagation();
+			if(boolLeave===false){
+				document.getElementById("button-gallery").style.visibility="visible";
+			}
+			else if(boolLeave===true){
+				
+				document.getElementById("button-gallery").style.visibility="hidden";
+				
+			}
+	}
+	function activeCarrousel(){
+		window.setTimeout(function(){
+			if(document.getElementById("img-userfocusgallery")!==null){
+				if(profilData.imageArray[targetCarrousel]!==undefined){
+					document.getElementById("img-userfocusgallery").src=profilData.imageArray[targetCarrousel];
+					settargetCarrousel(targetCarrousel+1);
+				}
+				else{
+					document.getElementById("img-userfocusgallery").src=profilData.imageArray[0];
+					settargetCarrousel(1);
+				}
+			}
+		},10000);
 	}
 	function getuserAnswer(focusMessage,replyLevel=0,boolend){
 		let userId=auth[1];
@@ -262,11 +329,13 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	useEffect(() => {
 		if(targetPage===0){
 			getmes();
+			//getImgUser();
 		}
 		else{
 			getmesall();
 		}
 		getanswer();
+		
 	}, [auth])
 	return (
 		<section>
@@ -280,6 +349,27 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 				: 1 &&
 				<>
 				<div id="blockprofil">
+					<div id='usergallery' onMouseEnter={(e)=>{galleryDisplayButton(e,false)}} onMouseLeave={(e)=>{galleryDisplayButton(e,true)}}>
+						<div id="img-gallery">
+							<img id="img-userfocusgallery" src={ profilData.imageArray.length !==0 ? profilData.imageArray[0] : profilData.imageUrl} alt={profilData.name}/>
+							{activeCarrousel()}
+						</div>
+						<div id='button-gallery'>
+							<ButtonGroup variant="outlined" aria-label="outlined button group" orientation="vertical">
+								<Button component="label">
+									Ajouter
+									<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files)} type="file" id="formFile" multiple/>
+								</Button>
+								{
+									formFile !==0 &&
+									<Button onClick={(e)=>{sendImg(e)}}>Envoyer</Button>
+								}
+								<Button onClick={(e)=>{setindexPage(4)}}>Parcourir</Button>
+							</ButtonGroup>
+						</div>
+						
+					</div>
+					<div className='userprofil'>
 					{
 						profilData[0]!==0 &&
 						<>
@@ -289,10 +379,11 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 						</ul>
 						</>
 					}
+					</div>
 				</div>
 				<div>
 					<div id="navprofil">
-						<ButtonGroup variant="outlined" aria-label="outlined button group">
+						<ButtonGroup variant="outlined" aria-label="outlined button group" >
 							<Button onClick={(e)=>{if(targetPage!==0){settargetPage(2);getmes().then(()=>settargetPage(0))}}}>Message</Button>
 							<Button onClick={(e)=>{if(targetPage!==1){settargetPage(2);getmesall().then(()=>settargetPage(1))}}}>Réponse</Button>
 						</ButtonGroup>

@@ -14,7 +14,7 @@ exports.signup = (req, res) => {
                 prename: objectContact.prename,
 
                 imageUrl: `${req.protocol}://${req.get('host')}/images/${
-                    req.file.filename
+                    req.files[0].filename
                 }`,
             });
             user.save()
@@ -71,7 +71,34 @@ exports.getlogin = (req, res) => {
                 prename: user.prename,
                 imageUrl: user.imageUrl,
                 adminLevel: user.adminLevel,
+                imageArray: user.imageArray,
             });
+        })
+        .catch((error) => res.status(500).json({ error }));
+};
+exports.sendimg = (req, res) => {
+    User.findOne({ _id: req.auth.userId })
+        .then((user) => {
+            if (!user) {
+                return res.status(401).json({
+                    message: 'Utilisateur introuvable',
+                });
+            } else {
+                let newimageArray = user.imageArray ? user.imageArray : [];
+                for (let x = 0; x < req.files.length; x++) {
+                    newimageArray.push(
+                        `${req.protocol}://${req.get('host')}/images/${
+                            req.files[x].filename
+                        }`
+                    );
+                }
+                User.updateOne(
+                    { _id: req.auth.userId },
+                    { imageArray: newimageArray }
+                )
+                    .then(() => res.status(200).json(newimageArray))
+                    .catch((error) => res.status(500).json({ error }));
+            }
         })
         .catch((error) => res.status(500).json({ error }));
 };

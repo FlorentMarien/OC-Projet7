@@ -2,9 +2,9 @@ import '../styles/Bodymain.css'
 
 import { useState,useEffect } from 'react'
 import Nav from './Nav'
-import Footer from './Footer'
 import Sectionmain_profil from './Sectionmain_profil'
 import Sectionmain_actu from './Sectionmain_actu'
+import Sectionmain_parametre from './Sectionmain_parametre'
 function Bodymain({auth,setAuth}) {
 	const [indexPage,setindexPage] = useState(1);
 	const [profilData,setprofilData] = useState(0);
@@ -37,6 +37,7 @@ function Bodymain({auth,setAuth}) {
 				prename:result.prename,
 				imageUrl:result.imageUrl,
 				adminLevel: result.adminLevel,
+				imageArray: result.imageArray
 			});	
 			}
 			else{
@@ -60,6 +61,8 @@ function Bodymain({auth,setAuth}) {
 				<Sectionmain_profil auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: indexPage === 1 ?
 				<Sectionmain_actu auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
+				: indexPage === 4 ?
+				<Sectionmain_parametre auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: null
 			}
 		</div>

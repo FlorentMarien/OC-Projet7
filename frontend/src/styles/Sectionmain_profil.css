@@ -10,4 +10,11 @@ img{
 }
 #blockprofil{
     text-align: center;
+    display: flex;
+}
+#usergallery{
+    width: 25%;
+}
+#userprofil{
+    width: 75%;
 }
