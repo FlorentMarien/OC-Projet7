@@ -20,7 +20,7 @@
 
 }
 .blocklisteanswer div.message{
-    border-radius: 0;
+    
 }
 .messageFocus .answer::before,.answerFocus .answer::before{
     content:"";
@@ -41,8 +41,12 @@
 }
 .answerFocus{
     border-top: black;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
 .lastanswerFocus{
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
     border-bottom-left-radius: 20px !important;
     border-bottom-right-radius: 20px !important;
 }
@@ -58,6 +62,8 @@
     padding-top: 20px !important;
     border-top-left-radius: 20px !important;
     border-top-right-radius: 20px !important;
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
 }
 .messageFocus .answer .MuiButtonGroup-root,.answerFocus .answer .MuiButtonGroup-root{
     width: 75%;
@@ -147,6 +153,10 @@
     margin-bottom: 2Opx;
 }
 .messageAll div.answer{
+    width: 75%;
+    margin-left: 25%;
+}
+.messageOne div.answer{
     width: 75%;
     margin-left: 25%;
 }

@@ -20,6 +20,7 @@ library.add(fas)
 function Message({parametre,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage,settampontargetMessage,tampontargetMessage,profilData}) {
 	const [disableButtonLike,setdisableButtonLike] = useState(element.arrayDislike.includes(auth[1]));
 	const [disableButtonDislike,setdisableButtonDislike] = useState(element.arrayLike.includes(auth[1]));
+	const [disablegetCommentaire,setdisablegetCommentaire] = useState(parametre.getCommentaire!==undefined ? true : false);
 	const [formFile,setformFile] = useState("");
 	const [formText,setformText] = useState("");
 	const [openReply,setopenReply] = useState(0);
@@ -406,7 +407,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 				<ButtonGroup variant="text" aria-label="text button group">
 					<div>
 					<div className='container_information'>
-					<IconButton disabled={disableButtonLike} color="primary" button-type="button_like" onClick={(e)=>{console.log(e.target);sendlike(e)}} aria-label="Like" component="label">
+					<IconButton disabled={disableButtonLike} color="primary" button-type="button_like" onClick={(e)=>{sendlike(e)}} aria-label="Like" component="label">
 						<ThumbUpOffIcon />
 					</IconButton>
 					<p className="informationBox">{element.Like}</p>
@@ -418,7 +419,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 					<p className="informationBox">{element.Dislike}</p>
 					</div>
 					<div className='container_information'>
-					<IconButton color="primary" aria-label="Show commentary" onClick={(e)=>{getCommentaire(e)}} component="label">
+					<IconButton disabled={disablegetCommentaire} color="primary" aria-label="Show commentary" onClick={(e)=>{getCommentaire(e)}} component="label">
 						<CommentIcon />
 					</IconButton>
 					<p className="informationBox">{element.answer.length}</p>

@@ -22,6 +22,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	}
 	function getuserAnswer(focusMessage,replyLevel=0,boolend){
 		let userId=auth[1];
+		let message,parentanswer=undefined;
 		let parametre = {
 			sendMessageGloabal:1,
 			buttonCommentaire:1,
@@ -31,27 +32,53 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		}
 		let parametremessage={
 			replyLevel:0,
-			messageFocus:"messageFocus inblocklistanswer",
+			messageFocus:"messageOne",
+			
 		};
 		let parametreanswer={
-			replyLevel:1,
+			replyLevel:2,
 			messageFocus:"lastanswerFocus",
+			getCommentaire:false
 		};
+		let parametreparentanswer={
+			replyLevel:1,
+			messageFocus:"messageFocus",
+			getCommentaire:false
+		};
+		let parametrealoneanswer={
+			replyLevel:1,
+			messageFocus:"messageOne",
+			getCommentaire:false
+		}
 		let reply;
 		if(focusMessage==="all"){
 			const resultlistanswer = listAnswer.filter(result => result.userId===userId);
+			
 			resultlistanswer.forEach((answer)=>{
-				let message=listMessage.find(result => result.answer.includes(answer._id));
-				if(message!==undefined && answer!==undefined){
-					reply=(
-						<>
+				message=listMessage.find(result => result.answer.includes(answer._id));
+				parentanswer=undefined;
+				if(message===undefined){
+					parentanswer=listAnswer.find(result => result.answer.includes(answer._id));
+					if(parentanswer!==undefined){
+						message=listMessage.find(result => result.answer.includes(parentanswer._id));
+					}
+				} 
+				if(message!==undefined){
+						reply=(
+							<>
 							{reply}
 							<div className='blocklisteanswer'>
 							{<Message parametre={parametremessage} element={message} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
-							{<Message parametre={parametreanswer} element={answer} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
+							{
+								parentanswer !== undefined &&
+								<Message parametre={parametreparentanswer} element={parentanswer} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>
+							}
+							{<Message parametre={parentanswer !== undefined ? parametreanswer : parametrealoneanswer} element={answer} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
 							</div>
-						</>
-					);
+							</>
+							
+						);
+					
 				}
 			});
 		}

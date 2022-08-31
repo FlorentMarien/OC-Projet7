@@ -127,6 +127,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 					sendReply:1,
 					replyLevel:replyLevel,
 					messageFocus:"messageAll",
+					getCommentaire:false,
 				};
 				if(targetMessage.replyLevel===0){
 					listMessage.forEach(element => {
@@ -163,6 +164,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 					sendReply:0,
 					replyLevel:replyLevel,
 					messageFocus:"",
+					getCommentaire:false
 				}
 				if(replyLevel>=maxReply){
 					parametre.sendReply=0;
