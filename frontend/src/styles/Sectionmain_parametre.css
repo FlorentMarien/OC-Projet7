@@ -4,3 +4,20 @@
 .errorinput label{
     color:red;
 }
+.nav-Parametre{
+    justify-content: center;
+}
+.form-Parametre{
+    display: flex;
+    flex-direction: column;
+}
+.parametre_imgparametre{
+    visibility: hidden;
+}
+.parametre_img{
+    display: flex;
+    justify-content: center;
+}
+.parametre_img div.parametre_imgparametre{
+    line-height: 115px;
+}

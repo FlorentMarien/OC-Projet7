@@ -27,18 +27,15 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	function sendImg(e){
 		e.preventDefault();
 		let formData = new FormData();
-		let text={
-			name:"test",
-			prename:"test"
-		}
+		
 		for(let x = 0 ; x<formFile.length ; x++){
 			formData.append('image',formFile[x]);
 		}
-		formData.append('text',JSON.stringify(text));
 		sendImgApi(formData).then((result)=>{
 			let newprofilData=profilData;
 			newprofilData.imageArray=result;
 			setprofilData(newprofilData);
+			setformFile(0);
 		});
 	}
 	async function sendImgApi(formData){

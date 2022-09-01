@@ -17,6 +17,11 @@ exports.signup = (req, res) => {
                 imageUrl: `${req.protocol}://${req.get('host')}/images/${
                     req.files[0].filename
                 }`,
+                imageArray: [
+                    `${req.protocol}://${req.get('host')}/images/${
+                        req.files[0].filename
+                    }`,
+                ],
             });
             user.save()
                 .then(() =>
@@ -125,7 +130,7 @@ exports.deletegallery = (req, res) => {
     User.findOne({ _id: req.auth.userId }).then((user) => {
         let newimageArray = user.imageArray;
         let filename = String(req.body.imageArray);
-        newimageArray.splice(req.body.imageArray, 1);
+        newimageArray.splice(newimageArray.indexOf(req.body.imageArray), 1);
         User.updateOne({ _id: req.auth.userId }, { imageArray: newimageArray })
             .then(() => {
                 filename = filename.substring(filename.lastIndexOf('/'));
