@@ -9,6 +9,7 @@ router.post('/signup', multer, userCtrl.signup);
 router.post('/login', userCtrl.login);
 router.post('/getlogin', auth, userCtrl.getlogin);
 router.post('/sendimg', auth, multer, userCtrl.sendimg);
-router.post('/modifpassword', auth, userCtrl.modifpassword);
-
+router.put('/modifpassword', auth, userCtrl.modifpassword);
+router.put('/deletegallery', auth, userCtrl.deletegallery);
+router.put('/modifpdp', auth, userCtrl.modifpdp);
 module.exports = router;

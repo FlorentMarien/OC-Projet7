@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
 	const [tampontargetMessage,settampontargetMessage] = useState([{messageid:"",replyLevel:0}]);
 	const [targetMessage,settargetMessage] = useState(tampontargetMessage[tampontargetMessage.length-1]);
@@ -12,6 +13,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	const [listMessage,setListMessage] = useState([]);
 	const [listAnswer,setListAnswer] = useState([0]);
 	const [targetCarrousel,settargetCarrousel] = useState(0);
+	let timerCarrousel = 0;
 	const [formFile,setformFile] = useState(0);
 	function getBack(e){
 		e.preventDefault();
@@ -24,18 +26,15 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	}
 	function sendImg(e){
 		e.preventDefault();
-		console.log(formFile);
 		let formData = new FormData();
 		let text={
 			name:"test",
 			prename:"test"
 		}
-		console.log(formFile.length);
 		for(let x = 0 ; x<formFile.length ; x++){
 			formData.append('image',formFile[x]);
 		}
 		formData.append('text',JSON.stringify(text));
-		console.log(formData);
 		sendImgApi(formData).then((result)=>{
 			let newprofilData=profilData;
 			newprofilData.imageArray=result;
@@ -65,27 +64,32 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	function galleryDisplayButton(e,boolLeave){
 			e.stopPropagation();
 			if(boolLeave===false){
+				if(timer===0) activeCarrousel();
 				document.getElementById("button-gallery").style.visibility="visible";
 			}
 			else if(boolLeave===true){
-				
-				document.getElementById("button-gallery").style.visibility="hidden";
-				
+				clearInterval(timer);
+				timer=0;
+				document.getElementById("button-gallery").style.visibility="hidden";	
 			}
 	}
+	let timer=0;
 	function activeCarrousel(){
-		window.setTimeout(function(){
-			if(document.getElementById("img-userfocusgallery")!==null){
-				if(profilData.imageArray[targetCarrousel]!==undefined){
-					document.getElementById("img-userfocusgallery").src=profilData.imageArray[targetCarrousel];
-					settargetCarrousel(targetCarrousel+1);
-				}
-				else{
-					document.getElementById("img-userfocusgallery").src=profilData.imageArray[0];
-					settargetCarrousel(1);
-				}
-			}
-		},10000);
+				timer=setInterval(function(){
+					if(document.getElementById("img-userfocusgallery")!==null){
+						let img=document.getElementById("img-userfocusgallery").src;
+						let posimg=profilData.imageArray.indexOf(img);
+						
+						if(profilData.imageArray[posimg+1]!==undefined){
+							document.getElementById("img-userfocusgallery").src=profilData.imageArray[posimg+1];
+						}
+						else{
+							document.getElementById("img-userfocusgallery").src=profilData.imageArray[0];
+						}
+					}
+				},2000);
+			
+			
 	}
 	function getuserAnswer(focusMessage,replyLevel=0,boolend){
 		let userId=auth[1];
@@ -335,7 +339,10 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			getmesall();
 		}
 		getanswer();
-		
+
+		return () => {
+			clearTimeout(timer);
+		};
 	}, [auth])
 	return (
 		<section>
@@ -351,8 +358,16 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 				<div id="blockprofil">
 					<div id='usergallery' onMouseEnter={(e)=>{galleryDisplayButton(e,false)}} onMouseLeave={(e)=>{galleryDisplayButton(e,true)}}>
 						<div id="img-gallery">
-							<img id="img-userfocusgallery" src={ profilData.imageArray.length !==0 ? profilData.imageArray[0] : profilData.imageUrl} alt={profilData.name}/>
-							{activeCarrousel()}
+							{
+								profilData.imageArray.length !== 0 ?
+								<>
+								<img id="img-userfocusgallery" src={ profilData.imageArray[0] } alt={profilData.name} />
+								</>
+								: 
+								<IconButton>
+									<PhotoCamera/>
+								</IconButton>
+							}
 						</div>
 						<div id='button-gallery'>
 							<ButtonGroup variant="outlined" aria-label="outlined button group" orientation="vertical">

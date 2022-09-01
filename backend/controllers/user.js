@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 
 exports.signup = (req, res) => {
     const objectContact = JSON.parse(req.body.user);
@@ -118,5 +119,32 @@ exports.modifpassword = (req, res) => {
                 res.status(401).json("Erreur de l'ancien mots de passe");
             }
         });
+    });
+};
+exports.deletegallery = (req, res) => {
+    User.findOne({ _id: req.auth.userId }).then((user) => {
+        let newimageArray = user.imageArray;
+        let filename = String(req.body.imageArray);
+        newimageArray.splice(req.body.imageArray, 1);
+        User.updateOne({ _id: req.auth.userId }, { imageArray: newimageArray })
+            .then(() => {
+                filename = filename.substring(filename.lastIndexOf('/'));
+                filename = filename.replace('/', '');
+                fs.unlink(`images/${filename}`, () => {});
+                res.status(200).json(newimageArray);
+            })
+            .catch((error) => res.status(200).json('Error' + error));
+    });
+};
+exports.modifpdp = (req, res) => {
+    User.findOne({ _id: req.auth.userId }).then(() => {
+        User.updateOne(
+            { _id: req.auth.userId },
+            { imageUrl: req.body.imageArray }
+        )
+            .then(() => {
+                res.status(200).json(req.body.imageArray);
+            })
+            .catch((error) => res.status(200).json('Error' + error));
     });
 };
