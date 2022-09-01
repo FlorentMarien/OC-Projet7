@@ -34,7 +34,32 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 	const [newbackPassword,setnewbackPassword] = useState("");
 	const [statePassword,setstatePassword] = useState("");
 	const [targetPage,settargetPage] = useState(0);
-	const [formFile,setformFile] = useState(0);
+	const [formFile,setformFile] = useState([]);
+	function delpreviewimg(e,file){
+		e.preventDefault();
+		console.log(file);
+		let newformFile = [
+			...formFile
+		];
+		console.log(formFile.indexOf(file));
+		newformFile.splice(newformFile.indexOf(file),1);
+		setformFile([...newformFile]);
+	}
+	function getimgpreview(){
+		let reply;
+		formFile.forEach((res)=>{
+			reply=(
+				<>
+				{reply}
+				<div>
+				{<img src={URL.createObjectURL(res)} alt={profilData.name}/>}
+				{<button onClick={(e)=>{delpreviewimg(e,res)}}>x</button>}
+				</div>
+				</>
+			);
+		});
+		return reply;
+	}
 	function sendImg(e){
 		e.preventDefault();
 		let formData = new FormData();
@@ -48,7 +73,7 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 				imageArray:result,
 			}
 			setprofilData(newprofilData);
-			setformFile(0);
+			setformFile([]);
 		});
 	}
 	async function sendImgApi(formData){
@@ -87,7 +112,6 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 		})	
 	}
 	function deleteGallery(e){
-		console.log(e.target.closest("div.parametre_img").children[0]);
 		e.preventDefault();
 		let objData={
 			imageArray:e.target.closest("div.parametre_img").children[0].src,
@@ -212,11 +236,16 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 			<ButtonGroup variant="outlined" aria-label="outlined button group" orientation="vertical">
 				<Button component="label">
 				Ajouter Images
-				<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files)} type="file" id="formFile" multiple/>
+				<input hidden accept="image/*" onChange={(e)=>{setformFile([...e.target.files])}} type="file" id="formFile" multiple/>
 				</Button>
 				{
-				formFile !==0 &&
-				<Button onClick={(e)=>{sendImg(e)}}>Envoyer</Button>
+				formFile.length !==0 &&
+				<>
+					<Button onClick={(e)=>{sendImg(e)}}>Envoyer</Button>
+					<div className='parametre_imgpreview'>
+						{getimgpreview()}
+					</div>
+				</>
 				}
 			</ButtonGroup>
 			{
