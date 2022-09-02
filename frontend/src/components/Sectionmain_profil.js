@@ -6,15 +6,17 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
-function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
+function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,targetRechercheUser,settargetRechercheUser}) {
 	const [tampontargetMessage,settampontargetMessage] = useState([{messageid:"",replyLevel:0}]);
 	const [targetMessage,settargetMessage] = useState(tampontargetMessage[tampontargetMessage.length-1]);
 	const [targetPage,settargetPage] = useState(0);
-	const [listMessage,setListMessage] = useState([]);
+	const [listMessage,setListMessage] = useState([0]);
 	const [listAnswer,setListAnswer] = useState([0]);
 	const [targetCarrousel,settargetCarrousel] = useState(0);
 	let timerCarrousel = 0;
 	const [formFile,setformFile] = useState(0);
+	const [profilTarget,setprofilTarget] = useState(0);
+	//targetRechercheUser
 	function getBack(e){
 		e.preventDefault();
 		let bistampontargetMessage;
@@ -32,7 +34,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			formData.append('image',formFile[x]);
 		}
 		sendImgApi(formData).then((result)=>{
-			let newprofilData=profilData;
+			let newprofilData=profilTarget;
 			newprofilData.imageArray=result;
 			setprofilData(newprofilData);
 			setformFile(0);
@@ -62,12 +64,16 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			e.stopPropagation();
 			if(boolLeave===false){
 				if(timer===0) activeCarrousel();
-				document.getElementById("button-gallery").style.visibility="visible";
+				if(targetRechercheUser===auth[2]){
+					document.getElementById("button-gallery").style.visibility="visible";
+				}
 			}
 			else if(boolLeave===true){
 				clearInterval(timer);
 				timer=0;
-				document.getElementById("button-gallery").style.visibility="hidden";	
+				if(targetRechercheUser===auth[2]){
+					document.getElementById("button-gallery").style.visibility="hidden";
+				}
 			}
 	}
 	let timer=0;
@@ -75,13 +81,13 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 				timer=setInterval(function(){
 					if(document.getElementById("img-userfocusgallery")!==null){
 						let img=document.getElementById("img-userfocusgallery").src;
-						let posimg=profilData.imageArray.indexOf(img);
+						let posimg=profilTarget.imageArray.indexOf(img);
 						
-						if(profilData.imageArray[posimg+1]!==undefined){
-							document.getElementById("img-userfocusgallery").src=profilData.imageArray[posimg+1];
+						if(profilTarget.imageArray[posimg+1]!==undefined){
+							document.getElementById("img-userfocusgallery").src=profilTarget.imageArray[posimg+1];
 						}
 						else{
-							document.getElementById("img-userfocusgallery").src=profilData.imageArray[0];
+							document.getElementById("img-userfocusgallery").src=profilTarget.imageArray[0];
 						}
 					}
 				},2000);
@@ -136,12 +142,12 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 							<>
 							{reply}
 							<div className='blocklisteanswer'>
-							{<Message parametre={parametremessage} element={message} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
+							{<Message parametre={parametremessage} element={message} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
 							{
 								parentanswer !== undefined &&
-								<Message parametre={parametreparentanswer} element={parentanswer} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>
+								<Message parametre={parametreparentanswer} element={parentanswer} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>
 							}
-							{<Message parametre={parentanswer !== undefined ? parametreanswer : parametrealoneanswer} element={answer} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
+							{<Message parametre={parentanswer !== undefined ? parametreanswer : parametrealoneanswer} element={answer} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
 							</div>
 							</>
 							
@@ -171,7 +177,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 					listmessageprofil=(
 					<>
 						{listmessageprofil}
-						{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
+						{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
 					</>);
 			});
 			return listmessageprofil;
@@ -188,7 +194,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 							<IconButton onClick={(e)=>getBack(e)} color="primary" aria-label="Back" component="label">
 								<KeyboardBackspaceIcon/>
 							</IconButton>
-							{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
+							{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
 						</>);
 						if(element.answer.length !== 0){
 							element.answer.forEach((Answerelement)=>{
@@ -221,7 +227,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 					listmessageprofil=(
 					<>
 						{listmessageprofil}
-						{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
+						{<Message parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
 					</>);
 					let x=1;
 					if(element.answer.length !== 0){
@@ -254,12 +260,15 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		}
 		return listmessageprofil;
 	}
-	async function getuserMessageApi(){
+	async function getuserMessageApi(objData){
 		return await fetch("http://localhost:3000/api/message/getuserMessage",{
 			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
 				'Authorization': "Bearer "+auth[2]
 			},
-			method: 'GET',
+			method: 'POST',
+			body:objData
 		  })
 		  .then(function(res) { 
 			if (res.ok) {
@@ -293,8 +302,13 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		});
 	}
 	async function getmes(){
-		return getuserMessageApi().then((result)=>{
-			setListMessage(result);
+		return getuserMessageApi(JSON.stringify(targetRechercheUser)).then((result)=>{
+			if(result.length===0){
+				setListMessage([-1]);
+			}
+			else{
+				setListMessage(result);
+			}
 		});
 	}
 	async function getmesall(){
@@ -328,9 +342,45 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	}
 
 	useEffect(() => {
+		setListMessage([0]);
+		async function getUser(objData){
+			return await fetch("http://localhost:3000/api/auth/getlogin",{
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'Authorization': "Bearer "+auth[2]
+				},
+				method: 'POST',
+				body:objData
+			  })
+			  .then(function(res) { 
+				return res.json();
+			  })
+			  .then(function(result) {
+				return result;
+			  })
+			  .catch(function(err) {
+				return err;
+			  });
+		}
+		getUser(JSON.stringify(targetRechercheUser)).then((result)=>{
+			if(!result.error){
+			setprofilTarget({
+				state:1,
+				name:result.name,
+				prename:result.prename,
+				imageUrl:result.imageUrl,
+				adminLevel: result.adminLevel,
+				imageArray: result.imageArray,
+				email:result.email
+			});	
+			}
+			else{
+				throw result;
+			}
+		});
 		if(targetPage===0){
 			getmes();
-			//getImgUser();
 		}
 		else{
 			getmesall();
@@ -340,25 +390,23 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		return () => {
 			clearTimeout(timer);
 		};
-	}, [auth])
+	}, [targetRechercheUser])
 	return (
 		<section>
 			{
-				listMessage.length === 0 
-				? 
-				<>
-					<p>Load...</p>
-				</>
-
-				: 1 &&
+				listMessage[0] === 0 ? 
+				<p>Load...</p>
+				: listMessage[0] < 0 ?
+				<p>Aucun message de l'utilisateur pour le moment</p>
+				: listMessage.length >= 1 &&
 				<>
 				<div id="blockprofil">
 					<div id='usergallery' onMouseEnter={(e)=>{galleryDisplayButton(e,false)}} onMouseLeave={(e)=>{galleryDisplayButton(e,true)}}>
 						<div id="img-gallery">
 							{
-								profilData.imageArray.length !== 0 ?
+								profilTarget.imageArray.length !== 0 ?
 								<>
-								<img id="img-userfocusgallery" src={ profilData.imageArray[0] } alt={profilData.name} />
+								<img id="img-userfocusgallery" src={ profilTarget.imageArray[0] } alt={profilTarget.name} />
 								</>
 								: 
 								<IconButton>
@@ -366,6 +414,8 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 								</IconButton>
 							}
 						</div>
+						{
+						profilTarget.userId===auth[2] &&
 						<div id='button-gallery'>
 							<ButtonGroup variant="outlined" aria-label="outlined button group" orientation="vertical">
 								<Button component="label">
@@ -379,15 +429,16 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 								<Button onClick={(e)=>{setindexPage(4)}}>Parcourir</Button>
 							</ButtonGroup>
 						</div>
+						}
 						
 					</div>
 					<div className='userprofil'>
 					{
-						profilData[0]!==0 &&
+						profilTarget[0]!==0 &&
 						<>
-						<img src={ profilData.imageUrl } alt={profilData.name}/>
+						<img src={ profilTarget.imageUrl } alt={profilTarget.name}/>
 						<ul>
-							<li>Nom: { profilData.name } Prenom: { profilData.prename }</li>
+							<li>Nom: { profilTarget.name } Prenom: { profilTarget.prename }</li>
 						</ul>
 						</>
 					}

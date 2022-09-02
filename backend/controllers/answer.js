@@ -27,7 +27,7 @@ async function getUser(message) {
     return message;
 }
 exports.sendAnswer = (req, res) => {
-    const messageObject = req.files && {
+    const messageObject = req.files[0] && {
         imageUrl: `${req.protocol}://${req.get('host')}/images/${
             req.files[0].filename
         }`,

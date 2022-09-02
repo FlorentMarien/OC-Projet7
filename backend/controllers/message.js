@@ -1,10 +1,8 @@
 const Message = require('../models/Message');
 const User = require('../models/User');
 exports.sendMessage = (req, res) => {
-    console.log(
-        `${req.protocol}://${req.get('host')}/images/${req.files[0].filename}`
-    );
-    const messageObject = req.files && {
+    //console.log(`${req.protocol}://${req.get('host')}/images/${req.files}`);
+    const messageObject = req.files[0] && {
         imageUrl: `${req.protocol}://${req.get('host')}/images/${
             req.files[0].filename
         }`,
@@ -135,7 +133,9 @@ exports.modifMessage = (req, res) => {
     });
 };
 exports.getuserMessage = (req, res) => {
-    Message.find({ userId: req.auth.userId })
+    console.log('test');
+    console.log(req.body);
+    Message.find({ userId: req.body.userid })
         .sort({ dateTime: -1 })
         .then((result) => {
             getUser(result).then((result) => {

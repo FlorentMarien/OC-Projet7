@@ -37,11 +37,9 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 	const [formFile,setformFile] = useState([]);
 	function delpreviewimg(e,file){
 		e.preventDefault();
-		console.log(file);
 		let newformFile = [
 			...formFile
 		];
-		console.log(formFile.indexOf(file));
 		newformFile.splice(newformFile.indexOf(file),1);
 		setformFile([...newformFile]);
 	}

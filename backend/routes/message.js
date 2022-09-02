@@ -10,5 +10,5 @@ router.post('/send', auth, multer, messageCtrl.sendMessage);
 router.post('/sendlike', auth, messageCtrl.sendLike);
 router.delete('/deleteMessage', auth, messageCtrl.deleteMessage);
 router.put('/modifMessage', auth, multer, messageCtrl.modifMessage);
-router.get('/getuserMessage', auth, messageCtrl.getuserMessage);
+router.post('/getuserMessage', auth, messageCtrl.getuserMessage);
 module.exports = router;

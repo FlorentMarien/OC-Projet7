@@ -31,7 +31,6 @@ exports.signup = (req, res) => {
         })
         .catch((error) => res.status(500).json({ error }));
 };
-
 exports.login = (req, res) => {
     User.findOne({ email: req.body.email })
         .then((user) => {
@@ -63,9 +62,9 @@ exports.login = (req, res) => {
         })
         .catch((error) => res.status(500).json({ error }));
 };
-
 exports.getlogin = (req, res) => {
-    User.findOne({ _id: req.auth.userId })
+    let userid = req.body.userid;
+    User.findOne({ _id: userid })
         .then((user) => {
             if (!user) {
                 return res.status(401).json({
@@ -152,4 +151,48 @@ exports.modifpdp = (req, res) => {
             })
             .catch((error) => res.status(200).json('Error' + error));
     });
+};
+exports.rechercheuser = (req, res) => {
+    console.log(req.body);
+    let recherche = { name: '', prename: '' };
+    if (req.body.keyRecherche.lastIndexOf(' ') === -1) {
+        recherche.prename = req.body.keyRecherche.substring(
+            0,
+            req.body.keyRecherche.length
+        );
+    } else {
+        recherche.prename = req.body.keyRecherche.substring(
+            0,
+            req.body.keyRecherche.lastIndexOf(' ')
+        );
+        req.body.keyRecherche.lastIndexOf(' ') !== -1 &&
+            (recherche.name = req.body.keyRecherche.substring(
+                req.body.keyRecherche.lastIndexOf(' ')
+            ));
+    }
+
+    console.log(recherche);
+    User.find({ prename: recherche.prename })
+        .then((user) => {
+            if (!user) {
+                return res.status(401).json({
+                    message: 'Utilisateur introuvable',
+                });
+            }
+            let reply = [];
+            for (let x = 0; x < user.length; x++) {
+                reply[x] = {
+                    _id: user[x]._id,
+                    //email: user[x].email,
+                    imageArray: user[x].imageArray,
+                    imageUrl: user[x].imageUrl,
+                    name: user[x].name,
+                    prename: user[x].prename,
+                };
+                console.log(reply[x]);
+            }
+            // Deleting a property completely
+            res.status(200).json(reply);
+        })
+        .catch((error) => res.status(500).json({ error }));
 };
