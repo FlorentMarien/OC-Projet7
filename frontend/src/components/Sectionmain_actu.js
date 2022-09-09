@@ -136,7 +136,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				parametre.replyLevel=targetMessage.replyLevel;
 				parametre.messageFocus="messageAll";
 				parametre.getCommentaire=false;
-				if(listtargetMessage[0].answerArray.length > 0){
+				
 					let buttonback=(
 						<IconButton onClick={(e)=>settargetMessage({messageid:"",replyLevel:0})} color="primary" aria-label="Back" component="label">
 									<KeyboardBackspaceIcon/>
@@ -189,7 +189,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 						</>
 					);
 					return reply;
-				}
+				
 				}
 			}
 		
@@ -314,7 +314,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		});
 	}
 	useEffect(() => {
-		//setListMessage([]);
+		setListMessage([]);
 		//setlisttargetMessage([]);
 		if(targetMessage.messageid === "") {
 			getmes();

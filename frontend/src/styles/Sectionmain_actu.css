@@ -86,6 +86,7 @@ margin-bottom: 5px;
 #navprofil .MuiButtonGroup-root{
     display: flex;
     justify-content: center;
+    
 }
 .displayfocusMessage{
     position: sticky;
@@ -95,4 +96,5 @@ margin-bottom: 5px;
 }
 .displayfocusMessage > label.MuiButtonBase-root{
     position: absolute;
+    z-index: 3;
 }
