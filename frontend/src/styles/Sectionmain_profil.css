@@ -1,6 +1,8 @@
 section{
     width: 60%;
     margin-left: 20%;
+    box-sizing: border-box;
+    padding: 20px;
 }
 img{
     width: 115px;
@@ -16,4 +18,15 @@ img{
 }
 #userprofil{
     width: 75%;
+}
+.replylevel0{
+    position: sticky;
+    top:0px;
+    z-index: 2;
+    background-color: #0a1929;
+}
+#blocklistmessageprofil > label{
+    position: sticky;
+    z-index: 3;
+    top:0px;
 }

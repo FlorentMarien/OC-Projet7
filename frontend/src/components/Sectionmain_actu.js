@@ -1,7 +1,7 @@
 import '../styles/Sectionmain_actu.css'
 import { useState,useEffect } from 'react'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { fas } from '@fortawesome/free-solid-svg-icons'
+import { faRefresh, fas } from '@fortawesome/free-solid-svg-icons'
 import Message from './Message'
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -57,8 +57,6 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		)
 	}
 	function getreply2(messageid,replyLevel,boolEnd){
-		
-		
 			let parametre = {
 				sendMessageGloabal:1,
 				buttonCommentaire:1,
@@ -139,13 +137,13 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				parametre.messageFocus="messageAll";
 				parametre.getCommentaire=false;
 				if(listtargetMessage[0].answerArray.length > 0){
-					reply=(
-						<>
+					let buttonback=(
 						<IconButton onClick={(e)=>settargetMessage({messageid:"",replyLevel:0})} color="primary" aria-label="Back" component="label">
 									<KeyboardBackspaceIcon/>
 						</IconButton>
-						{<Message key={listtargetMessage[0].answerArray[0][0]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametre} element={listtargetMessage[0].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage}/>}
-						</>
+					);
+					let replylvl0=(	
+						<Message key={listtargetMessage[0].answerArray[0][0]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametre} element={listtargetMessage[0].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage}/>
 					);
 					if(listtargetMessage[0].answerArray[0][0].answer.length>0){
 						let replylvl1,replylvl2;
@@ -172,13 +170,24 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 								<>
 								{reply}
 								<div className="listAnswer">
-								{replylvl1}
-								{replylvl2}
+									{replylvl1}
+									{replylvl2}
 								</div>
 								</>
 							);
 						}
 					}
+					reply=(
+						<>
+						<div className="listMessage">
+							<div className="displayfocusMessage">
+								{buttonback}
+								{replylvl0}
+							</div>
+							{reply}
+						</div>
+						</>
+					);
 					return reply;
 				}
 				}
@@ -197,16 +206,15 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		let formData= new FormData();
 		formData.append('message',JSON.stringify(objectData));
 		if(objectData.message!==""){
-			//formData.append('image',e.target.parentElement.children[0].children[0].files[0]);
 			formData.append('image',formFile);
 		}
 		
 		sendMessageApi(formData).then((result)=>{
-			getmes().then(()=>{
-				setformText("");
-				setformFile("");
-				setopenActuSend(0);
-			});
+			if(result.resultmessage!==undefined){
+				let list=[...listMessage];
+				list.unshift(result.resultmessage);
+				setListMessage([...list]);
+			}
 		});
 	}
 	async function sendMessageApi(formData){
@@ -306,8 +314,8 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		});
 	}
 	useEffect(() => {
-		setListMessage([]);
-		setlisttargetMessage([]);
+		//setListMessage([]);
+		//setlisttargetMessage([]);
 		if(targetMessage.messageid === "") {
 			getmes();
 		}
@@ -315,15 +323,15 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			getMessageById();
 		}
 	}, [targetMessage,changeUpdate])
-	return (
-		<section>
-		{
-		targetMessage.messageid === "" ?
-		getreply2("all",0)
-		: getreply2("one",0)
-		}
-		</section>
-	)
+	let reply;
+		return (
+			<section>
+			{
+			targetMessage.messageid === "" ?
+			getreply2("all",0)
+			: getreply2("one",0)
+			}
+			</section>
+		);
 }
-
 export default Sectionmain_actu

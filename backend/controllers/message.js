@@ -28,7 +28,14 @@ exports.sendMessage = (req, res) => {
     }
     message
         .save()
-        .then(() => res.status(201).json({ message: 'Message enregistré !' }))
+        .then((resultmessage) =>
+            getUser([resultmessage]).then((result) => {
+                res.status(201).json({
+                    message: 'Message enregistré !',
+                    resultmessage: result[0],
+                });
+            })
+        )
         .catch((error) =>
             res.status(400).json({ message: 'Echec création', error })
         );

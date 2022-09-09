@@ -57,7 +57,7 @@ function Sectionmain_aside({auth,setAuth,indexPage,setindexPage,profilData,setpr
 	return (
 		<aside className='sectionmain_aside'>
 			<div className='aside_recherche'>
-				<input type="text" defaut-value={"Nom Prénom?"} onChange={(e)=>{getRechercheuser(e.target.value)}}></input>
+				<input type="text" defaut-value={"Nom Prénom?"} onChange={(e)=>{getRechercheuser(e.target.value)}} placeholder="Name?"></input>
 				<div className='aside_recherche_result'>
 					{
 						userList[0]!==null &&

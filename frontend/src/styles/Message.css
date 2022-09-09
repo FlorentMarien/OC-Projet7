@@ -4,7 +4,7 @@
 .message{
     justify-content: space-between;
     padding: 20px;
-    width: 80%;
+    
     margin-left: auto;
     margin-right: auto;
     border: solid 1px white;
@@ -148,4 +148,20 @@
 }
 .popupParametre ul li button:hover{
     background-color: rgba(100,100,100,0.8);
+}
+/*
+.listAnswer::before{
+    content:"";
+    display: block;
+    width: 10%;
+    
+    background-color: black;
+}*/
+.listAnswer{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    border-left: 2px solid white;
+    margin-top:20px;
+    margin-bottom:20px;
 }
