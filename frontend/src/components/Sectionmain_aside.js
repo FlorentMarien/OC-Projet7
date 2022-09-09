@@ -19,7 +19,7 @@ function Sectionmain_aside({auth,setAuth,indexPage,setindexPage,profilData,setpr
 			reply=(
 				<>
 				{reply}
-				<button className="recherche_user" onClick={(e)=>settargetRechercheUser({userid:element._id})}>
+				<button className="recherche_user" onClick={(e)=>setindexPage({userid:element._id})}>
 					<div>
 						<img src={element.imageUrl} alt={element.name + " " + element.prename} />
 					</div>

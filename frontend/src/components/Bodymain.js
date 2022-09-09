@@ -60,20 +60,21 @@ function Bodymain({auth,setAuth}) {
 			setAuth([0]); // TokenExpired/ProblemeToken
 		})
 	}, [auth,setAuth]);
+	
 	return (
 		<div id="main_container">
 			<Nav auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 			{
-				targetRechercheUser.userid ?
-					<Sectionmain_profil targetRechercheUser={targetRechercheUser} settargetRechercheUser={settargetRechercheUser} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
-				: indexPage === 0 ?
-				<Sectionmain_profil targetRechercheUser={auth[1]} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
+				
+				indexPage === 0 ?
+				<Sectionmain_profil targetRechercheUser={{userid:auth[1]}} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: indexPage === 1 ?
 				<Sectionmain_actu auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: indexPage === 4 ?
 				<Sectionmain_parametre auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
+				: typeof indexPage === 'object' ?
+				<Sectionmain_profil targetRechercheUser={indexPage} settargetRechercheUser={settargetRechercheUser} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: null
-				
 			}
 			<Sectionmain_aside auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData} targetRechercheUser={targetRechercheUser} settargetRechercheUser={settargetRechercheUser}/>
 		</div>

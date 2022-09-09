@@ -122,23 +122,14 @@ exports.deleteMessage = (req, res) => {
                                     answer: messageBack.answer,
                                 }
                             )
-                                .then((result) => {
-                                    console.log(result);
-                                    Answer.deleteOne({
-                                        _id: req.body.messageId,
-                                    })
-                                        .then(() =>
-                                            res
-                                                .status(200)
-                                                .json('Suppresion Ok')
-                                        )
-                                        .catch((error) => error);
+                                .then(() => {
+                                    deleteAllAnswer([req.body.messageId]);
+                                    res.status(200).json('Suppresion Ok');
                                 })
                                 .catch((error) => console.log(error));
                         }
                     );
                 } else if (replyLevel > 1) {
-                    console.log('child');
                     Answer.findOne({ answer: req.body.messageId }).then(
                         (messageBack) => {
                             messageBack.answer.splice(
@@ -170,42 +161,43 @@ exports.deleteMessage = (req, res) => {
             }
         });
     });
-
-    /*Message.findOne({
-        answer: req.body.messageId,
-    }).then((messageBack) => {
-        messageBack.answer.splice(
-            messageBack.answer.indexOf(req.body.messageId),
-            1
-        );
-        Message.updateOne(
-            { answer: req.body.messageId },
-            {
-                answer: messageBack.answer,
-            }
-        )
-            .then((result) => console.log(result))
-            .catch((error) => console.log(error));
-    });
-    */
 };
+async function deleteAllAnswer(arrayAnswerlevel1) {
+    let arrayAnswerlevel2;
+    for (let x = 0; x < arrayAnswerlevel1.length; x++) {
+        await Answer.findOneAndDelete({ _id: arrayAnswerlevel1[x] }).then(
+            (element) => {
+                arrayAnswerlevel2 = element.answer;
+                console.log('Suppresion element:' + element._id);
+            }
+        );
+        if (arrayAnswerlevel2.length > 0) {
+            await Answer.deleteMany({ _id: arrayAnswerlevel2 }).then(() => {
+                console.log('Suppresion sous réponse:' + arrayAnswerlevel2);
+            });
+        }
+        arrayAnswerlevel2 = [];
+    }
+    return 1;
+}
 exports.modifMessage = (req, res) => {
     let message = JSON.parse(req.body.message);
     User.findOne({ _id: req.auth.userId }).then((resultUser) => {
         let adminLevel = resultUser.adminLevel;
         Answer.findOne({ _id: message.messageId }).then((result) => {
             if (result.userId === req.auth.userId || adminLevel === 1) {
-                const messageObject = req.files
+                const messageObject = req.files[0]
                     ? {
                           imageUrl: `${req.protocol}://${req.get(
                               'host'
                           )}/images/${req.files[0].filename}`,
                       }
-                    : req.files === undefined
+                    : req.files[0] === undefined
                     ? {
                           imageUrl: '',
                       }
                     : { imageUrl: result.imageUrl };
+
                 Answer.updateOne(
                     { _id: message.messageId },
                     {

@@ -189,7 +189,7 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 				'Content-Type': 'application/json',
 				'Authorization': "Bearer "+auth[2]
 			},
-			method: 'PT',
+			method: 'PUT',
 			body: objData
 		  })
 		  .then(function(res) { 

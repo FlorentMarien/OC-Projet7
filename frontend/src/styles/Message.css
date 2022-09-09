@@ -13,60 +13,12 @@
 }
 .replylevel1, .replylevel2{
     width:70%;
+    margin-right: 0 !important;
 }
 .blocklisteanswer{
     margin-top: 20px;
     margin-bottom: 20px;
 
-}
-.blocklisteanswer div.message{
-    
-}
-.messageFocus .answer::before,.answerFocus .answer::before{
-    content:"";
-    width: 25%;
-    width: 1px;
-    background-color: white;
-    margin-left:auto;
-    margin-right: auto;
-    
-}
-.answerFocus::before, .lastanswerFocus::before{
-    content: "";
-    height: 20px;
-    width: 1px;
-    background-color: white;
-    display: block;
-    margin-left: calc(12.5% - 0.5px);
-}
-.answerFocus{
-    border-top: black;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-}
-.lastanswerFocus{
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-    border-bottom-left-radius: 20px !important;
-    border-bottom-right-radius: 20px !important;
-}
-.lastanswerFocus .answer .MuiButtonGroup-root{
-    width: 75%;
-}
-.lastanswerFocus .answer::before{
-    content:"";
-    width: 25%;
-}
-
-.messageFocus{
-    padding-top: 20px !important;
-    border-top-left-radius: 20px !important;
-    border-top-right-radius: 20px !important;
-    border-bottom-left-radius: 0px !important;
-    border-bottom-right-radius: 0px !important;
-}
-.messageFocus .answer .MuiButtonGroup-root,.answerFocus .answer .MuiButtonGroup-root{
-    width: 75%;
 }
 
 .message_content{
@@ -141,9 +93,7 @@
 .MuiButtonGroup-root{
     display: flex;
     justify-content: space-between;
-    padding-bottom: 20px;
     width: 100%;
-    padding-bottom: 20px;
 }
 .answerFocus, .messageFocus, .lastanswerFocus{
     padding-top: 0px;
@@ -152,7 +102,7 @@
     margin-top: 20px;
     margin-bottom: 2Opx;
 }
-.messageAll div.answer{
+.message div.answer{
     width: 75%;
     margin-left: 25%;
 }

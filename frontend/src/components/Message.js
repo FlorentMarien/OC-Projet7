@@ -17,10 +17,10 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
 
 library.add(fas)
-function Message({parametre,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage,settampontargetMessage,tampontargetMessage,profilData}) {
+function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage,settampontargetMessage,tampontargetMessage,profilData}) {
 	const [disableButtonLike,setdisableButtonLike] = useState(element.arrayDislike.includes(auth[1]));
 	const [disableButtonDislike,setdisableButtonDislike] = useState(element.arrayLike.includes(auth[1]));
-	const [disablegetCommentaire,setdisablegetCommentaire] = useState(parametre.getCommentaire!==undefined ? true : false);
+	const [disablegetCommentaire,setdisablegetCommentaire] = useState(parametre.getCommentaire===undefined ? false : true);
 	const [formFile,setformFile] = useState("");
 	const [formText,setformText] = useState("");
 	const [openReply,setopenReply] = useState(0);
@@ -66,7 +66,8 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 	}
 	function modifAnswer(e,replyLevel=0){
 		e.preventDefault();
-		setopenReply(3);
+		let message=e.target.closest("div.message");
+		setopenReply(0);
 		let objectData={
 			messageId:element._id,
 			message:formText,
@@ -82,16 +83,26 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 			// Ajout image vide pour reset
 			formData.append('image',"");
 		}
-		
 		modifMessageApi(formData).then((result)=>{
-				if(parametre.replyLevel===0 && parametre.pageProfil===true){
-					getuserMessageApi().then((result)=>{
-						setopenReply(0);
-						setListMessage(result);
-					})
+			message.children[0].children[1].children[0].textContent=formText;
+			if(formFile!=="" ){
+				if(message.children[0].children[2] === undefined){
+					img = document.createElement('img');
+					let urlFile = URL.createObjectURL(formFile);
+					img.src = urlFile;
+					message.children[0].appendChild(img);
 				}
-				else if(parametre.replyLevel===0) getmes(1,0).then(()=>{setopenReply(0);});
-				else getmes(0,1).then(()=>{setopenReply(0);});
+				else if(message.children[0].children[2].src !== formFile){
+					message.children[0].children[2].remove();
+					var img = document.createElement('img');
+					let urlFile = URL.createObjectURL(formFile);
+					img.src = urlFile;
+					message.children[0].appendChild(img);
+				}
+			}
+			else{
+				if(message.children[0].children[2] !== undefined) message.children[0].children[2].remove();
+			}
 		});
 	}
 	async function modifMessageApi(formData){
@@ -125,35 +136,23 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 		}
 		if(element._id===target.attributes["messageid"].value) target.children[0].children[1].children[0].textContent="Suppresion en cours";
 		senddelMessage(JSON.stringify(objectSend)).then((result)=>{
+			if(target.closest("div.listMessage")!==null){
+				//Delete page profil
+				if(objectSend.replyLevel === 0 ) target.closest("div.listMessage").style.display="none";
+				else if(objectSend.replyLevel===1) target.parentNode.style.display="none";
+				else target.style.display="none";
+				
+			}
+			else{
+				//Delete page actu
+				if(target.parentNode.className === "listAnswer" && objectSend.replyLevel===1) target.parentNode.style.display="none";
+				else target.style.display="none";
+			}
+
+			if(parametre.replyLevel===0 && targetMessage.messageid!==""){
+				settargetMessage({messageid:"",replyLevel:0});
+			}
 			setopenParametre(0);
-			if(parametre.replyLevel===0) {
-				if(parametre.pageProfil===true){
-					getuserMessageApi().then((result)=>{
-						if(targetMessage.messageid===objectSend.messageId) {
-							settargetMessage(tampontargetMessage[0]);
-						}
-						setListMessage(result);
-					})
-				}
-				else{
-					getmes(1,0).then(()=>{
-						if(targetMessage.messageid===objectSend.messageId) settargetMessage(0);
-					});
-				}
-			}
-			else {
-				if(parametre.replyLevel===1) {
-					if(parametre.pageProfil===true){
-						getuserMessageApi().then((result)=>{
-							if(targetMessage.messageid===objectSend.messageId) settargetMessage(0);
-							setListMessage(result);
-						})
-					}
-					else getmes(1,0);
-					getmes(0,1);
-				}
-				else getmes(0,1);
-			}
 		})
 	}
 	async function senddelMessage(formData){
@@ -284,10 +283,10 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 		if(formFile!==""){
 			formData.append('image',formFile);
 		}
-		console.log(formData);
 		sendAnswerApi(formData).then((result)=>{
-				element.answer.push(result.answerId);
-				getmes(0,1);
+				setchangeUpdate(changeUpdate+1);
+				//element.answer.push(result.answerId);
+				//getmes(0,1);
 			});
 	}
 	async function sendAnswerApi(formData){
@@ -366,12 +365,11 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 		if(parametre.replyLevel<2){
 			e.preventDefault();
 			let messageid=e.target.closest("div.message").attributes["messageid"].value;
-			let bistampontargetMessage=tampontargetMessage;
-			bistampontargetMessage.push({messageid:messageid,replyLevel:parametre.replyLevel});
-			console.log(bistampontargetMessage);
-			settampontargetMessage(bistampontargetMessage);
-			settargetMessage(bistampontargetMessage[bistampontargetMessage.length-1]);
-			getmes(0,1);
+			//let bistampontargetMessage=tampontargetMessage;
+			//bistampontargetMessage.push({messageid:messageid,replyLevel:parametre.replyLevel});
+			//console.log(bistampontargetMessage);
+			//settampontargetMessage(bistampontargetMessage);
+			settargetMessage({messageid:messageid,replyLevel:parametre.replyLevel});
 		}
 	}
 	function getIntervalDate(dateTime){
@@ -384,7 +382,7 @@ function Message({parametre,element,auth,setListMessage,listMessage,setListAnswe
 	}
 	return (
 	<>
-		<div className={'message replylevel'+parametre.replyLevel+" "+parametre.messageFocus} messageid={element._id} onMouseLeave={(e)=>{exitOnBlur(e)}}>
+		<div className={'message replylevel'+parametre.replyLevel+" "+parametre.messageFocus} messageid={element._id} onMouseLeave={(e)=>{}}>
 			<div className='message_content'>								
 				<div className='userInfo'>
 					<img src={element.userImageUrl} alt={"Image de "+element.userName + " "+element.userPrename}/>
