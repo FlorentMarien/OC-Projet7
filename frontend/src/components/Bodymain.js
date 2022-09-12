@@ -6,6 +6,7 @@ import Sectionmain_profil from './Sectionmain_profil'
 import Sectionmain_actu from './Sectionmain_actu'
 import Sectionmain_parametre from './Sectionmain_parametre'
 import Sectionmain_aside from './Sectionmain_aside'
+import Sectionmain_recherche from './Sectionmain_recherche'
 function Bodymain({auth,setAuth}) {
 	const [indexPage,setindexPage] = useState(1);
 	const [profilData,setprofilData] = useState(0);
@@ -72,11 +73,16 @@ function Bodymain({auth,setAuth}) {
 				<Sectionmain_actu auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: indexPage === 4 ?
 				<Sectionmain_parametre auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
+				: indexPage === 2 ?
+				<Sectionmain_recherche auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage}/>
 				: typeof indexPage === 'object' ?
 				<Sectionmain_profil targetRechercheUser={indexPage} settargetRechercheUser={settargetRechercheUser} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: null
 			}
-			<Sectionmain_aside auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData} targetRechercheUser={targetRechercheUser} settargetRechercheUser={settargetRechercheUser}/>
+			{
+				indexPage !== 2 &&
+				<Sectionmain_aside auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData} targetRechercheUser={targetRechercheUser} settargetRechercheUser={settargetRechercheUser}/>
+			}
 		</div>
 	)
 }
