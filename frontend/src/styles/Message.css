@@ -99,8 +99,10 @@
     padding-top: 0px;
 }
 .messageAll{
+    /*
     margin-top: 20px;
     margin-bottom: 2Opx;
+    */
 }
 .message div.answer{
     width: 75%;
@@ -113,16 +115,15 @@
 .inblocklistanswer{
     width:70%;
 }
-.MuiButtonGroup-root div{
+.MuiButtonGroup-root > div{
     display: flex;
 }
 .popupParametre{
     background-color: #0a1929;
     position: absolute;
-    top: 40px;
-    left: -40px;
+    top: -60px;
+    left: -51px;
     border-radius: 5px;
-    z-index: 1300;
 }
 .container_parametre{
     position:relative
@@ -164,4 +165,11 @@
     border-left: 2px solid white;
     margin-top:20px;
     margin-bottom:20px;
+}
+.message_image > img{
+    border-radius: 50px;
+    margin-left: 25%;
+    width: 75%;
+    height: 300px;
+    object-fit: cover;
 }

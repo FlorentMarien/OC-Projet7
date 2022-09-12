@@ -21,7 +21,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 	const [disableButtonLike,setdisableButtonLike] = useState(element.arrayDislike.includes(auth[1]));
 	const [disableButtonDislike,setdisableButtonDislike] = useState(element.arrayLike.includes(auth[1]));
 	const [disablegetCommentaire,setdisablegetCommentaire] = useState(parametre.getCommentaire===undefined ? false : true);
-	const [formFile,setformFile] = useState("");
+	const [formFile,setformFile] = useState(element.imageUrl);
 	const [formText,setformText] = useState("");
 	const [openReply,setopenReply] = useState(0);
 	const [openParametre,setopenParametre] = useState(0);
@@ -86,22 +86,22 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 		modifMessageApi(formData).then((result)=>{
 			message.children[0].children[1].children[0].textContent=formText;
 			if(formFile!=="" ){
-				if(message.children[0].children[2] === undefined){
+				if(message.children[1].children[0] === undefined){
 					img = document.createElement('img');
 					let urlFile = URL.createObjectURL(formFile);
 					img.src = urlFile;
-					message.children[0].appendChild(img);
+					message.children[1].appendChild(img);
 				}
-				else if(message.children[0].children[2].src !== formFile){
-					message.children[0].children[2].remove();
+				else if(message.children[1].children[0].src !== formFile){
+					message.children[1].children[0].remove();
 					var img = document.createElement('img');
 					let urlFile = URL.createObjectURL(formFile);
 					img.src = urlFile;
-					message.children[0].appendChild(img);
+					message.children[1].appendChild(img);
 				}
 			}
 			else{
-				if(message.children[0].children[2] !== undefined) message.children[0].children[2].remove();
+				if(message.children[1].children[0] !== undefined) message.children[1].children[0].remove();
 			}
 		});
 	}
@@ -396,10 +396,13 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 							}
 						</p>
 					</div>
-					{
-						element.imageUrl &&
-						<img src={element.imageUrl} alt={"Image de "+element.userName+" "+element.userPrename}/>
-					}
+					
+				</div>
+				<div className='message_image'>
+				{
+					element.imageUrl &&
+					<img src={element.imageUrl} alt={"Image de "+element.userName+" "+element.userPrename}/>
+				}
 				</div>
 				<div className='answer'>
 				<ButtonGroup variant="text" aria-label="text button group">
