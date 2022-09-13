@@ -29,12 +29,13 @@ const theme = createTheme({
 function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
 	let [listMessage,setListMessage] = useState([]);
 	let [listAnswer,setListAnswer] = useState([]);
+	let [limitmessage,setlimitmessage] = useState(0);
+	//let limitmessage=5;
 	const [tampontargetMessage,settampontargetMessage] = useState([{messageid:"",replyLevel:0}]);
 	const [targetMessage,settargetMessage] = useState({messageid:"",replyLevel:0});
 	const [formText,setformText] = useState("Votre message ");
 	const [formFile,setformFile] = useState("");
 	let [listtargetMessage,setlisttargetMessage] = useState([]);
-	
 	let [changeUpdate,setchangeUpdate] = useState(0);
 	
 	const [openActuSend,setopenActuSend] = useState(0);
@@ -237,12 +238,15 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			// Une erreur est survenue
 		  });
 	}
-	async function getMessageApi(){
+	async function getMessageApi(limitmessage){
 		return await fetch("http://localhost:3000/api/message/get",{
 			headers: {
-				'Authorization': "Bearer "+auth[2]
+				'Authorization': "Bearer "+auth[2],
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
 			},
 			method: 'POST',
+			body: limitmessage,
 		  })
 		  .then(function(res) { 
 			if (res.ok) {
@@ -276,8 +280,8 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		});
 	}
 	async function getmes(){
-		return await getMessageApi().then((result)=>{
-			setListMessage([...result]);
+		return await getMessageApi(JSON.stringify({limitmessage:limitmessage})).then((result)=>{
+			setListMessage([...listMessage,...result]);
 		});
 	}
 	async function getanswer(){
@@ -310,19 +314,32 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 	async function getMessageById(){
 		return await getMessageByIdApi(JSON.stringify({_id:targetMessage.messageid})).then((result)=>{
 			if(result.length===0) setlisttargetMessage([-1]);
-			else setlisttargetMessage(result);
+			else setlisttargetMessage([...result]);
 		});
 	}
 	useEffect(() => {
-		setListMessage([]);
-		//setlisttargetMessage([]);
-		if(targetMessage.messageid === "") {
-			getmes();
+		console.log(listMessage);
+		if(targetMessage.messageid === "" ){
+			getmes().then(()=>{
+				window.onscroll = function(ev) {
+					let headerheight=document.getElementsByTagName("header")[0].offsetHeight;
+					let mainheight=document.getElementById("main_container").offsetHeight;
+					let pageheight=headerheight+mainheight;
+					
+					if ((window.innerHeight + window.scrollY + 5) >= pageheight) {
+						//console.log(window.innerHeight + window.scrollY);
+						window.onscroll = null;
+						setlimitmessage(limitmessage+5);
+					}
+				};
+			})
 		}
-		else {
+		if(targetMessage.messageid !== ""){
+			setlisttargetMessage([]);
+			window.onscroll = null;
 			getMessageById();
 		}
-	}, [targetMessage,changeUpdate])
+	}, [targetMessage,changeUpdate,limitmessage])
 	let reply;
 		return (
 			<section>
