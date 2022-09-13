@@ -1,0 +1,15 @@
+.message_private-user{
+    display: block;
+    width: 50%;
+    height: 100px;
+    background-color: cyan;
+    color: black;
+}
+.message_private-useranswer{
+    display: block;
+    margin-left: 50%;
+    width: 50%;
+    height: 100px;
+    background-color: lightcyan;
+    color: black;
+}

@@ -41,8 +41,11 @@ exports.sendMessage = (req, res) => {
         );
 };
 exports.getMessages = (req, res) => {
+    console.log(req.body);
     Message.find()
         .sort({ dateTime: -1 })
+        .limit(5)
+        .skip(req.body.limitmessage)
         .then((message) => {
             //Profil
             getUser(message).then((result) => {
@@ -211,7 +214,7 @@ exports.modifMessage = (req, res) => {
                         imageUrl: messageObject.imageUrl,
                     }
                 )
-                    .then(() => res.status(200).json('Modif Ok'))
+                    .then(() => res.status(200).json({msg:'Modif Ok',imageUrl:messageObject.imageUrl}))
                     .catch((error) => error);
             }
         });

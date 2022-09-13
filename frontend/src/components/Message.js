@@ -18,13 +18,18 @@ import { createTheme,ThemeProvider } from '@mui/material/styles';
 
 library.add(fas)
 function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage,settampontargetMessage,tampontargetMessage,profilData}) {
-	const [disableButtonLike,setdisableButtonLike] = useState(element.arrayDislike.includes(auth[1]));
-	const [disableButtonDislike,setdisableButtonDislike] = useState(element.arrayLike.includes(auth[1]));
+	const [elementMessage,setelementMessage] = useState(element);
+	let [disableButtonLike,setdisableButtonLike] = useState(elementMessage.arrayDislike.includes(auth[1]));
+	let [disableButtonDislike,setdisableButtonDislike] = useState(elementMessage.arrayLike.includes(auth[1]));
 	const [disablegetCommentaire,setdisablegetCommentaire] = useState(parametre.getCommentaire===undefined ? false : true);
-	const [formFile,setformFile] = useState(element.imageUrl);
+	const [formFile,setformFile] = useState(elementMessage.imageUrl ? elementMessage.imageUrl : "");
 	const [formText,setformText] = useState("");
 	const [openReply,setopenReply] = useState(0);
 	const [openParametre,setopenParametre] = useState(0);
+
+	disableButtonLike=elementMessage.arrayDislike.includes(auth[1]);
+	disableButtonDislike=elementMessage.arrayLike.includes(auth[1]);
+
 	const theme = createTheme({
 		palette: {
 			neutral:{
@@ -66,12 +71,13 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 	}
 	function modifAnswer(e,replyLevel=0){
 		e.preventDefault();
+		let target=e;
 		let message=e.target.closest("div.message");
-		setopenReply(0);
+		
 		let objectData={
-			messageId:element._id,
+			messageId:elementMessage._id,
 			message:formText,
-			dateTime:element.dateTime,
+			dateTime:elementMessage.dateTime,
 		}
 		let formData= new FormData();
 		formData.append('message',JSON.stringify(objectData));
@@ -84,6 +90,20 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 			formData.append('image',"");
 		}
 		modifMessageApi(formData).then((result)=>{
+			if(parametre.replyLevel===0){
+				for(let x=0; x<listMessage.length;x++){
+					if(listMessage[x]._id===target.target.closest("div.message").attributes["messageid"].value){
+						listMessage[x]={
+						...listMessage[x],
+						message:objectData.message,
+						imageUrl:result.imageUrl,
+						};
+						setopenReply(0);
+						setelementMessage(listMessage[x]);
+						break;
+					}
+				}
+			}
 			message.children[0].children[1].children[0].textContent=formText;
 			if(formFile!=="" ){
 				if(message.children[1].children[0] === undefined){
@@ -134,8 +154,33 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 			messageId:target.attributes['messageid'].value,
 			replyLevel:parametre.replyLevel
 		}
-		if(element._id===target.attributes["messageid"].value) target.children[0].children[1].children[0].textContent="Suppresion en cours";
+		if(elementMessage._id===target.attributes["messageid"].value) target.children[0].children[1].children[0].textContent="Suppresion en cours";
 		senddelMessage(JSON.stringify(objectSend)).then((result)=>{
+			if(parametre.replyLevel===0){
+				for(let x=0; x<listMessage.length;x++){
+					if(listMessage[x]._id===target.attributes["messageid"].value){
+						listMessage=listMessage.splice(x,1);
+						break;
+					}
+				}
+			}
+			else if(parametre.replyLevel===1){
+				let deletemessageid=target.closest("div.listMessage").children[0].children[1].attributes["messageid"].value;
+				for(let x=0; x<listMessage.length;x++){
+					if(listMessage[x]._id===deletemessageid){
+						console.log("correspondance message principale");
+						console.log(deletemessageid);
+						console.log(target.attributes["messageid"].value);
+						console.log(listMessage[x].answer);
+						for(let y=0 ; y<listMessage[x].answer.length ; y++)
+							if(listMessage[x].answer[y]===target.attributes["messageid"].value){
+								listMessage[x].answer.splice(y,1);
+							}
+						break;
+					}
+				}
+			}
+
 			if(target.closest("div.listMessage")!==null){
 				//Delete page profil
 				if(objectSend.replyLevel === 0 ) target.closest("div.listMessage").style.display="none";
@@ -153,6 +198,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 				settargetMessage({messageid:"",replyLevel:0});
 			}
 			setopenParametre(0);
+			setchangeUpdate(changeUpdate+1);
 		})
 	}
 	async function senddelMessage(formData){
@@ -199,9 +245,10 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 		)
 	}
 	function sendlike(e){
+		let target=e;
 		let likevalue=2;
 		e.preventDefault();
-		if(element.arrayLike.includes(auth[1])||element.arrayDislike.includes(auth[1])){
+		if(elementMessage.arrayLike.includes(auth[1])||elementMessage.arrayDislike.includes(auth[1])){
 			likevalue=0;
 		}
 		else if(e.target.closest("label").attributes['button-type'].value === "button_like") likevalue=1;
@@ -213,30 +260,45 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 		};
 		sendLikeApi(JSON.stringify(formData)).then((result)=>{
 			// Like: 1
+			if(parametre.replyLevel===0){
+				for(let x=0; x<listMessage.length;x++){
+					if(listMessage[x]._id===target.target.closest("div.message").attributes["messageid"].value){
+						listMessage[x]={
+						...listMessage[x],
+						...result,
+						};
+						setelementMessage(listMessage[x]);
+						break;
+					}
+				}
+			}
+			else{
+				setelementMessage({...elementMessage,...result});
+			}
+			/*
 			if(likevalue===1) {
 				e.target.closest("div.container_information").children[1].textContent=result.Like;
-				element.arrayLike.push(auth[1]);
-				element.Like=result.Like;
+				elementMessage.arrayLike.push(auth[1]);
+				elementMessage.Like=result.Like;
 				setdisableButtonDislike(true);
 			}
 			if(likevalue===-1){ 
 				e.target.closest("div.container_information").children[1].textContent=result.Dislike;
-				
-				element.arrayDislike.push(auth[1]);
-				element.Dislike=result.Dislike;;
+				elementMessage.arrayDislike.push(auth[1]);
+				elementMessage.Dislike=result.Dislike;;
 				setdisableButtonLike(true);
 			}
 			if(likevalue===0) {
 				e.target.closest("div.MuiButtonGroup-root").children[0].children[0].children[1].textContent=result.Like;
 				e.target.closest("div.MuiButtonGroup-root").children[0].children[1].children[1].textContent=result.Dislike;
-				element.Like=result.Like;
-				element.Dislike=result.Dislike
-				if(element.arrayLike.includes(auth[1])) element.arrayLike.splice(auth[1],1);
-				if(element.arrayDislike.includes(auth[1])) element.arrayDislike.splice(auth[1],1);
+				elementMessage.Like=result.Like;
+				elementMessage.Dislike=result.Dislike
+				if(elementMessage.arrayLike.includes(auth[1])) elementMessage.arrayLike.splice(auth[1],1);
+				if(elementMessage.arrayDislike.includes(auth[1])) elementMessage.arrayDislike.splice(auth[1],1);
 				
 				setdisableButtonLike(false);
 				setdisableButtonDislike(false);
-			}
+			}*/
 		});
 	}
 	async function sendLikeApi(formData){
@@ -265,13 +327,12 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 	}
 	function sendAnswer(e,replyLevel=0){
 		e.preventDefault();
-		
+		let target=e;
 		let objectData={
 			message:e.target.parentElement.children[0].value,
 			messageId:Date.now(),
 			dateTime:Date.now(),
 		}
-		
 		objectData={
 			...objectData,
 			replyLevel:replyLevel,
@@ -284,9 +345,22 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 			formData.append('image',formFile);
 		}
 		sendAnswerApi(formData).then((result)=>{
-				setchangeUpdate(changeUpdate+1);
-				//element.answer.push(result.answerId);
-				//getmes(0,1);
+			if(parametre.replyLevel===0){
+				for(let x=0; x<listMessage.length;x++){
+					if(listMessage[x]._id===target.target.closest("div.message").attributes["messageid"].value){
+						let array=listMessage[x].answer;
+						array.push(result.answerId);
+						listMessage[x]={
+						...listMessage[x],
+						answer:array,
+						};
+						setelementMessage(listMessage[x]);
+						break;
+					}
+				}
+			}
+			setopenReply(0);
+			setchangeUpdate(changeUpdate+1);
 			});
 	}
 	async function sendAnswerApi(formData){
@@ -380,19 +454,20 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 		else if (dateTime>=(3600*24)) return "Posté il y a "+Math.round(dateTime/(3600*24))+" jours";
 		else return "Erreur";
 	}
+
 	return (
 	<>
-		<div className={'message replylevel'+parametre.replyLevel+" "+parametre.messageFocus} messageid={element._id} onMouseLeave={(e)=>{}}>
+		<div className={'message replylevel'+parametre.replyLevel+" "+parametre.messageFocus} messageid={elementMessage._id} onMouseLeave={(e)=>{}}>
 			<div className='message_content'>								
 				<div className='userInfo'>
-					<img src={element.userImageUrl} alt={"Image de "+element.userName + " "+element.userPrename}/>
-					<p>{element.userName} {element.userPrename}</p>
+					<img src={elementMessage.userImageUrl} alt={"Image de "+elementMessage.userName + " "+elementMessage.userPrename}/>
+					<p>{elementMessage.userName} {elementMessage.userPrename}</p>
 				</div>
 					<div className='userMessage'>
-						<p className='userMessage_ptext'>{element.message}</p>
+						<p className='userMessage_ptext'>{elementMessage.message}</p>
 						<p className='userMessage_pdate'>
 							{
-								getIntervalDate(element.dateTime)
+								getIntervalDate(elementMessage.dateTime)
 							}
 						</p>
 					</div>
@@ -400,8 +475,8 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 				</div>
 				<div className='message_image'>
 				{
-					element.imageUrl &&
-					<img src={element.imageUrl} alt={"Image de "+element.userName+" "+element.userPrename}/>
+					elementMessage.imageUrl &&
+					<img src={elementMessage.imageUrl} alt={"Image de "+elementMessage.userName+" "+elementMessage.userPrename}/>
 				}
 				</div>
 				<div className='answer'>
@@ -411,19 +486,19 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 					<IconButton disabled={disableButtonLike} color="primary" button-type="button_like" onClick={(e)=>{sendlike(e)}} aria-label="Like" component="label">
 						<ThumbUpOffIcon />
 					</IconButton>
-					<p className="informationBox">{element.Like}</p>
+					<p className="informationBox">{elementMessage.Like}</p>
 					</div>
 					<div className='container_information'>
 					<IconButton disabled={disableButtonDislike} color="primary" button-type="button_dislike" onClick={(e)=>{sendlike(e)}}aria-label="Dislike" component="label">
 						<ThumbDownIcon />
 					</IconButton>
-					<p className="informationBox">{element.Dislike}</p>
+					<p className="informationBox">{elementMessage.Dislike}</p>
 					</div>
 					<div className='container_information'>
 					<IconButton disabled={disablegetCommentaire} color="primary" aria-label="Show commentary" onClick={(e)=>{getCommentaire(e)}} component="label">
 						<CommentIcon />
 					</IconButton>
-					<p className="informationBox">{element.answer.length}</p>
+					<p className="informationBox">{elementMessage.answer.length}</p>
 					</div>
 					{
 						parametre.sendReply === 1 &&
@@ -435,7 +510,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 					}
 					</div>
 					{
-					(element.userId === auth[1] || profilData.adminLevel===1) &&
+					(elementMessage.userId === auth[1] || profilData.adminLevel===1) &&
 					<div className='container_parametre'>
 						<IconButton color="primary" aria-label="delete message"  onClick={(e)=>{setopenParametre(openParametre === 0 ? 1 : 0)}} component="label">
 							<SettingsIcon/>
@@ -447,7 +522,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 									<li><button onClick={(e)=>{delMessage(e);}}>Delete</button></li>
 									<li><button onClick={(e)=>{
 										setopenReply(2);
-										setformText(element.message);
+										setformText(elementMessage.message);
 										e.target.closest("div.message").children[0].children.length === 3 &&
 										setformFile(e.target.closest("div.message").children[0].children[2].src);
 										}}>Edit</button></li>

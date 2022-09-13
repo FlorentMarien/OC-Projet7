@@ -7,6 +7,7 @@ import Sectionmain_actu from './Sectionmain_actu'
 import Sectionmain_parametre from './Sectionmain_parametre'
 import Sectionmain_aside from './Sectionmain_aside'
 import Sectionmain_recherche from './Sectionmain_recherche'
+import Sectionmain_message from './Sectionmain_message'
 function Bodymain({auth,setAuth}) {
 	const [indexPage,setindexPage] = useState(1);
 	const [profilData,setprofilData] = useState(0);
@@ -75,6 +76,8 @@ function Bodymain({auth,setAuth}) {
 				<Sectionmain_parametre auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: indexPage === 2 ?
 				<Sectionmain_recherche auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage}/>
+				: indexPage === 3 ?
+				<Sectionmain_message auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: typeof indexPage === 'object' ?
 				<Sectionmain_profil targetRechercheUser={indexPage} settargetRechercheUser={settargetRechercheUser} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: null
