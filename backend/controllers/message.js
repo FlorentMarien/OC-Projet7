@@ -30,10 +30,10 @@ exports.sendMessage = (req, res) => {
         .save()
         .then((resultmessage) =>
             getUser([resultmessage]).then((result) => {
-                res.status(201).json({
-                    message: 'Message enregistré !',
-                    resultmessage: result[0],
-                });
+                    res.status(201).json({
+                        message: 'Message enregistré !',
+                        resultmessage: result[0],
+                    });
             })
         )
         .catch((error) =>
@@ -86,56 +86,73 @@ async function getUser(message) {
     }
     return message;
 }
-async function getParentAnswer(message) {
+async function getParentAnswer(message,limitmessage) {
     let parentanswer = [];
     let tamponparent = [];
-
+    
+    let nbrdemessage=5;
+    // limitmessage = skip
     for (let x = 0; x < message.length; x++) {
-        let elementparent;
-        await Message.findOne({ answer: message[x]._id.valueOf() }).then(
-            (res) => {
-                elementparent = res;
-            }
-        );
-
-        if (elementparent === null || elementparent === undefined) {
-            //Aucun resultat dans les messages
-            //GERER MESSAGE NIV 2
-            //GERER DOUBLE ANSWER MEME MESSAGE PARENT
-        } else {
-            //Verif doublon
-            let doublon = false;
-            if (tamponparent.includes(elementparent._id.valueOf())) {
-                doublon = true;
-            }
-            if (doublon === true) {
-                //Doublon
-            } else {
-                let answerArray = [];
-                answerArray.push([elementparent]);
-                let elementreponse;
-                await Answer.find({ _id: elementparent.answer }).then(
-                    (result) => {
-                        answerArray.push(result);
-                        elementreponse = result;
+        if(parentanswer.length<nbrdemessage){
+            let elementparent=null;
+            await Message.findOne({ _id: message[x]._id.valueOf() }).then(
+                (res) => {
+                    elementparent = res;
+                }
+            );
+            if(elementparent===null){
+                await Message.findOne({ answer: message[x]._id.valueOf() }).then(
+                    (res) => {
+                        elementparent = res;
                     }
                 );
-                for (let x = 0; x < elementreponse.length; x++) {
-                    await Answer.find({ _id: elementreponse[x].answer }).then(
-                        (result) => {
-                            answerArray.push(result);
-                        }
-                    );
+            }
+
+            if (elementparent === null || elementparent === undefined) {
+                //Aucun resultat dans les messages
+                //GERER MESSAGE NIV 2
+                //GERER DOUBLE ANSWER MEME MESSAGE PARENT
+            } else {
+                //Verif doublon
+                let doublon = false;
+                if (tamponparent.includes(elementparent._id.valueOf())) {
+                    doublon = true;
                 }
-                let objectData = {
-                    dateTime: message[x].dateTime,
-                    parentArray: elementparent,
-                    answerArray: answerArray,
-                };
-                parentanswer.push(objectData);
-                tamponparent.push(elementparent._id.valueOf());
+                if (doublon === true) {
+                    //Doublon
+                } else {
+                    tamponparent.push(elementparent._id.valueOf());
+                    if(x>=limitmessage){
+                        let answerArray = [];
+                        answerArray.push([elementparent]);
+                        let elementreponse;
+                        await Answer.find({ _id: elementparent.answer }).then(
+                            (result) => {
+                                answerArray.push(result);
+                                elementreponse = result;
+                            }
+                        );
+                        for (let x = 0; x < elementreponse.length; x++) {
+                            await Answer.find({ _id: elementreponse[x].answer }).then(
+                                (result) => {
+                                    answerArray.push(result);
+                                }
+                            );
+                        }
+                        let objectData = {
+                            dateTime: message[x].dateTime,
+                            parentArray: elementparent,
+                            answerArray: answerArray,
+                        };
+                        parentanswer.push(objectData);
+                    }
+                }
             }
         }
+        else{
+            break;
+        }
+        
     }
     return parentanswer;
 }
@@ -221,7 +238,53 @@ exports.modifMessage = (req, res) => {
     });
 };
 //Recupere tout les messages / réponses de l'utilisateur ( avec les messages associés)
+async function getuserMessageAnswer(userid){
+    let arrayMessage=[];
+    let array;
+    await Message.find({
+        userId: userid,
+    })
+        .then((result) => {
+            arrayMessage=result
+            })
+    await Answer.find({
+        userId: userid,
+    })
+        .then((resultAnswer) => {
+
+        array=[...arrayMessage,...resultAnswer];
+        array.sort(function (a, b) {
+            if (a.dateTime > b.dateTime) return 1;
+            if (a.dateTime < b.dateTime) return -1;
+            return 0;
+        });
+        array.reverse();
+
+        /*for(let x=0;x<array.length;x++){
+            if(x >= limitmessage){
+                if(arrayReturn.length<nbrdemessage){
+                    arrayReturn.push(array[x]);
+                }
+                else{
+                    break;
+                }
+            }
+        }*/
+    })
+    //return arrayReturn
+    return array
+}
+
 exports.getuserMessage = (req, res) => {
+    getuserMessageAnswer(req.body.userid,req.body.limitmessage)
+        .then((result)=>{
+            getParentAnswer(result,req.body.limitmessage).then((resparentanswer) => {
+                getUser(resparentanswer).then((result) => {
+                    res.status(200).json(result);
+                });
+            });
+    })
+   /*
     Message.find({
         userId: req.body.userid,
     })
@@ -232,7 +295,14 @@ exports.getuserMessage = (req, res) => {
             })
                 .sort({ dateTime: -1 })
                 .then((resultAnswer) => {
-                    getParentAnswer(resultAnswer).then((resparentanswer) => {
+                    let allmessage=[...result,...resultAnswer];
+                    allmessage.sort(function (a, b) {
+                        if (a.dateTime > b.dateTime) return 1;
+                        if (a.dateTime < b.dateTime) return -1;
+                        return 0;
+                    });
+                    allmessage.reverse();
+                    getParentAnswer(allmessage).then((resparentanswer) => {
                         for (let y = 0; y < resparentanswer.length; y++) {
                             for (let x = 0; x < result.length; x++) {
                                 if (
@@ -252,12 +322,27 @@ exports.getuserMessage = (req, res) => {
                         });
                         result.reverse();
                         getUser(result).then((result) => {
+                            /*let limitmessage=req.body.limitmessage;
+                            let nbrdemessage=5;
+                            let array=[];
+                            for(let x=0;x<result.length;x++){
+                                if(x >= limitmessage){
+                                    if(array.length<nbrdemessage){
+                                        array.push(result[x]);
+                                    }
+                                    else{
+                                        break;
+                                    }
+                                }
+                            res.status(200).json(array);
+                            } //
                             res.status(200).json(result);
                         });
                     });
                 });
         })
         .catch((error) => res.status(404).json(error));
+    */  
 };
 exports.getMessageById = (req, res) => {
     getMessageById(req.body._id)

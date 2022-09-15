@@ -64,11 +64,16 @@ exports.sendAnswer = (req, res) => {
 
     answer
         .save()
-        .then(() =>
-            res
-                .status(201)
-                .json({ message: 'answer enregistré !', answerId: answer._id })
-        )
+        .then((result) =>
+        {
+            getUser([result]).then((resultmessage) => {
+                res.status(201).json({
+                    message: 'Message enregistré !',
+                    resultmessage: resultmessage[0],
+                    answerId: answer._id,
+                });
+            })
+        })
         .catch((error) =>
             res.status(400).json({ message: 'Echec création', error })
         );
@@ -197,16 +202,15 @@ exports.modifMessage = (req, res) => {
                           imageUrl: '',
                       }
                     : { imageUrl: result.imageUrl };
-
-                Answer.updateOne(
-                    { _id: message.messageId },
-                    {
-                        message: message.message,
-                        imageUrl: messageObject.imageUrl,
-                    }
-                )
-                    .then(() => res.status(200).json('Modif Ok'))
-                    .catch((error) => error);
+                    Answer.updateOne(
+                        { _id: message.messageId },
+                        {
+                            message: message.message,
+                            imageUrl: messageObject.imageUrl,
+                        }
+                    )
+                        .then(() => res.status(200).json({msg:'Modif Ok',imageUrl:messageObject.imageUrl}))
+                        .catch((error) => error);
             }
         });
     });

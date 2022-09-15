@@ -58,7 +58,8 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		)
 	}
 	function getreply2(messageid,replyLevel,boolEnd){
-			let parametre = {
+		console.log("render page profil");	
+		let parametre = {
 				sendMessageGloabal:1,
 				buttonCommentaire:1,
 				sendReply:1,
@@ -318,16 +319,13 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		});
 	}
 	useEffect(() => {
-		console.log(listMessage);
 		if(targetMessage.messageid === "" ){
 			getmes().then(()=>{
 				window.onscroll = function(ev) {
 					let headerheight=document.getElementsByTagName("header")[0].offsetHeight;
 					let mainheight=document.getElementById("main_container").offsetHeight;
 					let pageheight=headerheight+mainheight;
-					
 					if ((window.innerHeight + window.scrollY + 5) >= pageheight) {
-						//console.log(window.innerHeight + window.scrollY);
 						window.onscroll = null;
 						setlimitmessage(limitmessage+5);
 					}
@@ -339,7 +337,14 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			window.onscroll = null;
 			getMessageById();
 		}
-	}, [targetMessage,changeUpdate,limitmessage])
+	}, [targetMessage,limitmessage])
+	useEffect(() => {
+		if(targetMessage.messageid !== ""){
+			setlisttargetMessage([]);
+			window.onscroll = null;
+			getMessageById();
+		}
+	}, [changeUpdate])
 	let reply;
 		return (
 			<section>

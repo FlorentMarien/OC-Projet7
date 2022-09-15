@@ -7,26 +7,12 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,targetRechercheUser,settargetRechercheUser}) {
-	const [tampontargetMessage,settampontargetMessage] = useState([{messageid:"",replyLevel:0}]);
-	const [targetMessage,settargetMessage] = useState(tampontargetMessage[tampontargetMessage.length-1]);
-	const [targetPage,settargetPage] = useState(0);
-	let [changeUpdate,setchangeUpdate] = useState(0);
+	const [targetMessage,settargetMessage] = useState({messageid:"",replyLevel:0});
+	let [limitmessage,setlimitmessage] = useState(0);
 	let [listMessage,setListMessage] = useState([]);
-	let [listtargetMessage,setlisttargetMessage] = useState([]);
-	const [listAnswer,setListAnswer] = useState([0]);
 	let timer=0;
 	const [formFile,setformFile] = useState(0);
 	const [profilTarget,setprofilTarget] = useState(0);
-	//targetRechercheUser
-	function getBack(e){
-		e.preventDefault();
-		let bistampontargetMessage;
-		bistampontargetMessage=tampontargetMessage;
-		bistampontargetMessage.pop();
-		console.log(bistampontargetMessage);
-		settampontargetMessage(bistampontargetMessage);
-		settargetMessage(bistampontargetMessage[bistampontargetMessage.length-1]);
-	}
 	function sendImg(e){
 		e.preventDefault();
 		let formData = new FormData();
@@ -74,79 +60,6 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 				}
 			}
 	}
-	function getuserAnswer(focusMessage,replyLevel=0,boolend){
-		let userId=targetRechercheUser.userid;
-		let message,parentanswer=undefined;
-		let parametre = {
-			sendMessageGloabal:1,
-			buttonCommentaire:1,
-			sendReply:0,
-			replyLevel:0,
-			pageProfil:true,
-		}
-		let parametremessage={
-			replyLevel:0,
-			messageFocus:"messageOne",
-			
-		};
-		let parametreanswer={
-			replyLevel:2,
-			messageFocus:"lastanswerFocus",
-			getCommentaire:false
-		};
-		let parametreparentanswer={
-			replyLevel:1,
-			messageFocus:"messageFocus",
-			getCommentaire:false
-		};
-		let parametrealoneanswer={
-			replyLevel:1,
-			messageFocus:"messageOne",
-			getCommentaire:false
-		}
-		let reply;
-		if(focusMessage==="all"){
-			const resultlistanswer = listAnswer.filter(result => result.userId===userId);
-			if(resultlistanswer.length<=0){
-				reply=(
-					<p>Aucune réponse de l'utilisateur</p>
-				);
-			}
-			else{
-				resultlistanswer.forEach((answer)=>{
-					message=listMessage.find(result => result.answer.includes(answer._id));
-					parentanswer=undefined;
-					if(message===undefined){
-						parentanswer=listAnswer.find(result => result.answer.includes(answer._id));
-						if(parentanswer!==undefined){
-							message=listMessage.find(result => result.answer.includes(parentanswer._id));
-						}
-					} 
-					if(message!==undefined){
-							reply=(
-								<>
-								{reply}
-								<div className='blocklisteanswer'>
-								{<Message parametre={parametremessage} element={message} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
-								{
-									parentanswer !== undefined &&
-									<Message parametre={parametreparentanswer} element={parentanswer} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>
-								}
-								{<Message parametre={parentanswer !== undefined ? parametreanswer : parametrealoneanswer} element={answer} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
-								</div>
-								</>
-								
-							);
-						
-					}
-				});
-			}
-		}
-		if(focusMessage==="one"){
-
-		}
-		return reply
-	}
 	function getuserMessage(focusMessage,replyLevel=0,boolEnd){
 		let parametre = {
 			sendMessageGloabal:1,
@@ -178,7 +91,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 							<>
 								{listmessageprofil}
 								<div className='listMessage'>
-								{<Message key={listMessage[x]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametre} element={listMessage[x]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
+								{<Message key={listMessage[x]._id}   parametre={parametre} element={listMessage[x]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
 								</div>
 							</>);
 					}
@@ -198,7 +111,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 													listparentmessageprofil=(
 													<>
 														{listparentmessageprofil}
-														{<Message key={listMessage[x].answerArray[z+2][w]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametreanswer} element={listMessage[x].answerArray[z+2][w]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
+														{<Message key={listMessage[x].answerArray[z+2][w]._id}   parametre={parametreanswer} element={listMessage[x].answerArray[z+2][w]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
 													</>);
 													verif=true;
 												}
@@ -206,14 +119,14 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 											if(verif===true ){
 												listparentmessageprofil=(
 													<>
-														{<Message key={listMessage[x].answerArray[y][z]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametreparentanswer} element={listMessage[x].answerArray[y][z]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
+														{<Message key={listMessage[x].answerArray[y][z]._id}   parametre={parametreparentanswer} element={listMessage[x].answerArray[y][z]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
 														{listparentmessageprofil}
 													</>);
 											}
 											else if(listMessage[x].answerArray[y][z].userId===targetRechercheUser.userid){
 												listparentmessageprofil=(
 													<>
-														{<Message key={listMessage[x].answerArray[y][z]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametreparentanswer} element={listMessage[x].answerArray[y][z]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
+														{<Message key={listMessage[x].answerArray[y][z]._id}   parametre={parametreparentanswer} element={listMessage[x].answerArray[y][z]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
 													</>);
 											}
 											listparent=(
@@ -228,7 +141,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 								listmessageprofil=(
 									<>
 									{listmessageprofil}
-									<div className='listMessage'>
+									<div key={listMessage[x].answerArray[0][0]._id} className='listMessage' >
 										{listparent}
 									</div>
 									</>
@@ -237,7 +150,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 							else{
 								listparent=(
 									<>
-									{<Message key={listMessage[x].answerArray[0][0]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametre} element={listMessage[x].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
+									{<Message key={listMessage[x].answerArray[0][0]._id}   parametre={parametre} element={listMessage[x].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
 									</>
 								);
 							}
@@ -246,7 +159,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 				}
 			}
 			else{
-				listmessageprofil=<p>Aucun message de l'utilisateur</p>
+				listmessageprofil=<p>Aucun message de l'utilisateur...</p>
 			}
 			return listmessageprofil;
 		}
@@ -256,51 +169,60 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			parametre.replyLevel=targetMessage.replyLevel;
 			parametre.messageFocus="messageAll";
 			parametre.getCommentaire=false;
-			//console.log(listtargetMessage[0].answerArray.length);
-			//console.log("test:"+listtargetMessage);
-			if(listtargetMessage[0].answerArray.length > 0){
-				reply=(
-					<>
-					<IconButton onClick={(e)=>settargetMessage({messageid:"",replyLevel:0})} color="primary" aria-label="Back" component="label">
-								<KeyboardBackspaceIcon/>
-					</IconButton>
-					{<Message key={listtargetMessage[0].answerArray[0][0]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametre} element={listtargetMessage[0].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
-					</>
-				);
-				if(listtargetMessage[0].answerArray[0][0].answer.length>0){
-					let replylvl1,replylvl2;
-					for(let x=0;x<listtargetMessage[0].answerArray[1].length;x++){
-						replylvl1="";
-						replylvl2="";
-						replylvl1=(
-							<>
-							{replylvl1}
-							{<Message key={listtargetMessage[0].answerArray[1][x]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametreparentanswer} element={listtargetMessage[0].answerArray[1][x]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
-							</>
-						);
-						if(listtargetMessage[0].answerArray[1][x].answer.length>0){					
-							for(let y=0;y<listtargetMessage[0].answerArray[x+2].length;y++){
-								replylvl2=(
-									<>
-										{replylvl2}
-										{<Message key={listtargetMessage[0].answerArray[x+2][y]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametreanswer} element={listtargetMessage[0].answerArray[x+2][y]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilTarget}/>}
-									</>
-								);					
+			for(let a=0;a<listMessage.length;a++){
+				if(listMessage[0].answerArray[0][0]._id === targetMessage.messageid){
+					reply=(
+						<>
+						<div className='displayfocusMessage'>
+							<IconButton onClick={(e)=>settargetMessage({messageid:"",replyLevel:0})} color="primary" aria-label="Back" component="label">
+										<KeyboardBackspaceIcon/>
+							</IconButton>
+							{<Message key={listMessage[a].answerArray[0][0]._id}   parametre={parametre} element={listMessage[a].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
+						</div>
+						</>
+					);
+					if(listMessage[a].answerArray[0][0].answer.length>0){
+						let replylvl1,replylvl2;
+						for(let x=0;x<listMessage[a].answerArray[1].length;x++){
+							replylvl1="";
+							replylvl2="";
+							replylvl1=(
+								<>
+								{replylvl1}
+								{<Message key={listMessage[a].answerArray[1][x]._id}   parametre={parametreparentanswer} element={listMessage[a].answerArray[1][x]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
+								</>
+							);
+							if(listMessage[a].answerArray[1][x].answer.length>0){					
+								for(let y=0;y<listMessage[a].answerArray[x+2].length;y++){
+									replylvl2=(
+										<>
+											{replylvl2}
+											{<Message key={listMessage[a].answerArray[x+2][y]._id}   parametre={parametreanswer} element={listMessage[a].answerArray[x+2][y]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
+										</>
+									);					
+								}
 							}
+							reply=(
+								<>
+								{reply}
+								<div className="listAnswer">
+								{replylvl1}
+								{replylvl2}
+								</div>
+								</>
+							);
 						}
-						reply=(
-							<>
-							{reply}
-							<div className="listAnswer">
-							{replylvl1}
-							{replylvl2}
-							</div>
-							</>
-						);
 					}
+					reply=(
+						<>
+						<div className="listMessage">
+						{reply}
+						</div>
+						</>
+					);
+					return reply;
 				}
-				return reply;
-			}	
+			}
 		}
 		return listmessageprofil;
 	}
@@ -326,89 +248,15 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			// Une erreur est survenue
 		  });
 	}
-	async function getAnswerApi(){
-		return await fetch("http://localhost:3000/api/answer/get",{
-			headers: {
-				'Authorization': "Bearer "+auth[2]
-			},
-			method: 'POST',
-		})
-		.then(function(res) { 
-			if (res.ok) {
-			  return res.json();
-			}
-		})
-		.then(function(result) {
-			return result;
-		})
-		.catch(function(err) {
-			// Une erreur est survenue
-		});
-	}
 	async function getmes(){
-		return await getuserMessageApi(JSON.stringify(targetRechercheUser)).then((result)=>{
-			//setlisttargetMessage([]);
-			if(result.length===0) setListMessage([-1]);
-			else setListMessage(result);
-		});
-	}
-	async function getmesall(){
-		return await getMessageApi().then((result)=>{
-			setListMessage(result);
-		});
-	}
-	async function getMessageApi(){
-		return await fetch("http://localhost:3000/api/message/get",{
-			headers: {
-				'Authorization': "Bearer "+auth[2]
-			},
-			method: 'POST',
-		  })
-		  .then(function(res) { 
-			if (res.ok) {
-			  return res.json();
+		return await getuserMessageApi(JSON.stringify({...targetRechercheUser,limitmessage:limitmessage})).then((result)=>{
+			if(result.length===0){
+				if(listMessage.length>0){
+					window.onscroll = null;
+				}
+				else setListMessage([-1]);
 			}
-		  })
-		  .then(function(result) {
-			return result;
-		  })
-		  .catch(function(err) {
-			// Une erreur est survenue
-		  });
-	}
-	async function getMessageByIdApi(dataId){
-		return await fetch("http://localhost:3000/api/message/getMessageById",{
-			headers: {
-				'Authorization': "Bearer "+auth[2],
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-			},
-			method: 'POST',
-			body:dataId,
-		  })
-		  .then(function(res) { 
-			if (res.ok) {
-			  return res.json();
-			}
-		  })
-		  .then(function(result) {
-			return result;
-		  })
-		  .catch(function(err) {
-			// Une erreur est survenue
-		  });
-	}
-	async function getMessageById(){
-		return await getMessageByIdApi(JSON.stringify({_id:targetMessage.messageid})).then((result)=>{
-			//setListMessage([]);
-			if(result.length===0) setlisttargetMessage([-1]);
-			else setlisttargetMessage(result);
-			
-		});
-	}
-	async function getanswer(){
-		return await getAnswerApi().then((result)=>{
-			setListAnswer(result);
+			else setListMessage([...listMessage,...result]);
 		});
 	}
 	useEffect(() => {
@@ -430,8 +278,6 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	}, [profilTarget])
 	
 	useEffect(() => {
-		setListMessage([]);
-		setlisttargetMessage([]);
 		async function getUser(objData){
 				return await fetch("http://localhost:3000/api/auth/getlogin",{
 					headers: {
@@ -468,15 +314,26 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 					throw result;
 				}
 		});
-		
 		if(targetMessage.messageid!=="") 
 		{
-			getMessageById();
+			window.onscroll = null;
 		}
 		else{
-			getmes();	
+			if(listMessage.length === 0 || targetRechercheUser.userid !== ""){
+			getmes().then(()=>{
+				window.onscroll = function(ev) {
+					let headerheight=document.getElementsByTagName("header")[0].offsetHeight;
+					let mainheight=document.getElementById("main_container").offsetHeight;
+					let pageheight=headerheight+mainheight;
+					if ((window.innerHeight + window.scrollY ) >= pageheight){
+						window.onscroll = null;
+						setlimitmessage(limitmessage+5);
+					}
+				};
+			});	
+			}
 		}
-	}, [targetMessage,targetRechercheUser,changeUpdate])
+	}, [targetMessage,limitmessage])
 	
 	return (
 		<section>
@@ -530,16 +387,13 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 					</div>
 				</div>
 				
-				<div id="blocklistmessageprofil">
-					{
-						listMessage.length > 0 ?
-							targetMessage.messageid === "" 
-							? getuserMessage("all")
-							: <p>Load...</p>
+				<div id="containerlistMessage">
+					{	targetMessage.messageid === "" ?
+							(listMessage.length > 0) ?
+							getuserMessage("all")
+							: <p>Load all message...</p>
 
-						: (listtargetMessage.length > 0 && targetMessage.messageid !== "" ) ?
-							getuserMessage("one")
-							: <p>Load...</p>
+						: getuserMessage("one")
 					}
 				</div>
 				</>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import '../styles/Message.css'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -90,39 +90,66 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 			formData.append('image',"");
 		}
 		modifMessageApi(formData).then((result)=>{
-			if(parametre.replyLevel===0){
+			//if(parametre.replyLevel===0){
+				let boolend=false;
 				for(let x=0; x<listMessage.length;x++){
-					if(listMessage[x]._id===target.target.closest("div.message").attributes["messageid"].value){
-						listMessage[x]={
-						...listMessage[x],
-						message:objectData.message,
-						imageUrl:result.imageUrl,
-						};
-						setopenReply(0);
-						setelementMessage(listMessage[x]);
-						break;
+					if(listMessage[x]._id !== undefined){
+						if(listMessage[x]._id===target.target.closest("div.message").attributes["messageid"].value){
+							listMessage[x]={
+							...listMessage[x],
+							message:objectData.message,
+							imageUrl:result.imageUrl,
+							};
+							setopenReply(0);
+							setelementMessage(listMessage[x]);
+							break;
+						}
+					}else{
+						if(boolend===true) break;
+						if(listMessage[x].answerArray[0][0]._id===target.target.closest("div.message").attributes["messageid"].value){
+							//Detect modif replylevel 0
+							listMessage[x].answerArray[0][0]={
+								...listMessage[x].answerArray[0][0],
+								message:objectData.message,
+								imageUrl:result.imageUrl,
+							};
+							setListMessage(listMessage);
+							setelementMessage(listMessage[x].answerArray[0][0]);
+						}else{
+							for(let y=0;y<listMessage[x].answerArray[1].length;y++){
+								if(boolend===true) break;
+								if(listMessage[x].answerArray[1][y]._id===target.target.closest("div.message").attributes["messageid"].value){
+									//Detect modif replylevel 1
+									listMessage[x].answerArray[1][y]={
+										...listMessage[x].answerArray[1][y],
+										message:objectData.message,
+										imageUrl:result.imageUrl,
+									};
+									setListMessage(listMessage);
+									setelementMessage(listMessage[x].answerArray[1][y]);
+									boolend=true;
+									break;
+								}else{
+									for(let z=0;z<listMessage[x].answerArray[y+2].length;z++){
+										if(listMessage[x].answerArray[y+2][z]._id===target.target.closest("div.message").attributes["messageid"].value){
+											//Detect modif replylevel 2
+											listMessage[x].answerArray[y+2][z]={
+												...listMessage[x].answerArray[y+2][z],
+												message:objectData.message,
+												imageUrl:result.imageUrl,
+											};
+											setListMessage(listMessage);
+											setelementMessage(listMessage[x].answerArray[y+2][z]);
+											boolend=true;
+											break;
+										}					
+									}
+								}
+							}
+						}
 					}
 				}
-			}
-			message.children[0].children[1].children[0].textContent=formText;
-			if(formFile!=="" ){
-				if(message.children[1].children[0] === undefined){
-					img = document.createElement('img');
-					let urlFile = URL.createObjectURL(formFile);
-					img.src = urlFile;
-					message.children[1].appendChild(img);
-				}
-				else if(message.children[1].children[0].src !== formFile){
-					message.children[1].children[0].remove();
-					var img = document.createElement('img');
-					let urlFile = URL.createObjectURL(formFile);
-					img.src = urlFile;
-					message.children[1].appendChild(img);
-				}
-			}
-			else{
-				if(message.children[1].children[0] !== undefined) message.children[1].children[0].remove();
-			}
+				setopenReply(0);
 		});
 	}
 	async function modifMessageApi(formData){
@@ -156,7 +183,63 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 		}
 		if(elementMessage._id===target.attributes["messageid"].value) target.children[0].children[1].children[0].textContent="Suppresion en cours";
 		senddelMessage(JSON.stringify(objectSend)).then((result)=>{
-			if(parametre.replyLevel===0){
+			//OBJECTIF RECUPERER L'ELEMENT SUPPRIMER DANS LA LISTE
+			//elementMessage_id;
+			let boolend=false;
+			for(let x=0; x<listMessage.length;x++){
+				if(listMessage[x]._id !== undefined){
+					//Page actu
+					/*if(listMessage[x]._id===target.target.closest("div.message").attributes["messageid"].value){
+						listMessage[x]={
+						...listMessage[x],
+						message:objectData.message,
+						imageUrl:result.imageUrl,
+						};
+						setopenReply(0);
+						setelementMessage(listMessage[x]);
+						break;
+					}*/
+				}else{
+					//page profil
+					if(boolend===true) break;
+					if(listMessage[x].answerArray[0][0]._id===elementMessage._id){
+						//Detect modif replylevel 0
+						listMessage.splice(x,1);
+						setListMessage(listMessage);
+						settargetMessage({messageid:"",replyLevel:0});
+					}else{
+						for(let y=0;y<listMessage[x].answerArray[1].length;y++){
+							if(boolend===true) break;
+							if(listMessage[x].answerArray[1][y]._id===elementMessage._id){
+								//Detect modif replylevel 1
+								//Suppression de l'element
+								listMessage[x].answerArray[1].splice(y,1);
+								//Suppression de l'assosiation element parent
+								listMessage[x].answerArray[0][0].answer.splice(y,1);
+								listMessage[x].answerArray.splice(y+2,1);
+								setListMessage([...listMessage]);
+								// Reload l'element parent
+								boolend=true;
+								break;
+							}else{
+								for(let z=0;z<listMessage[x].answerArray[y+2].length;z++){
+									if(listMessage[x].answerArray[y+2][z]._id===elementMessage._id){
+										//Detect modif replylevel 2
+										//Suppression de l'element
+										listMessage[x].answerArray[y+2].splice(z,1);
+										//Suppression de l'assosiation element parent
+										listMessage[x].answerArray[1][y].answer.splice(z,1);
+										setListMessage([...listMessage]);
+										boolend=true;
+										break;
+									}					
+								}
+							}
+						}
+					}
+				}
+			}
+			/*if(parametre.replyLevel===0){
 				for(let x=0; x<listMessage.length;x++){
 					if(listMessage[x]._id===target.attributes["messageid"].value){
 						listMessage=listMessage.splice(x,1);
@@ -165,13 +248,15 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 				}
 			}
 			else if(parametre.replyLevel===1){
-				let deletemessageid=target.closest("div.listMessage").children[0].children[1].attributes["messageid"].value;
+				let deletemessageid;
+				if(target.closest("div.listMessage").children[0].children[1].attributes["messageid"] !== undefined){
+					deletemessageid=target.closest("div.listMessage").children[0].children[1].attributes["messageid"].value;
+				}
+				else{
+					deletemessageid=target.closest("div.listMessage").children[0].attributes["messageid"].value;
+				}
 				for(let x=0; x<listMessage.length;x++){
 					if(listMessage[x]._id===deletemessageid){
-						console.log("correspondance message principale");
-						console.log(deletemessageid);
-						console.log(target.attributes["messageid"].value);
-						console.log(listMessage[x].answer);
 						for(let y=0 ; y<listMessage[x].answer.length ; y++)
 							if(listMessage[x].answer[y]===target.attributes["messageid"].value){
 								listMessage[x].answer.splice(y,1);
@@ -199,6 +284,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 			}
 			setopenParametre(0);
 			setchangeUpdate(changeUpdate+1);
+			*/
 		})
 	}
 	async function senddelMessage(formData){
@@ -262,18 +348,79 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 			// Like: 1
 			if(parametre.replyLevel===0){
 				for(let x=0; x<listMessage.length;x++){
-					if(listMessage[x]._id===target.target.closest("div.message").attributes["messageid"].value){
-						listMessage[x]={
-						...listMessage[x],
+					let targetelementmessage;
+					// Verif page profil / actu
+					if(listMessage[x]._id === undefined) targetelementmessage=listMessage[x].answerArray[0][0];
+					else targetelementmessage=listMessage[x];
+
+					if(targetelementmessage._id===target.target.closest("div.message").attributes["messageid"].value){
+						targetelementmessage={
+						...targetelementmessage,
 						...result,
 						};
-						setelementMessage(listMessage[x]);
+						setelementMessage({...targetelementmessage});
+						for(let x=0;x<listMessage.length;x++){
+							if(listMessage[x]._id === undefined){
+								//Page profil
+								if(listMessage[x].answerArray[0][0]._id===targetelementmessage._id){
+									listMessage[x].answerArray[0][0]=targetelementmessage;
+									break;
+								}
+							}
+							else{
+								// Actu page
+								if(listMessage[x]._id===targetelementmessage._id){
+									listMessage[x]=targetelementmessage;
+									break;
+								}
+							}
+						}
+						setListMessage(listMessage);
 						break;
 					}
 				}
 			}
 			else{
 				setelementMessage({...elementMessage,...result});
+				if(listMessage[0]._id === undefined){
+					//Page profil
+					let endbool=false;
+					for(let x=0;x<listMessage.length;x++){
+						if(endbool===true) break;
+						if(listMessage[x].answerArray[1].length>0){
+							for(let y=0;y<listMessage[x].answerArray[1].length;y++){
+								if(endbool===true) break;
+								if(listMessage[x].answerArray[1][y]._id===target.target.closest("div.message").attributes["messageid"].value){
+									//replylevel1 correspondance
+									listMessage[x].answerArray[1][y]={
+										...listMessage[x].answerArray[1][y],
+										...result,
+									};
+									setListMessage(listMessage);
+									endbool=true;
+									break;
+								}
+								else{
+									//recherche replylevel2
+									if(listMessage[x].answerArray[y+2].length>0){
+										for(let z=0;z<listMessage[x].answerArray[y+2].length;z++){
+											if(listMessage[x].answerArray[y+2][z]._id===target.target.closest("div.message").attributes["messageid"].value){
+												//replylevel1 correspondance
+												listMessage[x].answerArray[y+2][z]={
+													...listMessage[x].answerArray[y+2][z],
+													...result,
+												};
+												setListMessage(listMessage);
+												endbool=true;
+												break;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 			/*
 			if(likevalue===1) {
@@ -345,22 +492,54 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 			formData.append('image',formFile);
 		}
 		sendAnswerApi(formData).then((result)=>{
-			if(parametre.replyLevel===0){
-				for(let x=0; x<listMessage.length;x++){
-					if(listMessage[x]._id===target.target.closest("div.message").attributes["messageid"].value){
-						let array=listMessage[x].answer;
-						array.push(result.answerId);
-						listMessage[x]={
-						...listMessage[x],
-						answer:array,
-						};
-						setelementMessage(listMessage[x]);
-						break;
+			let boolend=false;
+			if(listMessage[0]._id !== undefined){
+				if(parametre.replyLevel===0){
+					for(let x=0; x<listMessage.length;x++){
+						if(listMessage[x]._id===target.target.closest("div.message").attributes["messageid"].value){
+							let array=listMessage[x].answer;
+							array.push(result.answerId);
+							listMessage[x]={
+							...listMessage[x],
+							answer:array,
+							};
+							setelementMessage(listMessage[x]);
+							setchangeUpdate(changeUpdate+1);
+							break;
+						}
+					}
+				}
+			}else{
+				if(parametre.replyLevel===0){
+					for(let x=0;x<listMessage.length;x++){
+						if(listMessage[x].answerArray[0][0]._id === elementMessage._id){
+							listMessage[x].answerArray[0][0].answer.push(result.answerId);
+							listMessage[x].answerArray[1].push(result.resultmessage);
+							listMessage[x].answerArray.push([]);
+							setListMessage([...listMessage]);
+							boolend=true;
+							break;
+						}
+					}
+				}
+				else if(parametre.replyLevel===1){
+					for(let x=0;x<listMessage.length;x++){
+						if(boolend===true) break;
+						if(listMessage[x].answerArray[1].length>0){
+							for(let y=0;y<listMessage[x].answerArray[1].length;y++){
+								if(listMessage[x].answerArray[1][y]._id===elementMessage._id){
+									listMessage[x].answerArray[1][y].answer.push(result.answerId);
+									listMessage[x].answerArray[y+2].push(result.resultmessage);
+									setListMessage([...listMessage]);
+									boolend=true;
+									break;
+								}
+							}
+						}
 					}
 				}
 			}
 			setopenReply(0);
-			setchangeUpdate(changeUpdate+1);
 			});
 	}
 	async function sendAnswerApi(formData){
@@ -454,7 +633,6 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 		else if (dateTime>=(3600*24)) return "Posté il y a "+Math.round(dateTime/(3600*24))+" jours";
 		else return "Erreur";
 	}
-
 	return (
 	<>
 		<div className={'message replylevel'+parametre.replyLevel+" "+parametre.messageFocus} messageid={elementMessage._id} onMouseLeave={(e)=>{}}>
