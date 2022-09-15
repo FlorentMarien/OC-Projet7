@@ -88,11 +88,12 @@ async function getUser(message) {
 async function getParentAnswer(message,limitmessage) {
     let parentanswer = [];
     let tamponparent = [];
-    let nbrdemessage=5;
     let incrementOld=0;
+    let skipmessage=limitmessage.skipmessage;
+    let nbrmessage=limitmessage.nbrmessage;
     // limitmessage = skip
     for (let x = 0; x < message.length; x++) {
-        if(parentanswer.length<nbrdemessage){
+        if(parentanswer.length<nbrmessage){
             let elementparent=null;
             await Message.findOne({ _id: message[x]._id.valueOf() }).then(
                 (res) => {
@@ -122,7 +123,7 @@ async function getParentAnswer(message,limitmessage) {
                 } else {
                     tamponparent.push(elementparent._id.valueOf());
                     
-                    if(limitmessage<=incrementOld){
+                    if(skipmessage<=incrementOld){
                         let answerArray = [];
                         answerArray.push([elementparent]);
                         let elementreponse;
@@ -275,7 +276,6 @@ async function getuserMessageAnswer(userid){
     //return arrayReturn
     return array
 }
-
 exports.getuserMessage = (req, res) => {
     getuserMessageAnswer(req.body.userid,req.body.limitmessage)
         .then((result)=>{
@@ -284,66 +284,7 @@ exports.getuserMessage = (req, res) => {
                     res.status(200).json(result);
                 });
             });
-    })
-   /*
-    Message.find({
-        userId: req.body.userid,
-    })
-        .sort({ dateTime: -1 })
-        .then((result) => {
-            Answer.find({
-                userId: req.body.userid,
-            })
-                .sort({ dateTime: -1 })
-                .then((resultAnswer) => {
-                    let allmessage=[...result,...resultAnswer];
-                    allmessage.sort(function (a, b) {
-                        if (a.dateTime > b.dateTime) return 1;
-                        if (a.dateTime < b.dateTime) return -1;
-                        return 0;
-                    });
-                    allmessage.reverse();
-                    getParentAnswer(allmessage).then((resparentanswer) => {
-                        for (let y = 0; y < resparentanswer.length; y++) {
-                            for (let x = 0; x < result.length; x++) {
-                                if (
-                                    result[x]._id.valueOf() ===
-                                    resparentanswer[y].parentArray._id.valueOf()
-                                ) {
-                                    result.splice(x, 1);
-                                    break;
-                                }
-                            }
-                        }
-                        result = result.concat(resparentanswer);
-                        result.sort(function (a, b) {
-                            if (a.dateTime > b.dateTime) return 1;
-                            if (a.dateTime < b.dateTime) return -1;
-                            return 0;
-                        });
-                        result.reverse();
-                        getUser(result).then((result) => {
-                            /*let limitmessage=req.body.limitmessage;
-                            let nbrdemessage=5;
-                            let array=[];
-                            for(let x=0;x<result.length;x++){
-                                if(x >= limitmessage){
-                                    if(array.length<nbrdemessage){
-                                        array.push(result[x]);
-                                    }
-                                    else{
-                                        break;
-                                    }
-                                }
-                            res.status(200).json(array);
-                            } //
-                            res.status(200).json(result);
-                        });
-                    });
-                });
-        })
-        .catch((error) => res.status(404).json(error));
-    */  
+    })  
 };
 exports.getMessageById = (req, res) => {
     getMessageById(req.body._id)

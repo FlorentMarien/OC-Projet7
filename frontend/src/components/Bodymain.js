@@ -63,11 +63,12 @@ function Bodymain({auth,setAuth}) {
 		})
 	}, [auth,setAuth]);
 	useEffect(() => {
-		console.log("click");
 		if(indexPage.index===0 && indexPage.emetteur==="navbar") settargetRechercheUser({userid:auth[1]});
 	}, [indexPage]);
 	useEffect(() => {
-		if(indexPage.index!==0 && indexPage.emetteur==="navbar-aside") setindexPage({index:0,emetteur:"navbar-aside"});
+		if(indexPage.index!==0){
+			setindexPage({index:0,emetteur:"navbar-aside"});
+		}
 	}, [targetRechercheUser]);
 
 	return (
@@ -81,7 +82,7 @@ function Bodymain({auth,setAuth}) {
 				: indexPage.index === 4 ?
 				<Sectionmain_parametre auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: indexPage.index === 2 ?
-				<Sectionmain_recherche auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage}/>
+				<Sectionmain_recherche auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: indexPage.index === 3 ?
 				<Sectionmain_message auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: null

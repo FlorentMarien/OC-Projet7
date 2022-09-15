@@ -8,7 +8,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,targetRechercheUser,settargetRechercheUser}) {
 	const [targetMessage,settargetMessage] = useState({messageid:"",replyLevel:0});
-	let [limitmessage,setlimitmessage] = useState(0);
+	let [limitmessage,setlimitmessage] = useState({skipmessage:0,nbrmessage:5});
 	let [listMessage,setListMessage] = useState([]);
 	let timer=0;
 	const [formFile,setformFile] = useState(0);
@@ -266,7 +266,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			let pageheight=headerheight+mainheight;
 			if ((window.innerHeight + window.scrollY ) >= pageheight){
 				window.onscroll = null;
-				setlimitmessage(limitmessage+5);
+				setlimitmessage({...limitmessage,skipmessage:limitmessage.skipmessage+limitmessage.nbrmessage,nbrmessage:limitmessage.nbrmessage});
 			}
 		};
 	}
@@ -326,10 +326,11 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 						throw result;
 				}
 		});
-		limitmessage=0;
+		//limitmessage=0;
 	}, [auth])
 
 	useEffect(() => {
+		console.log("load new answer");
 		getmes().then(()=>{
 			lazyload();
 		});
