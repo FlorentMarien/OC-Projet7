@@ -12,7 +12,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	let [listMessage,setListMessage] = useState([]);
 	let timer=0;
 	const [formFile,setformFile] = useState(0);
-	const [profilTarget,setprofilTarget] = useState(0);
+	let [profilTarget,setprofilTarget] = useState(0);
 	function sendImg(e){
 		e.preventDefault();
 		let formData = new FormData();
@@ -170,7 +170,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			parametre.messageFocus="messageAll";
 			parametre.getCommentaire=false;
 			for(let a=0;a<listMessage.length;a++){
-				if(listMessage[0].answerArray[0][0]._id === targetMessage.messageid){
+				if(listMessage[a].answerArray[0][0]._id === targetMessage.messageid){
 					reply=(
 						<>
 						<div className='displayfocusMessage'>
@@ -259,6 +259,17 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			else setListMessage([...listMessage,...result]);
 		});
 	}
+	function lazyload(){
+		window.onscroll = function(ev) {
+			let headerheight=document.getElementsByTagName("header")[0].offsetHeight;
+			let mainheight=document.getElementById("main_container").offsetHeight;
+			let pageheight=headerheight+mainheight;
+			if ((window.innerHeight + window.scrollY ) >= pageheight){
+				window.onscroll = null;
+				setlimitmessage(limitmessage+5);
+			}
+		};
+	}
 	useEffect(() => {
 		timer=setInterval(() => {
 			if(document.getElementById("img-userfocusgallery")!==null){
@@ -276,7 +287,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			clearInterval(timer);
 		};
 	}, [profilTarget])
-	
+
 	useEffect(() => {
 		async function getUser(objData){
 				return await fetch("http://localhost:3000/api/auth/getlogin",{
@@ -301,40 +312,37 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		getUser(JSON.stringify(targetRechercheUser)).then((result)=>{
 				if(!result.error){
 					setprofilTarget({
-						state:1,
-						name:result.name,
-						prename:result.prename,
-						imageUrl:result.imageUrl,
-						adminLevel: result.adminLevel,
-						imageArray: result.imageArray,
-						email:result.email
+							state:1,
+							name:result.name,
+							prename:result.prename,
+							imageUrl:result.imageUrl,
+							adminLevel: result.adminLevel,
+							imageArray: result.imageArray,
+							email:result.email,
+							userId:targetRechercheUser.userId
 					});
 				}
 				else{
-					throw result;
+						throw result;
 				}
 		});
-		if(targetMessage.messageid!=="") 
-		{
+		limitmessage=0;
+	}, [auth])
+
+	useEffect(() => {
+		getmes().then(()=>{
+			lazyload();
+		});
+	}, [limitmessage])
+	useEffect(() => {
+		if(targetMessage.messageid!==""){
 			window.onscroll = null;
+		}else{
+			lazyload();
 		}
-		else{
-			if(listMessage.length === 0 || targetRechercheUser.userid !== ""){
-			getmes().then(()=>{
-				window.onscroll = function(ev) {
-					let headerheight=document.getElementsByTagName("header")[0].offsetHeight;
-					let mainheight=document.getElementById("main_container").offsetHeight;
-					let pageheight=headerheight+mainheight;
-					if ((window.innerHeight + window.scrollY ) >= pageheight){
-						window.onscroll = null;
-						setlimitmessage(limitmessage+5);
-					}
-				};
-			});	
-			}
-		}
-	}, [targetMessage,limitmessage])
+	}, [targetMessage])
 	
+
 	return (
 		<section>
 			{

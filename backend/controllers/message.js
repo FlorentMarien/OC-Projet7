@@ -41,7 +41,6 @@ exports.sendMessage = (req, res) => {
         );
 };
 exports.getMessages = (req, res) => {
-    console.log(req.body);
     Message.find()
         .sort({ dateTime: -1 })
         .limit(5)
@@ -89,8 +88,8 @@ async function getUser(message) {
 async function getParentAnswer(message,limitmessage) {
     let parentanswer = [];
     let tamponparent = [];
-    
     let nbrdemessage=5;
+    let incrementOld=0;
     // limitmessage = skip
     for (let x = 0; x < message.length; x++) {
         if(parentanswer.length<nbrdemessage){
@@ -122,7 +121,8 @@ async function getParentAnswer(message,limitmessage) {
                     //Doublon
                 } else {
                     tamponparent.push(elementparent._id.valueOf());
-                    if(x>=limitmessage){
+                    
+                    if(limitmessage<=incrementOld){
                         let answerArray = [];
                         answerArray.push([elementparent]);
                         let elementreponse;
@@ -146,6 +146,7 @@ async function getParentAnswer(message,limitmessage) {
                         };
                         parentanswer.push(objectData);
                     }
+                    incrementOld=incrementOld+1;
                 }
             }
         }

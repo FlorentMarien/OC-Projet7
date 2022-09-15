@@ -9,9 +9,9 @@ import Sectionmain_aside from './Sectionmain_aside'
 import Sectionmain_recherche from './Sectionmain_recherche'
 import Sectionmain_message from './Sectionmain_message'
 function Bodymain({auth,setAuth}) {
-	const [indexPage,setindexPage] = useState(1);
+	let [indexPage,setindexPage] = useState({index:1,emetteur:"navbar"});
 	const [profilData,setprofilData] = useState(0);
-	const [targetRechercheUser,settargetRechercheUser] = useState({userid:undefined});
+	let [targetRechercheUser,settargetRechercheUser] = useState({userid:undefined});
 	
 	useEffect(() => {
 		async function getUser(objData){
@@ -62,28 +62,32 @@ function Bodymain({auth,setAuth}) {
 			setAuth([0]); // TokenExpired/ProblemeToken
 		})
 	}, [auth,setAuth]);
-	
+	useEffect(() => {
+		console.log("click");
+		if(indexPage.index===0 && indexPage.emetteur==="navbar") settargetRechercheUser({userid:auth[1]});
+	}, [indexPage]);
+	useEffect(() => {
+		if(indexPage.index!==0 && indexPage.emetteur==="navbar-aside") setindexPage({index:0,emetteur:"navbar-aside"});
+	}, [targetRechercheUser]);
+
 	return (
 		<div id="main_container">
-			<Nav auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
+			<Nav auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData} settargetRechercheUser={settargetRechercheUser}/>
 			{
-				
-				indexPage === 0 ?
-				<Sectionmain_profil targetRechercheUser={{userid:auth[1]}} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
-				: indexPage === 1 ?
+				indexPage.index === 0 ?
+				<Sectionmain_profil key={targetRechercheUser.userid} targetRechercheUser={targetRechercheUser} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
+				: indexPage.index === 1 ?
 				<Sectionmain_actu auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
-				: indexPage === 4 ?
+				: indexPage.index === 4 ?
 				<Sectionmain_parametre auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
-				: indexPage === 2 ?
+				: indexPage.index === 2 ?
 				<Sectionmain_recherche auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage}/>
-				: indexPage === 3 ?
+				: indexPage.index === 3 ?
 				<Sectionmain_message auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
-				: typeof indexPage === 'object' ?
-				<Sectionmain_profil targetRechercheUser={indexPage} settargetRechercheUser={settargetRechercheUser} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData}/>
 				: null
 			}
 			{
-				indexPage !== 2 &&
+				indexPage.index !== 2 &&
 				<Sectionmain_aside auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData} targetRechercheUser={targetRechercheUser} settargetRechercheUser={settargetRechercheUser}/>
 			}
 		</div>

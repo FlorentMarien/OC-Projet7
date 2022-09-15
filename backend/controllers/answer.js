@@ -147,8 +147,7 @@ exports.deleteMessage = (req, res) => {
                                     answer: messageBack.answer,
                                 }
                             )
-                                .then((result) => {
-                                    console.log(result);
+                                .then(() => {
                                     Answer.deleteOne({
                                         _id: req.body.messageId,
                                     })

@@ -58,7 +58,6 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		)
 	}
 	function getreply2(messageid,replyLevel,boolEnd){
-		console.log("render page profil");	
 		let parametre = {
 				sendMessageGloabal:1,
 				buttonCommentaire:1,

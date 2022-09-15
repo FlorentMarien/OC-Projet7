@@ -153,7 +153,6 @@ exports.modifpdp = (req, res) => {
     });
 };
 exports.rechercheuser = (req, res) => {
-    console.log(req.body);
     let recherche = { name: '', prename: '' };
     if (req.body.keyRecherche.lastIndexOf(' ') === -1) {
         recherche.prename = req.body.keyRecherche.substring(
@@ -171,7 +170,6 @@ exports.rechercheuser = (req, res) => {
             ));
     }
 
-    console.log(recherche);
     User.find({ prename: recherche.prename })
         .then((user) => {
             if (!user) {
@@ -189,7 +187,6 @@ exports.rechercheuser = (req, res) => {
                     name: user[x].name,
                     prename: user[x].prename,
                 };
-                console.log(reply[x]);
             }
             // Deleting a property completely
             res.status(200).json(reply);
