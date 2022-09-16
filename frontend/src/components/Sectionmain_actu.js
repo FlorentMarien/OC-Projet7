@@ -3,6 +3,7 @@ import { useState,useEffect } from 'react'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faRefresh, fas } from '@fortawesome/free-solid-svg-icons'
 import Message from './Message'
+import Message_reply from './Message_reply'
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
@@ -28,21 +29,12 @@ const theme = createTheme({
   });
 function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
 	let [listMessage,setListMessage] = useState([]);
-	let [listAnswer,setListAnswer] = useState([]);
-	let [limitmessage,setlimitmessage] = useState(0);
-	//let limitmessage=5;
-	const [tampontargetMessage,settampontargetMessage] = useState([{messageid:"",replyLevel:0}]);
+	let [limitmessage,setlimitmessage] = useState({skipmessage:0,nbrmessage:5});
 	const [targetMessage,settargetMessage] = useState({messageid:"",replyLevel:0});
 	const [formText,setformText] = useState("Votre message ");
 	const [formFile,setformFile] = useState("");
-	let [listtargetMessage,setlisttargetMessage] = useState([]);
-	let [changeUpdate,setchangeUpdate] = useState(0);
-	
 	const [openActuSend,setopenActuSend] = useState(0);
-	function getBack(e){
-		e.preventDefault();
-		settargetMessage({messageid:"",replyLevel:0});
-	}
+	
 	function getimgpreview(){
 		let urlFile = URL.createObjectURL(formFile);
 		return (
@@ -57,22 +49,31 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		</div>
 		)
 	}
-	function getreply2(messageid,replyLevel,boolEnd){
+	function getuserMessage(focusMessage,replyLevel=0,boolEnd){
 		let parametre = {
-				sendMessageGloabal:1,
-				buttonCommentaire:1,
-				sendReply:1,
-			}
-			let reply;
-			if(messageid === "all"){
-				if(listMessage.length !== 0 ){
-				parametre={
-					...parametre,
-					buttonCommentaire:1,
-					sendReply:0,
-					replyLevel:replyLevel,
-					messageFocus:"messageAll",
-				};
+			sendMessageGloabal:1,
+			buttonCommentaire:1,
+			sendReply:1,
+			replyLevel:0,
+			pageProfil:true,
+		};
+		let parametreparentanswer={
+			replyLevel:1,
+			messageFocus:"messageFocus",
+			getCommentaire:false,
+			sendReply:0,
+		};
+		let parametreanswer={
+			replyLevel:2,
+			messageFocus:"messageFocus",
+			getCommentaire:false,
+			sendReply:0,
+		};
+		
+		let listmessageprofil;
+		if(focusMessage==="all"){
+			parametre.messageFocus="messageAll";
+			if(listMessage.length>0){
 				let sendreply=(
 					<div id="blockactu">
 						<div id="blockactu_send">
@@ -101,68 +102,66 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 						</div>
 					</div>
 				);
-				listMessage.forEach(element => {
-					reply=(
-					<>
-						{reply}
-						{<Message key={element._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametre} element={element} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage} profilData={profilData}/>}
-					</>)
-				});
-				reply=(
-				<>
-				{sendreply}
-				<div className='blockactu_fil'>
-					{reply}
-				</div>
-				</>);
-				return reply;
+				for(let x=0;x<listMessage.length;x++){
+					//[0] Parent // [1] Reponse if lenght = 2 // [2] Sous reponse de [1][0] // [3] Sous reponse de [1][1]
+					for(let y=0;y<2;y++){
+						if(y===0){
+							listmessageprofil=(
+								<>
+								{listmessageprofil}
+								{<Message key={listMessage[x].answerArray[0][0]._id} parametre={parametre} element={listMessage[x].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData} />}
+								</>
+							);
+						}
+					}
 				}
+				listmessageprofil=(
+					<>
+					{sendreply}
+					{listmessageprofil}
+					</>
+				);
 			}
-			if(messageid==="one"){
-				if(listtargetMessage.length !== 0){
-				let reply;
-				let parametreparentanswer={
-					replyLevel:1,
-					messageFocus:"messageFocus",
-					getCommentaire:false,
-					sendReply:1,
-				};
-				let parametreanswer={
-					replyLevel:2,
-					messageFocus:"messageFocus",
-					getCommentaire:false,
-					sendReply:0,
-				};
-				parametre.sendReply=1;
-				parametre.replyLevel=targetMessage.replyLevel;
-				parametre.messageFocus="messageAll";
-				parametre.getCommentaire=false;
-				
-					let buttonback=(
-						<IconButton onClick={(e)=>settargetMessage({messageid:"",replyLevel:0})} color="primary" aria-label="Back" component="label">
-									<KeyboardBackspaceIcon/>
-						</IconButton>
+			else{
+				listmessageprofil=<p>Aucun message de l'utilisateur...</p>
+			}
+			return listmessageprofil;
+		}
+		if(focusMessage==="one"){
+			let reply;
+			parametre.sendReply=1;
+			parametre.replyLevel=targetMessage.replyLevel;
+			parametre.messageFocus="messageAll";
+			parametre.getCommentaire=false;
+			for(let a=0;a<listMessage.length;a++){
+				if(listMessage[a].answerArray[0][0]._id === targetMessage.messageid){
+					reply=(
+						<>
+						<div className='displayfocusMessage'>
+							<IconButton onClick={(e)=>settargetMessage({messageid:"",replyLevel:0})} color="primary" aria-label="Back" component="label">
+										<KeyboardBackspaceIcon/>
+							</IconButton>
+							{<Message key={listMessage[a].answerArray[0][0]._id}   parametre={parametre} element={listMessage[a].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData}/>}
+						</div>
+						</>
 					);
-					let replylvl0=(	
-						<Message key={listtargetMessage[0].answerArray[0][0]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametre} element={listtargetMessage[0].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage}/>
-					);
-					if(listtargetMessage[0].answerArray[0][0].answer.length>0){
+					if(listMessage[a].answerArray[0][0].answer.length>0){
 						let replylvl1,replylvl2;
-						for(let x=0;x<listtargetMessage[0].answerArray[1].length;x++){
+						for(let x=0;x<listMessage[a].answerArray[1].length;x++){
 							replylvl1="";
 							replylvl2="";
 							replylvl1=(
 								<>
 								{replylvl1}
-								{<Message key={listtargetMessage[0].answerArray[1][x]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametreparentanswer} element={listtargetMessage[0].answerArray[1][x]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage}/>}
+								{<Message key={listMessage[a].answerArray[1][x]._id}   parametre={parametreparentanswer} element={listMessage[a].answerArray[1][x]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData}/>}
 								</>
 							);
-							if(listtargetMessage[0].answerArray[1][x].answer.length>0){					
-								for(let y=0;y<listtargetMessage[0].answerArray[x+2].length;y++){
+							if(listMessage[a].answerArray[1][x].answer.length>0){					
+								for(let y=0;y<listMessage[a].answerArray[x+2].length;y++){
 									replylvl2=(
 										<>
 											{replylvl2}
-											{<Message key={listtargetMessage[0].answerArray[x+2][y]._id} changeUpdate={changeUpdate} setchangeUpdate={setchangeUpdate} parametre={parametreanswer} element={listtargetMessage[0].answerArray[x+2][y]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} setListAnswer={setListAnswer} listAnswer={listAnswer} settargetMessage={settargetMessage} targetMessage={targetMessage} settampontargetMessage={settampontargetMessage} tampontargetMessage={tampontargetMessage}/>}
+											{<Message key={listMessage[a].answerArray[x+2][y]._id}   parametre={parametreanswer} element={listMessage[a].answerArray[x+2][y]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData}/>}
 										</>
 									);					
 								}
@@ -171,8 +170,9 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 								<>
 								{reply}
 								<div className="listAnswer">
-									{replylvl1}
-									{replylvl2}
+								{replylvl1}
+								{replylvl2}
+								<Message_reply auth={auth} parametre={parametreparentanswer} messagetarget={listMessage[a].answerArray[1][x]._id} listMessage={listMessage} setListMessage={setListMessage}/>
 								</div>
 								</>
 							);
@@ -181,24 +181,18 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 					reply=(
 						<>
 						<div className="listMessage">
-							<div className="displayfocusMessage">
-								{buttonback}
-								{replylvl0}
-							</div>
-							{reply}
+						{reply}
 						</div>
 						</>
 					);
 					return reply;
-				
 				}
 			}
-		
-		return (<p>Load...</p>);
+			return listmessageprofil;
+		}
 	}
 	function sendMessage(e){
 		e.preventDefault();
-		setopenActuSend(1);
 		let objectData={
 			message:formText,
 			messageId:Date.now(),
@@ -209,11 +203,21 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		if(objectData.message!==""){
 			formData.append('image',formFile);
 		}
-		
 		sendMessageApi(formData).then((result)=>{
 			if(result.resultmessage!==undefined){
+				let objectMessage={
+					parentArray:[result.resultmessage],
+					answerArray:[[result.resultmessage],[]],
+					dateTime:result.resultmessage.dateTime,
+				}
 				let list=[...listMessage];
-				list.unshift(result.resultmessage);
+				list.unshift(objectMessage);
+				limitmessage={
+					...limitmessage,
+					skipmessage:limitmessage.skipmessage+1,
+					refresh:false,
+				};
+				
 				setListMessage([...list]);
 			}
 		});
@@ -260,97 +264,48 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			// Une erreur est survenue
 		  });
 	}
-	async function getAnswerApi(){
-		return await fetch("http://localhost:3000/api/answer/get",{
-			headers: {
-				'Authorization': "Bearer "+auth[2]
-			},
-			method: 'POST',
-		})
-		.then(function(res) { 
-			if (res.ok) {
-			  return res.json();
-			}
-		})
-		.then(function(result) {
-			return result;
-		})
-		.catch(function(err) {
-			// Une erreur est survenue
-		});
-	}
 	async function getmes(){
-		return await getMessageApi(JSON.stringify({limitmessage:limitmessage})).then((result)=>{
-			setListMessage([...listMessage,...result]);
-		});
-	}
-	async function getanswer(){
-		return await getAnswerApi().then((result)=>{
-			setListAnswer([...result]);
-		});
-	}
-	async function getMessageByIdApi(dataId){
-		return await fetch("http://localhost:3000/api/message/getMessageById",{
-			headers: {
-				'Authorization': "Bearer "+auth[2],
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-			},
-			method: 'POST',
-			body:dataId,
-		  })
-		  .then(function(res) { 
-			if (res.ok) {
-			  return res.json();
+		return await getMessageApi(JSON.stringify({userid:"all",limitmessage:limitmessage})).then((result)=>{
+			if(result.length===0){
+				if(listMessage.length>0){
+					window.onscroll = null;
+				}
+				else setListMessage([-1]);
 			}
-		  })
-		  .then(function(result) {
-			return result;
-		  })
-		  .catch(function(err) {
-			// Une erreur est survenue
-		  });
-	}
-	async function getMessageById(){
-		return await getMessageByIdApi(JSON.stringify({_id:targetMessage.messageid})).then((result)=>{
-			if(result.length===0) setlisttargetMessage([-1]);
-			else setlisttargetMessage([...result]);
+			else setListMessage([...listMessage,...result]);
 		});
 	}
+	function lazyload(){
+		window.onscroll = function(ev) {
+			let headerheight=document.getElementsByTagName("header")[0].offsetHeight;
+			let mainheight=document.getElementById("main_container").offsetHeight;
+			let pageheight=headerheight+mainheight;
+			if ((window.innerHeight + window.scrollY ) >= pageheight){
+				window.onscroll = null;
+				setlimitmessage({...limitmessage,skipmessage:limitmessage.skipmessage+limitmessage.nbrmessage,nbrmessage:limitmessage.nbrmessage});
+			}
+		};
+	}
 	useEffect(() => {
-		if(targetMessage.messageid === "" ){
+			console.log("load new answer");
 			getmes().then(()=>{
-				window.onscroll = function(ev) {
-					let headerheight=document.getElementsByTagName("header")[0].offsetHeight;
-					let mainheight=document.getElementById("main_container").offsetHeight;
-					let pageheight=headerheight+mainheight;
-					if ((window.innerHeight + window.scrollY + 5) >= pageheight) {
-						window.onscroll = null;
-						setlimitmessage(limitmessage+5);
-					}
-				};
-			})
-		}
-		if(targetMessage.messageid !== ""){
-			setlisttargetMessage([]);
-			window.onscroll = null;
-			getMessageById();
-		}
-	}, [targetMessage,limitmessage])
+				lazyload();
+			});
+	}, [limitmessage])
+
 	useEffect(() => {
-		if(targetMessage.messageid !== ""){
-			setlisttargetMessage([]);
+		if(targetMessage.messageid!==""){
 			window.onscroll = null;
-			getMessageById();
+		}else{
+			lazyload();
 		}
-	}, [changeUpdate])
-	let reply;
+	}, [targetMessage])
 		return (
 			<section>
 			{
 			targetMessage.messageid === "" ?
-			getreply2("all",0)
-			: getreply2("one",0)
+			getuserMessage("all",0)
+			: getuserMessage("one",0)
 			}
 			</section>
 		);

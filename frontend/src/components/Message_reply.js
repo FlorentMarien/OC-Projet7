@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
-function Message_reply({auth,parametre,messagetarget,listMessage,setListMessage}) {
+function Message_reply({auth,parametre,messagetarget,listMessage,setListMessage,profilTarget}) {
 	// Parametre => replylevel, useridmessage
 	const [openReply,setopenReply] = useState(0);
 	const [formFile,setformFile] = useState("");
@@ -79,6 +79,7 @@ function Message_reply({auth,parametre,messagetarget,listMessage,setListMessage}
 							listMessage[x].answerArray[0][0].answer.push(result.answerId);
 							listMessage[x].answerArray[1].push(result.resultmessage);
 							listMessage[x].answerArray.push([]);
+							if(profilTarget !== undefined)  profilTarget.nbranswer=profilTarget.nbranswer+1;
 							setListMessage([...listMessage]);
 							boolend=true;
 							break;
@@ -93,6 +94,7 @@ function Message_reply({auth,parametre,messagetarget,listMessage,setListMessage}
 								if(listMessage[x].answerArray[1][y]._id===messagetarget){
 									listMessage[x].answerArray[1][y].answer.push(result.answerId);
 									listMessage[x].answerArray[y+2].push(result.resultmessage);
+									if(profilTarget !== undefined) profilTarget.nbranswer=profilTarget.nbranswer+1;
 									setListMessage([...listMessage]);
 									boolend=true;
 									break;

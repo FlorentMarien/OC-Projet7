@@ -19,14 +19,13 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	function sendImg(e){
 		e.preventDefault();
 		let formData = new FormData();
-		
 		for(let x = 0 ; x<formFile.length ; x++){
 			formData.append('image',formFile[x]);
 		}
 		sendImgApi(formData).then((result)=>{
 			let newprofilData=profilTarget;
 			newprofilData.imageArray=result;
-			setprofilData(newprofilData);
+			setprofilTarget(newprofilData);
 			setformFile(0);
 		});
 	}
@@ -94,7 +93,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 							<>
 								{listmessageprofil}
 								<div className='listMessage'>
-								{<Message key={listMessage[x]._id}   parametre={parametre} element={listMessage[x]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
+								{<Message key={listMessage[x]._id}   parametre={parametre} element={listMessage[x]} auth={auth} setListMessage={setListMessage} listMessage={listMessage} settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData} profilTarget={profilTarget}/>}
 								</div>
 							</>);
 					}
@@ -114,7 +113,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 													listparentmessageprofil=(
 													<>
 														{listparentmessageprofil}
-														{<Message key={listMessage[x].answerArray[z+2][w]._id}   parametre={parametreanswer} element={listMessage[x].answerArray[z+2][w]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
+														{<Message key={listMessage[x].answerArray[z+2][w]._id}   parametre={parametreanswer} element={listMessage[x].answerArray[z+2][w]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData} profilTarget={profilTarget}/>}
 													</>);
 													verif=true;
 												}
@@ -122,14 +121,14 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 											if(verif===true ){
 												listparentmessageprofil=(
 													<>
-														{<Message key={listMessage[x].answerArray[y][z]._id}   parametre={parametreparentanswer} element={listMessage[x].answerArray[y][z]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
+														{<Message key={listMessage[x].answerArray[y][z]._id}   parametre={parametreparentanswer} element={listMessage[x].answerArray[y][z]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData} profilTarget={profilTarget}/>}
 														{listparentmessageprofil}
 													</>);
 											}
 											else if(listMessage[x].answerArray[y][z].userId===targetRechercheUser.userid){
 												listparentmessageprofil=(
 													<>
-														{<Message key={listMessage[x].answerArray[y][z]._id}   parametre={parametreparentanswer} element={listMessage[x].answerArray[y][z]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
+														{<Message key={listMessage[x].answerArray[y][z]._id}   parametre={parametreparentanswer} element={listMessage[x].answerArray[y][z]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData} profilTarget={profilTarget}/>}
 													</>);
 											}
 											listparent=(
@@ -137,7 +136,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 												{listparent}
 												<div className='listAnswer'>
 												{listparentmessageprofil}
-												<Message_reply auth={auth} parametre={parametreparentanswer} messagetarget={listMessage[x].answerArray[y][z]._id} listMessage={listMessage} setListMessage={setListMessage}/>
+												<Message_reply auth={auth} parametre={parametreparentanswer} messagetarget={listMessage[x].answerArray[y][z]._id} listMessage={listMessage} setListMessage={setListMessage} profilTarget={profilTarget}/>
 												</div>
 												</>
 											);
@@ -154,7 +153,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 							else{
 								listparent=(
 									<>
-									{<Message key={listMessage[x].answerArray[0][0]._id}   parametre={parametre} element={listMessage[x].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
+									{<Message key={listMessage[x].answerArray[0][0]._id}   parametre={parametre} element={listMessage[x].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData} profilTarget={profilTarget}/>}
 									</>
 								);
 							}
@@ -181,7 +180,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 							<IconButton onClick={(e)=>settargetMessage({messageid:"",replyLevel:0})} color="primary" aria-label="Back" component="label">
 										<KeyboardBackspaceIcon/>
 							</IconButton>
-							{<Message key={listMessage[a].answerArray[0][0]._id}   parametre={parametre} element={listMessage[a].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
+							{<Message key={listMessage[a].answerArray[0][0]._id}   parametre={parametre} element={listMessage[a].answerArray[0][0]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData} profilTarget={profilTarget}/>}
 						</div>
 						</>
 					);
@@ -193,7 +192,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 							replylvl1=(
 								<>
 								{replylvl1}
-								{<Message key={listMessage[a].answerArray[1][x]._id}   parametre={parametreparentanswer} element={listMessage[a].answerArray[1][x]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
+								{<Message key={listMessage[a].answerArray[1][x]._id}   parametre={parametreparentanswer} element={listMessage[a].answerArray[1][x]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData} profilTarget={profilTarget}/>}
 								</>
 							);
 							if(listMessage[a].answerArray[1][x].answer.length>0){					
@@ -201,7 +200,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 									replylvl2=(
 										<>
 											{replylvl2}
-											{<Message key={listMessage[a].answerArray[x+2][y]._id}   parametre={parametreanswer} element={listMessage[a].answerArray[x+2][y]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage}   profilData={profilTarget}/>}
+											{<Message key={listMessage[a].answerArray[x+2][y]._id}   parametre={parametreanswer} element={listMessage[a].answerArray[x+2][y]} auth={auth} setListMessage={setListMessage} listMessage={listMessage}  settargetMessage={settargetMessage} targetMessage={targetMessage} profilData={profilData} profilTarget={profilTarget}/>}
 										</>
 									);					
 								}
@@ -212,7 +211,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 								<div className="listAnswer">
 								{replylvl1}
 								{replylvl2}
-								<Message_reply auth={auth} parametre={parametreparentanswer} messagetarget={listMessage[a].answerArray[1][x]._id} listMessage={listMessage} setListMessage={setListMessage}/>
+								<Message_reply auth={auth} parametre={parametreparentanswer} messagetarget={listMessage[a].answerArray[1][x]._id} listMessage={listMessage} setListMessage={setListMessage} profilTarget={profilTarget}/>
 								</div>
 								</>
 							);
@@ -324,16 +323,16 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 							adminLevel: result.adminLevel,
 							imageArray: result.imageArray,
 							email:result.email,
-							userId:targetRechercheUser.userId
+							userId:targetRechercheUser,
+							nbrmessage:result.nbrmessage,
+							nbranswer:result.nbranswer,
 					});
 				}
 				else{
 						throw result;
 				}
 		});
-		//limitmessage=0;
 	}, [auth])
-
 	useEffect(() => {
 		console.log("load new answer");
 		getmes().then(()=>{
@@ -395,6 +394,12 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 						<img src={ profilTarget.imageUrl } alt={profilTarget.name}/>
 						<ul>
 							<li>Nom: { profilTarget.name } Prenom: { profilTarget.prename }</li>
+							<li>
+								<span>Message: { profilTarget.nbrmessage }</span>
+							</li>
+							<li>
+								<span>Réponse: { profilTarget.nbranswer }</span>
+							</li>
 						</ul>
 						</>
 					}
@@ -406,7 +411,6 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 							(listMessage.length > 0) ?
 							getuserMessage("all")
 							: <p>Load all message...</p>
-
 						: getuserMessage("one")
 					}
 				</div>

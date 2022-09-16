@@ -40,15 +40,40 @@ exports.sendMessage = (req, res) => {
             res.status(400).json({ message: 'Echec création', error })
         );
 };
+async function getAnswerParent(message){
+    let resultmessage=[];
+    let resultobject;
+    for(let x=0;x<message.length;x++){
+        resultobject={
+            parentArray:[],
+            answerArray:[],
+            dateTime: message[x].dateTime,
+        };
+        resultobject.parentArray.push(message[x]);
+        resultobject.answerArray.push([message[x]]);
+        await Answer.find({_id:message[x].answer}).then((result)=>{
+            resultobject.answerArray.push(result);
+        })
+        for(let y=0;y<resultobject.answerArray[1].length;y++){
+            await Answer.find({_id:resultobject.answerArray[1][y].answer}).then((result)=>{
+                resultobject.answerArray.push(result);
+            })
+        }
+        resultmessage.push(resultobject);
+    }
+    return resultmessage;
+}
 exports.getMessages = (req, res) => {
+    console.log(req.body.limitmessage.skipmessage);
     Message.find()
         .sort({ dateTime: -1 })
-        .limit(5)
-        .skip(req.body.limitmessage)
+        .skip(req.body.limitmessage.skipmessage)
+        .limit(req.body.limitmessage.nbrmessage)
         .then((message) => {
-            //Profil
-            getUser(message).then((result) => {
-                res.status(200).json(result);
+            getAnswerParent(message).then((result)=>{
+                getUser(result).then((finalresult) => {
+                    res.status(200).json(finalresult);
+                });
             });
         })
         .catch((error) => ({ error }));
@@ -242,38 +267,28 @@ exports.modifMessage = (req, res) => {
 //Recupere tout les messages / réponses de l'utilisateur ( avec les messages associés)
 async function getuserMessageAnswer(userid){
     let arrayMessage=[];
+    let arrayAnswer=[];
     let array;
-    await Message.find({
-        userId: userid,
-    })
-        .then((result) => {
-            arrayMessage=result
-            })
-    await Answer.find({
-        userId: userid,
-    })
-        .then((resultAnswer) => {
-
-        array=[...arrayMessage,...resultAnswer];
-        array.sort(function (a, b) {
-            if (a.dateTime > b.dateTime) return 1;
-            if (a.dateTime < b.dateTime) return -1;
-            return 0;
+        await Message.find({
+            userId: userid,
+        })
+            .then((result) => {
+                arrayMessage=result;
+                })
+        await Answer.find({
+            userId: userid,
+        })
+            .then((resultAnswer) => {
+            arrayAnswer = resultAnswer;
+        })
+        
+        array=[...arrayMessage,...arrayAnswer];
+            array.sort(function (a, b) {
+                if (a.dateTime > b.dateTime) return 1;
+                if (a.dateTime < b.dateTime) return -1;
+                return 0;
         });
         array.reverse();
-
-        /*for(let x=0;x<array.length;x++){
-            if(x >= limitmessage){
-                if(arrayReturn.length<nbrdemessage){
-                    arrayReturn.push(array[x]);
-                }
-                else{
-                    break;
-                }
-            }
-        }*/
-    })
-    //return arrayReturn
     return array
 }
 exports.getuserMessage = (req, res) => {

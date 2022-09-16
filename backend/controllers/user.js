@@ -2,7 +2,8 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-
+const Message = require('../models/Message');
+const Answer = require('../models/Answer');
 exports.signup = (req, res) => {
     const objectContact = JSON.parse(req.body.user);
     bcrypt
@@ -62,6 +63,21 @@ exports.login = (req, res) => {
         })
         .catch((error) => res.status(500).json({ error }));
 };
+async function getnbrmessageanswer(userid) {
+    let nbrmessage;
+    let nbranswer;
+    await Message.find({userId:userid}).then((res)=>{
+        nbrmessage=res.length;
+    })
+    await Answer.find({userId:userid}).then((res)=>{
+        nbranswer=res.length;
+    })
+    let objectRes={
+        nbrmessage:nbrmessage,
+        nbranswer:nbranswer,
+    }
+    return objectRes;
+}
 exports.getlogin = (req, res) => {
     let userid = req.body.userid;
     User.findOne({ _id: userid })
@@ -71,13 +87,17 @@ exports.getlogin = (req, res) => {
                     message: 'Utilisateur introuvable',
                 });
             }
-            res.status(200).json({
-                name: user.name,
-                prename: user.prename,
-                imageUrl: user.imageUrl,
-                adminLevel: user.adminLevel,
-                imageArray: user.imageArray,
-                email: user.email,
+            getnbrmessageanswer(req.body.userid).then((result)=>{
+                res.status(200).json({
+                    name: user.name,
+                    prename: user.prename,
+                    imageUrl: user.imageUrl,
+                    adminLevel: user.adminLevel,
+                    imageArray: user.imageArray,
+                    email: user.email,
+                    nbrmessage: result.nbrmessage,
+                    nbranswer: result.nbranswer,
+                });
             });
         })
         .catch((error) => res.status(500).json({ error }));

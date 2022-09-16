@@ -16,7 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
 library.add(fas)
-function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage,settampontargetMessage,tampontargetMessage,profilData}) {
+function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMessage,listMessage,setListAnswer,listAnswer,settargetMessage,targetMessage,settampontargetMessage,tampontargetMessage,profilTarget,profilData}) {
 	const [elementMessage,setelementMessage] = useState(element);
 	let [disableButtonLike,setdisableButtonLike] = useState(elementMessage.arrayDislike.includes(auth[1]));
 	let [disableButtonDislike,setdisableButtonDislike] = useState(elementMessage.arrayLike.includes(auth[1]));
@@ -203,7 +203,17 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 					if(boolend===true) break;
 					if(listMessage[x].answerArray[0][0]._id===elementMessage._id){
 						//Detect modif replylevel 0
+						if(profilTarget !== undefined) profilTarget.nbrmessage=profilTarget.nbrmessage-1;
+						let nbrreplylevel1=listMessage[x].answerArray[1].length;
+						let nbrreplylevel2=0;
+						if(nbrreplylevel1!==0){
+							nbrreplylevel2=listMessage[x].answerArray.length-2;
+							//-2 for delete parent et replylevel1
+						}
+
+						if(profilTarget !== undefined) profilTarget.nbranswer=profilTarget.nbranswer-nbrreplylevel1-nbrreplylevel2;
 						listMessage.splice(x,1);
+						
 						setListMessage(listMessage);
 						settargetMessage({messageid:"",replyLevel:0});
 					}else{
@@ -212,10 +222,15 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 							if(listMessage[x].answerArray[1][y]._id===elementMessage._id){
 								//Detect modif replylevel 1
 								//Suppression de l'element
+								let nbrsuppresion=listMessage[x].answerArray[1][y].answer.length;
+								nbrsuppresion=nbrsuppresion+1;
+								if(profilTarget !== undefined) profilTarget.nbranswer=profilTarget.nbranswer-nbrsuppresion;
+
 								listMessage[x].answerArray[1].splice(y,1);
 								//Suppression de l'assosiation element parent
 								listMessage[x].answerArray[0][0].answer.splice(y,1);
 								listMessage[x].answerArray.splice(y+2,1);
+
 								setListMessage([...listMessage]);
 								// Reload l'element parent
 								boolend=true;
@@ -228,6 +243,8 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 										listMessage[x].answerArray[y+2].splice(z,1);
 										//Suppression de l'assosiation element parent
 										listMessage[x].answerArray[1][y].answer.splice(z,1);
+										
+										if(profilTarget !== undefined) profilTarget.nbranswer=profilTarget.nbranswer-1;
 										setListMessage([...listMessage]);
 										boolend=true;
 										break;
@@ -515,6 +532,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 							listMessage[x].answerArray[0][0].answer.push(result.answerId);
 							listMessage[x].answerArray[1].push(result.resultmessage);
 							listMessage[x].answerArray.push([]);
+							if(profilTarget !== undefined) profilTarget.nbranswer=profilTarget.nbranswer+1;
 							setListMessage([...listMessage]);
 							boolend=true;
 							break;
@@ -529,6 +547,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 								if(listMessage[x].answerArray[1][y]._id===elementMessage._id){
 									listMessage[x].answerArray[1][y].answer.push(result.answerId);
 									listMessage[x].answerArray[y+2].push(result.resultmessage);
+									if(profilTarget !== undefined) profilTarget.nbranswer=profilTarget.nbranswer+1;
 									setListMessage([...listMessage]);
 									boolend=true;
 									break;
