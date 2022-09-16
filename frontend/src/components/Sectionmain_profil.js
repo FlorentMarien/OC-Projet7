@@ -1,11 +1,14 @@
 import '../styles/Sectionmain_profil.css'
 import Message from './Message'
+import Message_reply from './Message_reply'
 import { useState,useEffect } from 'react'
 import IconButton from '@mui/material/IconButton';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import AddCommentIcon from '@mui/icons-material/AddComment';
+
 function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,targetRechercheUser,settargetRechercheUser}) {
 	const [targetMessage,settargetMessage] = useState({messageid:"",replyLevel:0});
 	let [limitmessage,setlimitmessage] = useState({skipmessage:0,nbrmessage:5});
@@ -72,7 +75,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			replyLevel:1,
 			messageFocus:"messageFocus",
 			getCommentaire:false,
-			sendReply:1,
+			sendReply:0,
 		};
 		let parametreanswer={
 			replyLevel:2,
@@ -134,6 +137,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 												{listparent}
 												<div className='listAnswer'>
 												{listparentmessageprofil}
+												<Message_reply auth={auth} parametre={parametreparentanswer} messagetarget={listMessage[x].answerArray[y][z]._id} listMessage={listMessage} setListMessage={setListMessage}/>
 												</div>
 												</>
 											);
@@ -208,6 +212,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 								<div className="listAnswer">
 								{replylvl1}
 								{replylvl2}
+								<Message_reply auth={auth} parametre={parametreparentanswer} messagetarget={listMessage[a].answerArray[1][x]._id} listMessage={listMessage} setListMessage={setListMessage}/>
 								</div>
 								</>
 							);

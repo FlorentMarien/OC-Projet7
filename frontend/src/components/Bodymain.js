@@ -63,10 +63,12 @@ function Bodymain({auth,setAuth}) {
 		})
 	}, [auth,setAuth]);
 	useEffect(() => {
-		if(indexPage.index===0 && indexPage.emetteur==="navbar") settargetRechercheUser({userid:auth[1]});
+		if(indexPage.index===0 && indexPage.emetteur==="navbar") {
+			settargetRechercheUser({userid:auth[1]});
+		}
 	}, [indexPage]);
 	useEffect(() => {
-		if(indexPage.index!==0){
+		if(indexPage.index!==0 && targetRechercheUser.userid!==undefined){
 			setindexPage({index:0,emetteur:"navbar-aside"});
 		}
 	}, [targetRechercheUser]);

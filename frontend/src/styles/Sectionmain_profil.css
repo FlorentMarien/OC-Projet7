@@ -10,20 +10,29 @@ img{
     border-radius: 50px;
 }
 #blockprofil{
-    text-align: center;
     display: flex;
+    position: relative;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 #usergallery{
-    width: 25%;
+    position: absolute;
+    left:0px;
+    width: auto;
+    height: auto;
 }
-#userprofil{
-    width: 75%;
+.userprofil{
+    text-align: center;
 }
 .replylevel0{
     position: sticky;
     top:0px;
     z-index: 2;
     background-color: #0a1929;
+}
+#button-gallery div{
+    z-index: 4 !important;
 }
 #blocklistmessageprofil > label{
     position: sticky;
