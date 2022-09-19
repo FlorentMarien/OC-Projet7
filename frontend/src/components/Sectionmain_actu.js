@@ -1,5 +1,5 @@
 import '../styles/Sectionmain_actu.css'
-import { useState,useEffect } from 'react'
+import { useState,useEffect,useRef } from 'react'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faRefresh, fas } from '@fortawesome/free-solid-svg-icons'
 import Message from './Message'
@@ -30,11 +30,11 @@ const theme = createTheme({
 function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
 	let [listMessage,setListMessage] = useState([]);
 	let [limitmessage,setlimitmessage] = useState({skipmessage:0,nbrmessage:5});
+	let [nbrmessageapi,setnbrmessageapi] = useState({nbrmessage:0,nbrnewmessage:0,firstmessage:""});
 	const [targetMessage,settargetMessage] = useState({messageid:"",replyLevel:0});
 	const [formText,setformText] = useState("Votre message ");
 	const [formFile,setformFile] = useState("");
 	const [openActuSend,setopenActuSend] = useState(0);
-	
 	function getimgpreview(){
 		let urlFile = URL.createObjectURL(formFile);
 		return (
@@ -69,7 +69,6 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			getCommentaire:false,
 			sendReply:0,
 		};
-		
 		let listmessageprofil;
 		if(focusMessage==="all"){
 			parametre.messageFocus="messageAll";
@@ -97,9 +96,14 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 									</ThemeProvider>
 									</div>
 								</form>
-								
 							}
 						</div>
+						{
+						nbrmessageapi.nbrnewmessage>0 &&
+						<div id="blockactu_notifnewmessage">
+							<Button color="primary" variant="contained" onClick={(e)=>getNewMessage(e)}>Il y a {nbrmessageapi.nbrnewmessage} nouveaux messages</Button>
+						</div>
+						}
 					</div>
 				);
 				for(let x=0;x<listMessage.length;x++){
@@ -205,20 +209,32 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		}
 		sendMessageApi(formData).then((result)=>{
 			if(result.resultmessage!==undefined){
-				let objectMessage={
+				/*let objectMessage={
 					parentArray:[result.resultmessage],
 					answerArray:[[result.resultmessage],[]],
 					dateTime:result.resultmessage.dateTime,
 				}
 				let list=[...listMessage];
 				list.unshift(objectMessage);
+				
 				limitmessage={
 					...limitmessage,
 					skipmessage:limitmessage.skipmessage+1,
 					refresh:false,
 				};
-				
-				setListMessage([...list]);
+				*/
+				/*
+				nbrmessageapi={
+					...nbrmessageapi,
+					nbrmessage:nbrmessageapi.nbrmessage+1,
+					firstmessage:result.resultmessage._id,
+				};
+				*/
+				setnbrmessageapi({
+					...nbrmessageapi,
+					nbrnewmessage:nbrmessageapi.nbrnewmessage+1,
+				});
+				//setListMessage([...list]);
 			}
 		});
 	}
@@ -264,15 +280,41 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			// Une erreur est survenue
 		  });
 	}
+	async function getNewMessage(e){
+		e.preventDefault();
+		getMessageApi(JSON.stringify({userid:"allnewanswer",limitmessage:limitmessage,index:nbrmessageapi.firstmessage})).then((res)=>{
+			let tamponlistMessage=listMessage;
+			tamponlistMessage.unshift(...res.message);
+			setnbrmessageapi({
+				...nbrmessageapi,
+				nbrmessage:res.nbrmessage,
+				//firstmessage:tamponlistMessage[0].answerArray[0][0]._id,
+				nbrnewmessage:0,
+			});
+			setListMessage([...tamponlistMessage]);
+		})
+		
+	}
 	async function getmes(){
-		return await getMessageApi(JSON.stringify({userid:"all",limitmessage:limitmessage})).then((result)=>{
-			if(result.length===0){
+		return await getMessageApi(JSON.stringify({userid:"all",limitmessage:limitmessage,index:nbrmessageapi.firstmessage})).then((result)=>{
+			if(result.message.length===0){
 				if(listMessage.length>0){
 					window.onscroll = null;
 				}
 				else setListMessage([-1]);
 			}
-			else setListMessage([...listMessage,...result]);
+			else {
+				let firstmessage;
+				if(listMessage.length===0) firstmessage=result.message[0].answerArray[0][0]._id;
+				else firstmessage=nbrmessageapi.firstmessage;
+				
+				setListMessage([...listMessage,...result.message]);
+				if(nbrmessageapi.nbrmessage===0) setnbrmessageapi({nbrmessage:result.nbrmessage,nbrnewmessage:0,firstmessage:firstmessage});
+				else if(nbrmessageapi.nbrmessage!==result.nbrmessage && nbrmessageapi.nbrmessage<result.nbrmessage){
+					let nbrnewmessage=result.nbrmessage-nbrmessageapi.nbrmessage;
+					setnbrmessageapi({nbrmessage:nbrmessageapi.nbrmessage,nbrnewmessage:nbrnewmessage,firstmessage:firstmessage});
+				}
+			}
 		});
 	}
 	function lazyload(){
@@ -283,14 +325,15 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			if ((window.innerHeight + window.scrollY ) >= pageheight){
 				window.onscroll = null;
 				setlimitmessage({...limitmessage,skipmessage:limitmessage.skipmessage+limitmessage.nbrmessage,nbrmessage:limitmessage.nbrmessage});
+				
 			}
 		};
 	}
 	useEffect(() => {
-			console.log("load new answer");
-			getmes().then(()=>{
-				lazyload();
-			});
+		console.log("load new answer");
+		getmes().then(()=>{
+			lazyload();
+		});
 	}, [limitmessage])
 
 	useEffect(() => {
@@ -300,12 +343,17 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			lazyload();
 		}
 	}, [targetMessage])
+
 		return (
 			<section>
 			{
 			targetMessage.messageid === "" ?
-			getuserMessage("all",0)
-			: getuserMessage("one",0)
+				listMessage.length>0 ?
+				getuserMessage("all",0)
+				: <p>Load...</p>
+			: listMessage.length>0 ?
+				getuserMessage("one",0)
+				: <p>Load...</p>
 			}
 			</section>
 		);

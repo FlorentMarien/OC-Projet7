@@ -64,19 +64,60 @@ async function getAnswerParent(message){
     return resultmessage;
 }
 exports.getMessages = (req, res) => {
-    console.log(req.body.limitmessage.skipmessage);
-    Message.find()
+    let firstmessage=req.body.index;
+    let nbrmessage=0;
+    console.log(req.body);
+    if(req.body.userid==="allnewanswer"){
+        Message.find({_id : { $gt : firstmessage }})
+            .sort({dateTime:-1})
+            .then((result)=>{
+                Message.find().then((messages)=>{
+                    nbrmessage=messages.length;
+                    getAnswerParent(result).then((result)=>{
+                        getUser(result).then((finalresult) => {
+                            res.status(200).json({message:finalresult,nbrmessage:nbrmessage});
+                        });
+                    });
+                })
+            })
+    }
+    else if(firstmessage===""){
+        Message.findOne()
+            .sort({dateTime:-1})
+            .then((idindex)=>{
+                firstmessage = idindex._id;
+                Message.find({_id : { $lte : firstmessage }})
+                        .sort({ dateTime: -1 })
+                        .skip(req.body.limitmessage.skipmessage)
+                        .limit(req.body.limitmessage.nbrmessage)
+                        .then((message) => {
+                            Message.find().then((messages)=>{
+                                nbrmessage=messages.length;
+                                getAnswerParent(message).then((result)=>{
+                                    getUser(result).then((finalresult) => {
+                                        res.status(200).json({message:finalresult,nbrmessage:nbrmessage});
+                                    });
+                                });
+                            })
+                        })
+            })
+    }
+    else{
+        Message.find({_id : { $lte : firstmessage }})
         .sort({ dateTime: -1 })
         .skip(req.body.limitmessage.skipmessage)
         .limit(req.body.limitmessage.nbrmessage)
         .then((message) => {
-            getAnswerParent(message).then((result)=>{
-                getUser(result).then((finalresult) => {
-                    res.status(200).json(finalresult);
+            Message.find().then((messages)=>{
+                nbrmessage=messages.length;
+                getAnswerParent(message).then((result)=>{
+                    getUser(result).then((finalresult) => {
+                        res.status(200).json({message:finalresult,nbrmessage:nbrmessage});
+                    });
                 });
-            });
+            })
         })
-        .catch((error) => ({ error }));
+    }
 };
 async function getUser(message) {
     for (let y = 0; y < message.length; y++) {
