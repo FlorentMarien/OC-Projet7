@@ -5,10 +5,6 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
-import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import DeleteIcon from '@mui/icons-material/Delete';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import SettingsIcon from '@mui/icons-material/Settings';
 
@@ -356,7 +352,7 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 					<ThemeProvider theme={theme}>
 					<form id="modifmdp_form"className='form-Parametre' autoComplete="off">
 						<TextField color="neutral" type="email" id="formEmail" label="Email" variant="outlined" value={profilData.email} disabled/>
-						<TextField className={stateprofilEmail} color="neutral" type="email" id="newformEmail" label="new Email" variant="outlined" onBlur={(e)=>{setprofilEmail({...profilEmail,newemail:e.target.value})}}/>
+						<TextField className={stateprofilEmail} color="neutral" type="email" id="newformEmail" label="new Email" variant="outlined" defaultValue={profilEmail.oldemail} onBlur={(e)=>{setprofilEmail({...profilEmail,newemail:e.target.value})}}/>
 						
 						<Button variant="contained" onClick={(e)=>{submitmodifemail(e)}}>Modification email</Button>
 					</form>
@@ -364,8 +360,6 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 					</ThemeProvider>
 
 					</div>
-				: secondtargetPage === 3 ?
-					<p>Page 3</p>
 				: null
 			}
 			</>

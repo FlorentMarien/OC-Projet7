@@ -11,7 +11,7 @@ function Sectionmain_recherche({auth,setAuth,indexPage,setindexPage,profilData,s
 		<>
 			{
 			targetRechercheUser.userid === undefined ?
-			<section>
+			<section id="section_recherche">
 				<Sectionmain_aside key={10} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} targetRechercheUser={targetRechercheUser} settargetRechercheUser={settargetRechercheUser}/>
 			</section>
 			:

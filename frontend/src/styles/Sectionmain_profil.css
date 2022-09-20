@@ -3,6 +3,8 @@ section{
     margin-left: 20%;
     box-sizing: border-box;
     padding: 20px;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 img{
     width: 115px;
@@ -29,7 +31,7 @@ img{
     position: sticky;
     top:0px;
     z-index: 2;
-    background-color: #0a1929;
+    background-color: #17273f;
 }
 #button-gallery div{
     z-index: 4 !important;

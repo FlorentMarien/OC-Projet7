@@ -80,5 +80,7 @@ nav ul div li button img,nav ul li button img{
     padding-right: 20px !important;
     margin-left: auto;
     margin-right: auto;
-    
+}
+.nav-left div button{
+    background-color: #17273f;
 }

@@ -11,7 +11,6 @@
     height: 100%;
     border-radius: 15px;
     overflow-y: scroll;
-    padding-top: 10px;
     padding-bottom: 10px;
     text-align: center;
     box-sizing: border-box;
@@ -20,7 +19,7 @@
     border-radius: 15px;
     height: 40px;
     color: white;
-    background-color: transparent;
+    background-color: #17273f;
 }
 .aside_recherche input:focus-visible{
 }
@@ -48,4 +47,13 @@
 .recherche_user div img{
     width:50px;
     height: 50px;
+}
+.aside_recherche_result button{
+    background-color: #17273f;
+    text-transform: none;
+    margin: 10px;
+    width: 80%;
+}
+.aside_recherche div.MuiFormControl-root{
+    width: calc(100% - 40px);
 }

@@ -45,11 +45,7 @@
     text-align: center;
 }
 #blockactu{
-    position: sticky;
-    top: 0px;
-    background: #0a1929;
-    z-index: 2;
-    padding-top: 10px;
+    
     border-bottom: dashed gray;
 }
 .container_uploadimg{
@@ -91,7 +87,6 @@ margin-bottom: 5px;
 .displayfocusMessage{
     position: sticky;
     top: 0px;
-    background-color: #0a1929;
     z-index: 2;
 }
 .displayfocusMessage > label.MuiButtonBase-root{

@@ -1,7 +1,9 @@
 .listAnswer_sendreply{
-    width:70%;
+    width: calc(70% - 4px);
     padding: 20px;
     text-align: center;
-    border: 1px dashed white;
-    border-radius: 15px;
+    border: 2px dashed #1565c0;
+}
+.listAnswer_sendreply{
+    background-color: #17273f;
 }

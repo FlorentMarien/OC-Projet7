@@ -3,17 +3,20 @@
 }
 .message{
     justify-content: space-between;
-    padding: 20px;
-    
+    padding: 20px !important;
     margin-left: auto;
     margin-right: auto;
-    border: solid 1px white;
     border-radius: 15px;
-    padding-bottom: 0px;
+    background: #17273f;
+}
+.message:hover{
+    border:1px solid #1565c0;
 }
 .replylevel1, .replylevel2{
     width:70%;
     margin-right: 0 !important;
+    border-radius: 0px;
+    border-bottom: dashed 2px #1565c0;
 }
 .blocklisteanswer{
     margin-top: 20px;
@@ -172,4 +175,8 @@
     width: 75%;
     height: 300px;
     object-fit: cover;
+}
+.replylevel0{
+    margin-top: 20px;
+    margin-bottom: 20px;
 }

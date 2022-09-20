@@ -1,10 +1,30 @@
 import '../styles/Sectionmain_aside.css'
 import { useState,useEffect } from 'react'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { createTheme,ThemeProvider } from '@mui/material/styles'
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+
+library.add(fas)
+
+const theme = createTheme({
+	palette: {
+		neutral:{
+			color:'#fff',
+		},
+		text:{
+			primary:'#fff', // 
+			secondary:'#aaa', //
+		},
+	},
+  });
 
 function Sectionmain_aside({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,targetRechercheUser,settargetRechercheUser}) {
 	const [userList,setuserList] = useState([null]);
 	const [formuserRecherche,setformuserRecherche] = useState("Qui recherchez vous?");
-	function getRechercheuser(value){
+	function getRechercheuser(e,value){
 		//Recherche nom prénom ->
 		let objData={
 			keyRecherche:value,
@@ -19,7 +39,7 @@ function Sectionmain_aside({auth,setAuth,indexPage,setindexPage,profilData,setpr
 			reply=(
 				<>
 				{reply}
-				<button className="recherche_user" onClick={(e)=>{
+				<Button variant="contained" className="recherche_user" onClick={(e)=>{
 					settargetRechercheUser({userid:element._id,emetteur:"navbar-aside"});
 					}}>
 					<div>
@@ -28,7 +48,7 @@ function Sectionmain_aside({auth,setAuth,indexPage,setindexPage,profilData,setpr
 					<div>
 						<p>{element.name + " " + element.prename}</p>
 					</div>
-				</button>
+				</Button>
 				</>
 			);
 		});
@@ -59,7 +79,9 @@ function Sectionmain_aside({auth,setAuth,indexPage,setindexPage,profilData,setpr
 	return (
 		<aside className='sectionmain_aside'>
 			<div className='aside_recherche'>
-				<input type="text" defaut-value={"Nom Prénom?"} onChange={(e)=>{getRechercheuser(e.target.value)}} placeholder="Name?"></input>
+				<ThemeProvider theme={theme}>
+					<TextField variant="filled" color="neutral" type="text" id="formAsideRecherche" label="Nom" defaultValue={formuserRecherche} onChange={(e)=>{getRechercheuser(e,e.target.value)}}/>
+				</ThemeProvider>
 				<div className='aside_recherche_result'>
 					{
 						userList[0]!==null &&

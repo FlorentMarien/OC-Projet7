@@ -6,7 +6,7 @@ function Nav({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,setta
 	let buttonVariant="contained";
 	let ASUPRIMER=0;
 	return (
-		<nav>
+		<nav className='nav-left'>
 			<>
 			{
 			ASUPRIMER===1 ?

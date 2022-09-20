@@ -5,9 +5,6 @@ form{
     width: 100px;
     height: 30px;
 }
-header{
-    background-color: rgba(10, 25, 41, 0.5);
-}
 main{
     min-height: 80%;
     display: flex;
