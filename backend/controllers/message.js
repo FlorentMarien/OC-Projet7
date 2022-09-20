@@ -1,6 +1,7 @@
 const Message = require('../models/Message');
 const User = require('../models/User');
 const Answer = require('../models/Answer');
+
 exports.sendMessage = (req, res) => {
     const messageObject = req.files[0] && {
         imageUrl: `${req.protocol}://${req.get('host')}/images/${
@@ -66,7 +67,6 @@ async function getAnswerParent(message){
 exports.getMessages = (req, res) => {
     let firstmessage=req.body.index;
     let nbrmessage=0;
-    console.log(req.body);
     if(req.body.userid==="allnewanswer"){
         Message.find({_id : { $gt : firstmessage }})
             .sort({dateTime:-1})
@@ -150,6 +150,23 @@ async function getUser(message) {
         }
     }
     return message;
+}
+exports.getNbrMessage = (req, res) => {
+    Message.find()
+            .sort({dateTime:-1})
+            .then((result)=>{
+                res.status(200).json(result.length);
+            })
+}
+exports.getNbrNewMessage = (req, res) => {
+    let indexId=req.body.indexId;
+    
+    Message.find({_id:{$gt: indexId}})
+            .sort({dateTime:-1})
+            .then((result)=>{
+                res.status(200).json({newmessage:result.length});
+            })
+            
 }
 async function getParentAnswer(message,limitmessage) {
     let parentanswer = [];

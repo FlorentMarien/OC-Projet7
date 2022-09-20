@@ -101,3 +101,6 @@ margin-bottom: 5px;
 #blockactu_notifnewmessage{
     text-align: center;
 }
+#notifnewmessage_button{
+    display: none;
+}

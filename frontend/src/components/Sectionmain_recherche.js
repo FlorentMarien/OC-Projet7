@@ -19,7 +19,7 @@ function Sectionmain_recherche({auth,setAuth,indexPage,setindexPage,profilData,s
 			<IconButton className="buttonback_nav" onClick={(e)=>settargetRechercheUser({userid:undefined})} color="primary" aria-label="Back" component="label">
 				<KeyboardBackspaceIcon />
 			</IconButton>
-			<Sectionmain_profil key={20} targetRechercheUser={targetRechercheUser} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage}/>
+			<Sectionmain_profil key={20} targetRechercheUser={targetRechercheUser} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData}/>
 			</>
 			}
 		</>

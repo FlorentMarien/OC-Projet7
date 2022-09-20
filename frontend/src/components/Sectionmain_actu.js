@@ -35,6 +35,8 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 	const [formText,setformText] = useState("Votre message ");
 	const [formFile,setformFile] = useState("");
 	const [openActuSend,setopenActuSend] = useState(0);
+	let timerNewMessage;
+
 	function getimgpreview(){
 		let urlFile = URL.createObjectURL(formFile);
 		return (
@@ -98,12 +100,11 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 								</form>
 							}
 						</div>
-						{
-						nbrmessageapi.nbrnewmessage>0 &&
+						
 						<div id="blockactu_notifnewmessage">
-							<Button color="primary" variant="contained" onClick={(e)=>getNewMessage(e)}>Il y a {nbrmessageapi.nbrnewmessage} nouveaux messages</Button>
+							<Button id="notifnewmessage_button" color="primary" variant="contained" onClick={(e)=>getNewMessage(e)}>Il y a {nbrmessageapi.nbrnewmessage} nouveaux messages</Button>
 						</div>
-						}
+						
 					</div>
 				);
 				for(let x=0;x<listMessage.length;x++){
@@ -207,6 +208,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		if(objectData.message!==""){
 			formData.append('image',formFile);
 		}
+		
 		sendMessageApi(formData).then((result)=>{
 			if(result.resultmessage!==undefined){
 				/*let objectMessage={
@@ -230,10 +232,10 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 					firstmessage:result.resultmessage._id,
 				};
 				*/
-				setnbrmessageapi({
+				/*setnbrmessageapi({
 					...nbrmessageapi,
 					nbrnewmessage:nbrmessageapi.nbrnewmessage+1,
-				});
+				});*/
 				//setListMessage([...list]);
 			}
 		});
@@ -282,15 +284,17 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 	}
 	async function getNewMessage(e){
 		e.preventDefault();
+		document.getElementById("notifnewmessage_button").style.display="none";
 		getMessageApi(JSON.stringify({userid:"allnewanswer",limitmessage:limitmessage,index:nbrmessageapi.firstmessage})).then((res)=>{
 			let tamponlistMessage=listMessage;
 			tamponlistMessage.unshift(...res.message);
 			setnbrmessageapi({
 				...nbrmessageapi,
 				nbrmessage:res.nbrmessage,
-				//firstmessage:tamponlistMessage[0].answerArray[0][0]._id,
 				nbrnewmessage:0,
+				firstmessage:tamponlistMessage[0].answerArray[0][0]._id,
 			});
+			limitmessage.skipmessage=limitmessage.skipmessage+res.message.length;
 			setListMessage([...tamponlistMessage]);
 		})
 		
@@ -309,13 +313,58 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				else firstmessage=nbrmessageapi.firstmessage;
 				
 				setListMessage([...listMessage,...result.message]);
+
 				if(nbrmessageapi.nbrmessage===0) setnbrmessageapi({nbrmessage:result.nbrmessage,nbrnewmessage:0,firstmessage:firstmessage});
-				else if(nbrmessageapi.nbrmessage!==result.nbrmessage && nbrmessageapi.nbrmessage<result.nbrmessage){
+				else if(nbrmessageapi.nbrmessage<result.nbrmessage){
 					let nbrnewmessage=result.nbrmessage-nbrmessageapi.nbrmessage;
 					setnbrmessageapi({nbrmessage:nbrmessageapi.nbrmessage,nbrnewmessage:nbrnewmessage,firstmessage:firstmessage});
+					
 				}
 			}
 		});
+	}
+	async function getNbrMessageApi(){
+		return await fetch("http://localhost:3000/api/message/getNbrMessage",{
+			headers: {
+				'Authorization': "Bearer "+auth[2],
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			method: 'GET',
+		  })
+		  .then(function(res) { 
+			if (res.ok) {
+			  return res.json();
+			}
+		  })
+		  .then(function(result) {
+			return result;
+		  })
+		  .catch(function(err) {
+			// Une erreur est survenue
+		  });
+	}
+	async function getNbrNewMessageApi(indexId){
+		return await fetch("http://localhost:3000/api/message/getNbrNewMessage",{
+			headers: {
+				'Authorization': "Bearer "+auth[2],
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			method: 'POST',
+			body:indexId,
+		  })
+		  .then(function(res) { 
+			if (res.ok) {
+			  return res.json();
+			}
+		  })
+		  .then(function(result) {
+			return result;
+		  })
+		  .catch(function(err) {
+			// Une erreur est survenue
+		  });
 	}
 	function lazyload(){
 		window.onscroll = function(ev) {
@@ -325,12 +374,11 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			if ((window.innerHeight + window.scrollY ) >= pageheight){
 				window.onscroll = null;
 				setlimitmessage({...limitmessage,skipmessage:limitmessage.skipmessage+limitmessage.nbrmessage,nbrmessage:limitmessage.nbrmessage});
-				
 			}
 		};
 	}
+	
 	useEffect(() => {
-		console.log("load new answer");
 		getmes().then(()=>{
 			lazyload();
 		});
@@ -344,6 +392,20 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		}
 	}, [targetMessage])
 
+	useEffect(() => {
+		timerNewMessage=setInterval(() => {
+			getNbrNewMessageApi(JSON.stringify({indexId:nbrmessageapi.firstmessage})).then((res)=>{
+				if(res.newmessage>0){
+					document.getElementById("notifnewmessage_button").style.display="inline";
+					
+					setnbrmessageapi({...nbrmessageapi,nbrmessage:nbrmessageapi.nbrmessage,nbrnewmessage:res.newmessage});
+				}
+			})
+		},5000);
+		return () => {
+			clearInterval(timerNewMessage);
+		};
+	}, [nbrmessageapi])
 		return (
 			<section>
 			{
