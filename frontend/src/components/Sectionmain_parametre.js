@@ -1,8 +1,7 @@
-import '../styles/Sectionmain_parametre.css'
-import { useState,useEffect } from 'react'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import Message from './Message'
+import '../styles/Sectionmain_parametre.css';
+import { useState,useEffect } from 'react';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { createTheme,ThemeProvider } from '@mui/material/styles';

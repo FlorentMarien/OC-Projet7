@@ -54,3 +54,31 @@ nav ul div li button img,nav ul li button img{
     flex-direction: column;
     align-items: center;
 }
+#main_container nav{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+#main_container nav div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 60%;
+    width: 100%;
+}
+#main_container nav div *{
+    width: calc(100% - 40px) !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    height: 50px !important;
+    margin-left: auto;
+    margin-right: auto;
+}
+#nav_button_UserInfo{
+    width: calc(100% - 40px) !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
