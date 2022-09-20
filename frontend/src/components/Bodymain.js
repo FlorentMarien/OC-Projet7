@@ -14,6 +14,7 @@ function Bodymain({auth,setAuth}) {
 	let [targetRechercheUser,settargetRechercheUser] = useState({userid:undefined});
 	
 	useEffect(() => {
+		//Recuperation profil user
 		async function getUser(objData){
 			return await fetch("http://localhost:3000/api/auth/getlogin",{
 				headers: {

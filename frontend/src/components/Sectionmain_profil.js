@@ -293,45 +293,47 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	}, [profilTarget])
 
 	useEffect(() => {
-		async function getUser(objData){
-				return await fetch("http://localhost:3000/api/auth/getlogin",{
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json',
-						'Authorization': "Bearer "+auth[2]
-					},
-					method: 'POST',
-					body:objData
-				  })
-				  .then(function(res) { 
-					return res.json();
-				  })
-				  .then(function(result) {
-					return result;
-				  })
-				  .catch(function(err) {
-					return err;
-				  });
-		}
-		getUser(JSON.stringify(targetRechercheUser)).then((result)=>{
-				if(!result.error){
-					setprofilTarget({
-							state:1,
-							name:result.name,
-							prename:result.prename,
-							imageUrl:result.imageUrl,
-							adminLevel: result.adminLevel,
-							imageArray: result.imageArray,
-							email:result.email,
-							userId:targetRechercheUser,
-							nbrmessage:result.nbrmessage,
-							nbranswer:result.nbranswer,
+		if(targetRechercheUser.userid!==undefined){
+			async function getUser(objData){
+					return await fetch("http://localhost:3000/api/auth/getlogin",{
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json',
+							'Authorization': "Bearer "+auth[2]
+						},
+						method: 'POST',
+						body:objData
+					})
+					.then(function(res) { 
+						return res.json();
+					})
+					.then(function(result) {
+						return result;
+					})
+					.catch(function(err) {
+						return err;
 					});
-				}
-				else{
-						throw result;
-				}
-		});
+			}
+			getUser(JSON.stringify(targetRechercheUser)).then((result)=>{
+					if(!result.error){
+						setprofilTarget({
+								state:1,
+								name:result.name,
+								prename:result.prename,
+								imageUrl:result.imageUrl,
+								adminLevel: result.adminLevel,
+								imageArray: result.imageArray,
+								email:result.email,
+								userId:targetRechercheUser,
+								nbrmessage:result.nbrmessage,
+								nbranswer:result.nbranswer,
+						});
+					}
+					else{
+							throw result;
+					}
+			});
+		}
 	}, [auth])
 	useEffect(() => {
 		console.log("load new answer");
