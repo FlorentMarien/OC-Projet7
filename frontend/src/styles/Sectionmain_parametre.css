@@ -21,3 +21,12 @@
 .parametre_img div.parametre_imgparametre{
     line-height: 115px;
 }
+.parametre_inputtext{
+    color: gray;
+}
+#parametre_modifname *{
+   
+}
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
+    -webkit-text-fill-color: gray !important;
+}

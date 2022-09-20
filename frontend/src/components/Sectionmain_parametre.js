@@ -33,7 +33,12 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 	const [confirmbackPassword,setconfirmbackPassword] = useState("");
 	const [newbackPassword,setnewbackPassword] = useState("");
 	const [statePassword,setstatePassword] = useState("");
+	const [profilName,setprofilName] = useState({name:profilData.name,prename:profilData.prename});
+	const [stateprofilName,setstateprofilName] = useState("");
+	const [profilEmail,setprofilEmail] = useState({oldemail:profilData.email,newemail:""});
+	const [stateprofilEmail,setstateprofilEmail] = useState("");
 	const [targetPage,settargetPage] = useState(0);
+	const [secondtargetPage,setsecondtargetPage] = useState(0);
 	const [formFile,setformFile] = useState([]);
 	function delpreviewimg(e,file){
 		e.preventDefault();
@@ -182,6 +187,54 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 			sendmodifpass(JSON.stringify(objData)).then((result)=>result).catch((error)=>error);
 		}
 	}
+	function submitmodifname(e){
+		e.preventDefault();
+		if(profilName.name==="" || profilName.prename===""){
+			setstateprofilName("errorinput");
+			document.getElementById("modifname_notif").textContent="Vous n'avez pas tout saisie";
+		}
+		else{
+			setstateprofilName("");
+			let objData={
+				newname:profilName.name,
+				newprename:profilName.prename,
+				backname:profilData.name,
+				backprename:profilData.prename,
+			}
+			sendmodifname(JSON.stringify(objData))
+				.then((result)=>{
+					setprofilData({...profilData,name:profilName.name,prename:profilName.prename});
+					document.getElementById("modifname_notif").textContent="Modification faite";
+				})
+				.catch((error)=>error);
+
+		}
+	}
+	function submitmodifemail(e){
+		e.preventDefault();
+		if(profilEmail.newemail===""){
+			setstateprofilEmail("errorinput");
+			document.getElementById("modifemail_notif").textContent="Vous n'avez pas tout saisie";
+		}
+		else{
+			setstateprofilEmail("");
+			let objData={
+				...profilEmail,
+			}
+			sendmodifemail(JSON.stringify(objData))
+				.then((result)=>{
+					if(result.msg==="Email modifié"){
+					setprofilData({...profilData,email:profilEmail.newemail});
+					document.getElementById("modifemail_notif").textContent="Modification faite";
+					}else{
+						document.getElementById("modifemail_notif").textContent=result.msg;
+						setstateprofilEmail("errorinput");
+					}
+					
+				})
+				.catch((err)=>console.log(err));
+		}
+	}
 	async function sendmodifpass(objData){
 		return await fetch("http://localhost:3000/api/auth/modifpassword",{
 			headers: {
@@ -204,6 +257,52 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 			// Une erreur est survenue
 		  });
 	}
+	async function sendmodifname(objData){
+		return await fetch("http://localhost:3000/api/auth/modifname",{
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'Authorization': "Bearer "+auth[2]
+			},
+			method: 'PUT',
+			body: objData
+		  })
+		  .then(function(res) { 
+			if (res.ok) {
+			  return res.json();
+			}
+		  })
+		  .then(function(result) {
+			return result;
+		  })
+		  .catch(function(err) {
+			// Une erreur est survenue
+		  });
+	}
+	async function sendmodifemail(objData){
+		return await fetch("http://localhost:3000/api/auth/modifemail",{
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'Authorization': "Bearer "+auth[2]
+			},
+			method: 'PUT',
+			body: objData
+		  })
+		  .then(function(res) { 
+			if (res.ok) {
+			  return res.json();
+			}else{
+				throw res;
+			}
+		  })
+		  .then(function(result) {
+			return result;
+		  })
+		  .catch(function(err) {
+			return err.json();
+		  });
+	}
 	return (
 	<section>
 		<p>Parametre</p>
@@ -213,19 +312,65 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 		</ButtonGroup>
 		{
 		targetPage===0 &&
-			<div>
-				<p>Changement mot de passe</p>
-				<form className='form-Parametre'>
-					<ThemeProvider theme={theme}>
-						<TextField color="neutral" type="email" id="formEmail" label="Email" variant="outlined" value={profilData.email}/>
-						<TextField className={statePassword} color="neutral" type="password" id="formPassword" label="Password" variant="outlined" default-value={backPassword} onBlur={(e)=>setbackPassword(e.target.value)}/>
-						<TextField className={statePassword} color="neutral" type="password" id="confirmformPassword" label="Confirm-Password" variant="outlined" default-value={confirmbackPassword} onBlur={(e)=>setconfirmbackPassword(e.target.value)}/>
-						<TextField color="neutral" type="password" id="newformPassword" label="New Password" variant="outlined" default-value={newbackPassword} onBlur={(e)=>setnewbackPassword(e.target.value)}/>
-						<Button variant="contained" onClick={(e)=>{submitmodifpass(e)}}>Modification mots de passe</Button>
+			<>
+			<ButtonGroup className="nav-Parametre"variant="outlined" aria-label="outlined button group" >
+				<Button onClick={(e)=>{if(secondtargetPage!==0){setsecondtargetPage(0)}}}>Nom/Prénom</Button>
+				<Button onClick={(e)=>{if(secondtargetPage!==1){setsecondtargetPage(1)}}}>Mots de passe</Button>
+				<Button onClick={(e)=>{if(secondtargetPage!==2){setsecondtargetPage(2)}}}>Adresse email</Button>
+			</ButtonGroup>
+			{
+				secondtargetPage === 0 ?
+					<div id="parametre_modifname">
+						<p>Modification nom / prénom</p>
+						<form id="modifname_form" className='form-Parametre'>
+						<ThemeProvider theme={theme}>
+							<TextField className="parametre_inputtext" color="neutral" type="text" id="formoldname" label="Name" variant="outlined" value={profilData.name} disabled/>
+							<TextField className="parametre_inputtext" color="neutral" type="text" id="formoldprename" label="Prename" variant="outlined" value={profilData.prename} disabled/>
+							
+							<TextField className={"parametre_inputtext "+stateprofilName} color="neutral" type="text" id="formnewname" label="New Name" variant="outlined" defaultValue={profilName.name} onBlur={(e)=>setprofilName({...profilName,name:e.target.value})}/>
+							<TextField className={"parametre_inputtext "+stateprofilName} color="neutral" type="text" id="formnewprename" label="New Prename" variant="outlined" defaultValue={profilName.prename} onBlur={(e)=>setprofilName({...profilName,prename:e.target.value})}/>
+
+							<Button variant="contained" onClick={(e)=>{submitmodifname(e)}}>Modification</Button>
+						</ThemeProvider>
+						<span id="modifname_notif"></span>
+						</form>
+					</div>	
+				: secondtargetPage === 1 ?
+					<div id="parametre_modifmdp">
+						<p>Changement mot de passe</p>
 						
+						<ThemeProvider theme={theme}>
+						<form id="modifmdp_form"className='form-Parametre' autoComplete="off">
+							<TextField color="neutral" type="email" id="formEmail" label="Email" variant="outlined" value={profilData.email} disabled/>
+							<TextField className={statePassword} color="neutral" type="password" id="formPassword" label="Password" variant="outlined" onBlur={(e)=>setbackPassword(e.target.value)}/>
+							<TextField className={statePassword} color="neutral" type="password" id="confirmformPassword" label="Confirm-Password" variant="outlined" onBlur={(e)=>setconfirmbackPassword(e.target.value)}/>
+							<TextField color="neutral" type="password" id="newformPassword" label="New Password" variant="outlined" onBlur={(e)=>setnewbackPassword(e.target.value)}/>
+							<Button variant="contained" onClick={(e)=>{submitmodifpass(e)}}>Modification mots de passe</Button>
+						</form>		
+						</ThemeProvider>
+		
+					</div>
+				: secondtargetPage === 2 ?
+					<div id="parametre_modifmdp">
+					<p>Changement adresse email</p>
+					
+					<ThemeProvider theme={theme}>
+					<form id="modifmdp_form"className='form-Parametre' autoComplete="off">
+						<TextField color="neutral" type="email" id="formEmail" label="Email" variant="outlined" value={profilData.email} disabled/>
+						<TextField className={stateprofilEmail} color="neutral" type="email" id="newformEmail" label="new Email" variant="outlined" onBlur={(e)=>{setprofilEmail({...profilEmail,newemail:e.target.value})}}/>
+						
+						<Button variant="contained" onClick={(e)=>{submitmodifemail(e)}}>Modification email</Button>
+					</form>
+					<span id="modifemail_notif"></span>		
 					</ThemeProvider>
-				</form>
-			</div>
+
+					</div>
+				: secondtargetPage === 3 ?
+					<p>Page 3</p>
+				: null
+			}
+			</>
+			
 		}
 		{
 		targetPage === 1 &&

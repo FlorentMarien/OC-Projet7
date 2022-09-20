@@ -145,6 +145,27 @@ exports.modifpassword = (req, res) => {
         });
     });
 };
+exports.modifname = (req, res) => {
+    let newname=req.body.newname;
+    let newprename=req.body.newprename;
+    User.updateOne({ _id: req.auth.userId }, { name: newname,prename:newprename })
+        .then(() => res.status(200).json('Nom / Prenom modifié'))
+        .catch((error) => res.status(500).json(error));
+
+};
+exports.modifemail = (req, res) => {
+    let newemail=req.body.newemail;
+    User.find({email:newemail}).then((result)=>{
+        if(result.length===0){
+            User.updateOne({ _id: req.auth.userId }, { email: newemail })
+                .then(() => res.status(200).json({msg:'Email modifié'}))
+                .catch((error) => res.status(500).json(error));
+        }else{
+            res.status(400).json({msg:"Adresse email déjà enregistré"});
+            // return 1 for Doublon 
+        }
+    })
+};
 exports.deletegallery = (req, res) => {
     User.findOne({ _id: req.auth.userId }).then((user) => {
         let newimageArray = user.imageArray;
