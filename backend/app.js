@@ -4,6 +4,7 @@ const userRoutes = require('./routes/user');
 const messageRoutes = require('./routes/message');
 const path = require('path');
 const answerRoute = require('./routes/answer');
+const socket = require('./socket');
 
 const app = express();
 mongoose

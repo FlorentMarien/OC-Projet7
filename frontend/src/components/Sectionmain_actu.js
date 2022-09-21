@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import DeleteIcon from '@mui/icons-material/Delete';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import Slide from '@mui/material/Slide';
 
 library.add(fas)
 const theme = createTheme({
@@ -36,7 +37,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 	const [formFile,setformFile] = useState("");
 	const [openActuSend,setopenActuSend] = useState(0);
 	let timerNewMessage;
-
+	let containerRef = useRef();
 	function getimgpreview(){
 		let urlFile = URL.createObjectURL(formFile);
 		return (
@@ -123,7 +124,9 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				listmessageprofil=(
 					<>
 					{sendreply}
+					
 					{listmessageprofil}
+					
 					</>
 				);
 			}
@@ -406,8 +409,11 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			clearInterval(timerNewMessage);
 		};
 	}, [nbrmessageapi])
+		let parametre={
+			replyLevel:0,
+		};
 		return (
-			<section>
+			<section ref={containerRef}>
 			{
 			targetMessage.messageid === "" ?
 				listMessage.length>0 ?

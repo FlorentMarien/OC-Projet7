@@ -3,27 +3,14 @@ import { useState,useEffect } from 'react'
 import Sectionmain_recherche from './Sectionmain_recherche'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import IconButton from '@mui/material/IconButton';
+import Sectionmain_aside from './Sectionmain_aside';
 
-function Sectionmain_message({auth,setAuth,indexPage,setindexPage,targetRechercheUser,settargetRechercheUser,profilData,setprofilData}) {
-	const [targetUser,settargetUser]=useState("");
-  let testListMessage=["Hello","it's","Me"];
-  let testListAnswer=["test","1","3","5"];
+function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
+	const [targetRechercheUser,settargetRechercheUser]=useState({userid:undefined});
   let chat;
   function getBackMessage(){
     let reply;
-    for(let x=0;x<testListMessage.length;x++){
-        reply=(
-          <>
-          {reply}
-          <span className='message_private-user'>
-           {testListMessage[x]}
-          </span>
-          <span className='message_private-useranswer'>
-          {testListAnswer[x]} 
-         </span>
-          </>
-        );
-    }
+    //
     return reply;
   }
   //window.addEventListener("DOMContentLoaded", chat.init);
@@ -31,8 +18,8 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,targetRecherch
     //chat.init();
 	}, [indexPage])
   useEffect(() => {
-    //console.log(targetUser);
     
+    if(targetRechercheUser.userid!==undefined){
       chat = {
         // (A) INIT CHAT
         name : null, // USER'S NAME
@@ -54,7 +41,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,targetRecherch
     
           // ID
           chat.userId = auth[1];
-          chat.destuserId = targetUser.userid;
+          chat.destuserId = targetRechercheUser.userid;
       
           // (A3) CONNECT TO CHAT SERVER
           chat.socket = new WebSocket("ws://localhost:8086?id="+auth[1]);
@@ -113,10 +100,9 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,targetRecherch
           // (D1) PARSE JSON
           msg = JSON.parse(msg);
           
-      
           // (D2) CREATE NEW ROW
           let row = document.createElement("div");
-          row.className = "chatRow";
+          row.className = msg['userId']===auth[1] ? 'privateMessage_user' : 'privateMessage_destuser';
           row.innerHTML = `<div class="chatName">${msg["name"]}</div> <div class="chatMsg">${msg["msg"]}</div>`;
           chat.ewrap.appendChild(row);
       
@@ -124,35 +110,38 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,targetRecherch
           window.scrollTo(0, document.body.scrollHeight);
         }
       };
-    
-    chat.init();
-	}, [targetUser])
+      chat.init();
+    }
+	}, [targetRechercheUser])
   
 	
   return (
-    <>
-      
       <section>
         <>
         {
-        targetUser.userid === "" &&
-        <Sectionmain_recherche auth={auth} setAuth={setAuth} indexPage={targetUser} setindexPage={settargetUser}/>
+          targetRechercheUser.userid === undefined ?
+          <section id="section_recherche">
+            <Sectionmain_aside key={10} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} targetRechercheUser={targetRechercheUser} settargetRechercheUser={settargetRechercheUser}/>
+          </section>
+          :
+          <>
+            <IconButton className="buttonback_nav" onClick={(e)=>settargetRechercheUser({...targetRechercheUser,userid:undefined})} color="primary" aria-label="Back" component="label">
+              <KeyboardBackspaceIcon />
+            </IconButton>
+            
+            <div id="chatShow">
+              {getBackMessage()}
+            </div>
+            <form id="chatForm" onSubmit={(e)=>{e.preventDefault(); return chat.send()}}>
+              <input id="chatMsg" type="text" required disabled/>
+              <input id="chatGo" type="submit" value="Go" disabled/>
+            </form>
+          </>
         }
-          <IconButton onClick={(e)=>settargetUser({...targetUser,userid:""})} color="primary" aria-label="Back" component="label">
-								<KeyboardBackspaceIcon/>
-					</IconButton>
-          <div id="chatShow">
-            {getBackMessage()}
-          </div>
-          <form id="chatForm" onSubmit={(e)=>{e.preventDefault(); return chat.send()}}>
-            <input id="chatMsg" type="text" required disabled/>
-            <input id="chatGo" type="submit" value="Go" disabled/>
-          </form>
         </>
       </section>
-      
-    </>
 	)
+  
 }
 
 export default Sectionmain_message
