@@ -4,6 +4,7 @@ const userRoutes = require('./routes/user');
 const messageRoutes = require('./routes/message');
 const path = require('path');
 const answerRoute = require('./routes/answer');
+const privatemessageRoute = require('./routes/privatemessage');
 const socket = require('./socket');
 
 const app = express();
@@ -34,6 +35,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', userRoutes);
 app.use('/api/message', messageRoutes);
 app.use('/api/answer', answerRoute);
+app.use('/api/privatemessage', privatemessageRoute);
 app.use('/images/', express.static(path.join(__dirname, 'images')));
 
 module.exports = app;

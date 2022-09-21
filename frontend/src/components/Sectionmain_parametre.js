@@ -8,7 +8,7 @@ import { createTheme,ThemeProvider } from '@mui/material/styles';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import SettingsIcon from '@mui/icons-material/Settings';
 
-library.add(fas)
+library.add(fas);
 
 const theme = createTheme({
 	palette: {

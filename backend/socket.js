@@ -1,4 +1,5 @@
 const url = require('url');
+const Privatemessage = require('./controllers/privatemessage');
 // (A) INIT + CREATE WEBSOCKET SERVER AT PORT 8080
 var ws = require("ws"),
     wss = new ws.Server({ port: 8086 }),
@@ -21,10 +22,16 @@ wss.on("connection", (socket, req) => {
     //console.log(msg.toString());
     let message = msg.toString();
     let objectmessage=JSON.parse(message);
+    objectmessage={
+      ...objectmessage,
+      dateTime:Date.now(),
+    }
     //console.log(objectmessage.name);
     for (let u in users) { 
-
         if(u === objectmessage.destuserId || u === objectmessage.userId){
+            if(objectmessage.msg!=="Joined the chat room." && u === objectmessage.userId){
+              Privatemessage.sendMessage(objectmessage);
+            }
             users[u].send(message);
         }
     }

@@ -1,25 +1,76 @@
 import '../styles/Sectionmain_message.css'
 import { useState,useEffect } from 'react'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 import Sectionmain_recherche from './Sectionmain_recherche'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import IconButton from '@mui/material/IconButton';
 import Sectionmain_aside from './Sectionmain_aside';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import { createTheme,ThemeProvider } from '@mui/material/styles';
 
+library.add(fas);
+const theme = createTheme({
+	palette: {
+		neutral:{
+			color:'#fff',
+		},
+		text:{
+			primary:'#fff', // 
+			secondary:'#aaa', //
+		},
+	},
+  });
 function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
 	const [targetRechercheUser,settargetRechercheUser]=useState({userid:undefined});
+  const [listMessage,setlistMessage]=useState([null]);
   let chat;
+  let objectUser={ userId:auth[1], destuserId:targetRechercheUser.userid,};
   function getBackMessage(){
     let reply;
-    //
+    console.log(listMessage);
+    if(listMessage.length > 0 && listMessage[0]!==null){
+      listMessage.forEach(element => {
+          let parametre;
+          if(element.userId===auth[1]) parametre="privateMessage_user";
+          else parametre="privateMessage_destuser";
+          reply=
+            <>
+            {reply}
+            <div className={parametre}>
+              <p>{element.message}</p>
+            </div>
+            </>;
+      });
+    }
     return reply;
-  }
-  //window.addEventListener("DOMContentLoaded", chat.init);
-  useEffect(() => {
-    //chat.init();
-	}, [indexPage])
-  useEffect(() => {
     
-    if(targetRechercheUser.userid!==undefined){
+  }
+  async function getPrivatemessage(objectUser){
+		return await fetch("http://localhost:3000/api/privatemessage/get",{
+			headers: {
+				'Authorization': "Bearer "+auth[2],
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			method: 'POST',
+			body:objectUser,
+		  })
+		  .then(function(res) { 
+			if (res.ok) {
+			  return res.json();
+			}
+		  })
+		  .then(function(result) {
+			return result;
+		  })
+		  .catch(function(err) {
+			// Une erreur est survenue
+		  });
+	}
+  useEffect(() => {
+    if(listMessage.length>0){
       chat = {
         // (A) INIT CHAT
         name : null, // USER'S NAME
@@ -58,10 +109,10 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
           });
       
           // (A6) ON ERROR & CONNECTION LOST
-          chat.socket.addEventListener("close", () => {
+          /*chat.socket.addEventListener("close", () => {
             chat.controls();
             alert("Websocket connection lost!");
-          });
+          });*/
           chat.socket.addEventListener("error", (err) => {
             chat.controls();
             console.log(err);
@@ -111,12 +162,24 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
         }
       };
       chat.init();
+      console.log(chat);
+    return () => {
+      chat.socket.close();
+    };
     }
+	}, [listMessage])
+
+  useEffect(() => {
+    console.log(chat);
+    if(targetRechercheUser.userid!==undefined){
+      getPrivatemessage(JSON.stringify(objectUser)).then((res)=>{
+        setlistMessage([...res.conversation]);
+      });
+    }
+    
 	}, [targetRechercheUser])
-  
 	
   return (
-      <section>
         <>
         {
           targetRechercheUser.userid === undefined ?
@@ -125,6 +188,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
           </section>
           :
           <>
+          <section>
             <IconButton className="buttonback_nav" onClick={(e)=>settargetRechercheUser({...targetRechercheUser,userid:undefined})} color="primary" aria-label="Back" component="label">
               <KeyboardBackspaceIcon />
             </IconButton>
@@ -133,13 +197,15 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
               {getBackMessage()}
             </div>
             <form id="chatForm" onSubmit={(e)=>{e.preventDefault(); return chat.send()}}>
-              <input id="chatMsg" type="text" required disabled/>
-              <input id="chatGo" type="submit" value="Go" disabled/>
+              <ThemeProvider theme={theme}>
+                <TextField className="message_inputtext" color="neutral" type="text" id="chatMsg" label="Message" variant="filled" defaultValue="Votre Message?"/>
+                <Button variant="contained" id="chatGo" type="submit" value="Go">Go</Button>
+              </ThemeProvider>
             </form>
+            </section>
           </>
         }
         </>
-      </section>
 	)
   
 }
