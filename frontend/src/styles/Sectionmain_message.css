@@ -24,3 +24,72 @@
     display: flex;
     justify-content: center;
 }
+.message_historique{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    border-right: #17273f solid 2px;
+    border-left: #17273f solid 2px;
+}
+.lastprivateMessage_user{
+    width: 100%;
+    display: flex;
+    margin-bottom: 10px;
+    background-color: #17273f;
+}
+.lastprivateMessage_user:hover{
+    background-color: #1565c0;
+    cursor: pointer;
+}
+
+.lastprivateMessage_user div img{
+    border-radius: 0;
+    width: 50px;
+    height: 50px;
+}
+.lastprivateMessage_user p{
+    font-size: 16px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 0;
+}
+.message_container_img{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-right: 20px;
+}
+#section_privatemessage{
+    display: flex;
+}
+#privatemessage_previewmessage{
+    width: calc(40% - 10px);
+    text-align: center;
+    padding-right: 10px;
+    
+}
+#privatemessage_rechercheuser{
+    width: calc(60% - 10px);
+    padding-left: 10px;
+}
+.message_buttonrechercheuser{
+    
+}
+.previewmessage_addbutton{
+    background-color: #1976d2;
+    margin-bottom: 10px !important;
+}
+.previewmessage_addbutton button{
+    width: 100%;
+    color: black;
+}
+.previewmessage_addbutton:hover{
+    background-color: #1565c0;
+}
+#privatemessage_rechercheuser button.rechercheuser{
+    width: 40% !important;
+}
+#privatemessage_rechercheuser .aside_recherche div.MuiFormControl-root{
+    width: 100%;
+}
