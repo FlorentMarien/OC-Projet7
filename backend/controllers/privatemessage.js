@@ -33,18 +33,14 @@ exports.getAllLastMessageofuser = (req, res) => {
                                             let doublonArray=[];
                                             let parametre;
                                             array.forEach((element)=>{
-                                                if(element.userId===req.auth.userId)  parametre=element.destuserId;
-                                                else parametre=element.userId;
+                                                if(element.userId===req.auth.userId) parametre=element.destuserId;
+                                                else if(element.destuserId===req.auth.destuserId) parametre=element.userId;
 
                                                 if(doublonArray.includes(parametre)){
                                                     //Doublon
                                                 }else{
-                                                    if(element.userId===req.auth.userId){
-                                                        doublonArray.push(element.destuserId);
-                                                    }else if(element.destuserId === req.auth.userId){
-                                                        doublonArray.push(element.destuserId);
-                                                    }
-                                                    doublonArray.push([element.userId, element.destuserId]);
+                                                    
+                                                    doublonArray.push(parametre);
                                                     arrayReturn.push(element);
                                                 }
                                             })
