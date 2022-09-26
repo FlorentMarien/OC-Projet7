@@ -1,5 +1,5 @@
 import '../styles/Sectionmain_message.css'
-import { useState,useEffect } from 'react'
+import { useState,useEffect, useRef } from 'react'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import Sectionmain_recherche from './Sectionmain_recherche'
@@ -9,6 +9,8 @@ import Sectionmain_aside from './Sectionmain_aside';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 library.add(fas);
 const theme = createTheme({
@@ -23,12 +25,115 @@ const theme = createTheme({
 	},
   });
 function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
+  //let chat = useRef();
+  let [chat,setchat]=useState(({
+    // (A) INIT CHAT
+    name : null, // USER'S NAME
+    userId: null,
+    destuserId: null,
+    socket : null, // CHAT WEBSOCKET
+    ewrap : null, // HTML CHAT HISTORY
+    emsg : null, // HTML CHAT MESSAGE
+    ego : null, // HTML CHAT GO BUTTON
+    init : () => {
+      // (A1) GET HTML ELEMENTS
+      chat.ewrap = document.getElementById("chatShow");
+      chat.emsg = document.getElementById("chatMsg");
+      chat.ego = document.getElementById("chatGo");
+  
+      // (A2) USER'S NAME
+      chat.name = profilData.name + " " +profilData.prename;
+      if (chat.name === null || chat.name === "") { chat.name = "Mysterious"; }
+
+      // ID
+      chat.userId = auth[1];
+      chat.destuserId = targetRechercheUser.userid;
+  
+      // (A3) CONNECT TO CHAT SERVER
+      chat.socket = new WebSocket("ws://localhost:8086?id="+auth[1]);
+  
+      // (A4) ON CONNECT - ANNOUNCE "I AM HERE" TO THE WORLD
+      chat.socket.addEventListener("open", () => {
+        chat.controls(1);
+        chat.send("Joined the chat room.");
+      });
+  
+      // (A5) ON RECEIVE MESSAGE - DRAW IN HTML
+      chat.socket.addEventListener("message", (evt) => {
+        chat.draw(evt.data);
+      });
+  
+      // (A6) ON ERROR & CONNECTION LOST
+      
+      chat.socket.addEventListener("error", (err) => {
+        chat.controls();
+        console.log(err);
+        alert("Websocket connection error!");
+      });
+    },
+  
+    // (B) TOGGLE HTML CONTROLS
+    controls : (enable) => {
+      if (enable) {
+        chat.emsg.disabled = false;
+        chat.ego.disabled = false;
+      } else {
+        chat.emsg.disabled = true;
+        chat.ego.disabled = true;
+      }
+    },
+  
+    // (C) SEND MESSAGE TO CHAT SERVER
+    send : (msg) => {
+      if (msg === undefined) {
+        msg = chat.emsg.value;
+        chat.emsg.value = "";
+      }
+      chat.socket.send(JSON.stringify({
+        name: chat.name,
+        userId: chat.userId,
+        destuserId: chat.destuserId,
+        msg: msg,
+        imageUrl: formFile,
+      }));
+      return false;
+    },
+  
+    // (D) DRAW MESSAGE IN HTML
+    draw : (msg) => {
+      // (D1) PARSE JSON
+      msg = JSON.parse(msg);
+      
+      // (D2) CREATE NEW ROW
+      let row = document.createElement("div");
+      row.className = msg['userId']===auth[1] ? 'privateMessage_user' : 'privateMessage_destuser';
+      row.innerHTML = `<div class="chatName">${msg["name"]}</div> <div class="chatMsg">${msg["msg"]}</div>`;
+      chat.ewrap.appendChild(row);
+  
+      // AUTO SCROLL TO BOTTOM MAY NOT BE THE BEST...
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  }));
 	const [targetRechercheUser,settargetRechercheUser]=useState({userid:undefined});
   const [targetPage,settargetPage]=useState(0);
   const [listMessage,setlistMessage]=useState([null]);
   const [listPreviewMessage,setlistPreviewMessage]=useState([null]);
-  let chat;
-  let objectUser={ userId:auth[1], destuserId:targetRechercheUser.userid,};
+  const [formFile,setformFile]=useState("");
+  let objectUser={ userId:auth[1], destuserId:targetRechercheUser.userid};
+  function getimgpreview(){
+		let urlFile = URL.createObjectURL(formFile);
+		return (
+		<div>
+		<span className='container_uploadimg'>
+		<img src={urlFile} alt={"Photo de "+ profilData.name + " " + profilData.prename}/>
+		
+		<IconButton onClick={(e)=>setformFile("")} color="primary" aria-label="delete picture" component="label">
+			<DeleteIcon/>
+		</IconButton>
+		</span>
+		</div>
+		)
+	}
   function getIntervalDate(dateTime){
 		dateTime=Math.round((new Date(Date.now()) - new Date(dateTime).getTime())/1000);
 		if(dateTime<60) return "Posté il y a "+dateTime+" secondes";
@@ -39,7 +144,6 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
 	}
   function getBackMessage(){
     let reply;
-    console.log(listMessage);
     if(listMessage.length > 0 && listMessage[0]!==null){
       listMessage.forEach(element => {
           let parametre;
@@ -97,7 +201,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
               <div className='message_container_img'>
                 <img src={element.profilimageUrl}></img>
               </div>
-              <div>
+              <div className='message_container_info'>
                 <p>{element.profilname + " " + element.profilprename}</p>
                 <p>{element.message}</p>
                 <p>{getIntervalDate(element.dateTime)}</p>
@@ -136,115 +240,26 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
 		  });
 	}
   useEffect(() => {
-    if(listMessage[0]!==null){
-      chat = {
-        // (A) INIT CHAT
-        name : null, // USER'S NAME
-        userId: null,
-        destuserId: null,
-        socket : null, // CHAT WEBSOCKET
-        ewrap : null, // HTML CHAT HISTORY
-        emsg : null, // HTML CHAT MESSAGE
-        ego : null, // HTML CHAT GO BUTTON
-        init : () => {
-          // (A1) GET HTML ELEMENTS
-          chat.ewrap = document.getElementById("chatShow");
-          chat.emsg = document.getElementById("chatMsg");
-          chat.ego = document.getElementById("chatGo");
+    if(targetRechercheUser.userid !==undefined){
       
-          // (A2) USER'S NAME
-          chat.name = profilData.name + " " +profilData.prename;
-          if (chat.name === null || chat.name === "") { chat.name = "Mysterious"; }
-    
-          // ID
-          chat.userId = auth[1];
-          chat.destuserId = targetRechercheUser.userid;
-      
-          // (A3) CONNECT TO CHAT SERVER
-          chat.socket = new WebSocket("ws://localhost:8086?id="+auth[1]);
-      
-          // (A4) ON CONNECT - ANNOUNCE "I AM HERE" TO THE WORLD
-          chat.socket.addEventListener("open", () => {
-            chat.controls(1);
-            chat.send("Joined the chat room.");
-          });
-      
-          // (A5) ON RECEIVE MESSAGE - DRAW IN HTML
-          chat.socket.addEventListener("message", (evt) => {
-            chat.draw(evt.data);
-          });
-      
-          // (A6) ON ERROR & CONNECTION LOST
-          /*chat.socket.addEventListener("close", () => {
-            chat.controls();
-            alert("Websocket connection lost!");
-          });*/
-          chat.socket.addEventListener("error", (err) => {
-            chat.controls();
-            console.log(err);
-            alert("Websocket connection error!");
-          });
-        },
-      
-        // (B) TOGGLE HTML CONTROLS
-        controls : (enable) => {
-          if (enable) {
-            chat.emsg.disabled = false;
-            chat.ego.disabled = false;
-          } else {
-            chat.emsg.disabled = true;
-            chat.ego.disabled = true;
-          }
-        },
-      
-        // (C) SEND MESSAGE TO CHAT SERVER
-        send : (msg) => {
-          if (msg === undefined) {
-            msg = chat.emsg.value;
-            chat.emsg.value = "";
-          }
-          chat.socket.send(JSON.stringify({
-            name: chat.name,
-            userId: chat.userId,
-            destuserId: chat.destuserId,
-            msg: msg
-          }));
-          return false;
-        },
-      
-        // (D) DRAW MESSAGE IN HTML
-        draw : (msg) => {
-          // (D1) PARSE JSON
-          msg = JSON.parse(msg);
-          
-          // (D2) CREATE NEW ROW
-          let row = document.createElement("div");
-          row.className = msg['userId']===auth[1] ? 'privateMessage_user' : 'privateMessage_destuser';
-          row.innerHTML = `<div class="chatName">${msg["name"]}</div> <div class="chatMsg">${msg["msg"]}</div>`;
-          chat.ewrap.appendChild(row);
-      
-          // AUTO SCROLL TO BOTTOM MAY NOT BE THE BEST...
-          window.scrollTo(0, document.body.scrollHeight);
-        }
-      };
-      chat.init();
-      console.log(chat);
-    return () => {
-      chat.socket.close();
-    };
     }
-	}, [listMessage])
-
+  }, [formFile])
   useEffect(() => {
-    console.log()
     if(targetRechercheUser.userid!==undefined){
       getPrivatemessage(JSON.stringify(objectUser)).then((res)=>{
         setlistMessage([...res.conversation]);
+        chat.init();
+        chat.destuserId=targetRechercheUser.userid;
       });
-    }else if(listPreviewMessage[0]===null){
+    }else{
       getLastmessage(JSON.stringify({userId:auth[1]})).then((res)=>{
         setlistPreviewMessage([...res.conversation]);
       });
+    }
+    return() => {
+      if(chat.socket !== null){
+        chat.socket.close();
+      }
     }
 	}, [targetRechercheUser])
 	
@@ -283,10 +298,22 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
             <div id="chatShow">
               {getBackMessage()}
             </div>
-            <form id="chatForm" onSubmit={(e)=>{e.preventDefault(); return chat.send()}}>
+            <form id="chatForm" onSubmit={(e)=>{e.preventDefault(); if(chat!==undefined) return chat.send()}}>
               <ThemeProvider theme={theme}>
+              <div className='sendreply_uploadimg'>
+									{
+									formFile === "" ?
+										<IconButton color="primary" aria-label="upload picture" component="label">
+											<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files[0])} type="file" id="formFile"/>
+											<PhotoCamera />
+										</IconButton>
+									: 
+										getimgpreview()
+									}
+              </div>
                 <TextField className="message_inputtext" color="neutral" type="text" id="chatMsg" label="Message" variant="filled" defaultValue="Votre Message?"/>
                 <Button variant="contained" id="chatGo" type="submit" value="Go">Go</Button>
+
               </ThemeProvider>
             </form>
             </section>

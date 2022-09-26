@@ -1,3 +1,4 @@
+const { Console } = require('console');
 const url = require('url');
 const Privatemessage = require('./controllers/privatemessage');
 // (A) INIT + CREATE WEBSOCKET SERVER AT PORT 8080
@@ -15,13 +16,14 @@ wss.on("connection", (socket, req) => {
 
   // (B2) DEREGISTER CLIENT ON DISCONNECT
   socket.on("close", () => { delete users[id]; });
-
   // (B3) FORWARD MESSAGE TO ALL ON RECEIVING MESSAGE
   socket.on("message", (msg) => {
-    
-    //console.log(msg.toString());
     let message = msg.toString();
     let objectmessage=JSON.parse(message);
+    if(objectmessage.imageUrl !== ""){
+      //GESTION IMAGE
+      
+    }
     objectmessage={
       ...objectmessage,
       dateTime:Date.now(),

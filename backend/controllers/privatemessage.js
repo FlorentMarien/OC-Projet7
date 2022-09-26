@@ -1,7 +1,6 @@
 const Privatemessage = require('../models/Privatemessage');
 const User = require('../models/User');
 exports.sendMessage = (msg) => {
-    console.log(msg);
     let message = new Privatemessage({
         ...msg,
         message:msg.msg,
@@ -19,7 +18,6 @@ exports.getMessages = (req, res) => {
                     .catch((err)=>res.status(400).json({err}))
 };
 exports.getAllLastMessageofuser = (req, res) => {
-    console.log(req.body);
     Privatemessage.find({userId: req.body.userId})
                     .then((result)=>{
                         Privatemessage.find({destuserId: req.body.userId})
@@ -66,19 +64,12 @@ async function getuserinfo(array,req){
         else parametre=array[x].userId
         await User.findOne({_id: parametre})
             .then((result)=>{
-                
-                console.log(result.name);
-                /*
-                array[x].profilname=result.name;
-                array[x].profilprename=result.prename;
-                array[x].profilimageUrl=result.imageUrl;*/
                 array[x]={
                     ...array[x]._doc,
                     profilname:result.name,
                     profilprename:result.prename,
                     profilimageUrl:result.imageUrl,
                 }
-                if(x===0) console.log(array[x]);
             })
     }
     return array;

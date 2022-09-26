@@ -28,7 +28,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 46.5px);
     border-right: #17273f solid 2px;
     border-left: #17273f solid 2px;
 }
@@ -38,6 +38,12 @@
     margin-bottom: 10px;
     background-color: #17273f;
 }
+.lastprivateMessage_user div p{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .lastprivateMessage_user:hover{
     background-color: #1565c0;
     cursor: pointer;
@@ -58,7 +64,6 @@
     display: flex;
     align-items: center;
     padding: 10px;
-    margin-right: 20px;
 }
 #section_privatemessage{
     display: flex;
@@ -67,7 +72,6 @@
     width: calc(40% - 10px);
     text-align: center;
     padding-right: 10px;
-    
 }
 #privatemessage_rechercheuser{
     width: calc(60% - 10px);
@@ -87,9 +91,14 @@
 .previewmessage_addbutton:hover{
     background-color: #1565c0;
 }
-#privatemessage_rechercheuser button.rechercheuser{
+#privatemessage_rechercheuser button.recherche_user{
     width: 40% !important;
 }
 #privatemessage_rechercheuser .aside_recherche div.MuiFormControl-root{
     width: 100%;
+}
+.message_container_info{
+    width: calc(100% - 70px);
+    text-align: left;
+
 }
