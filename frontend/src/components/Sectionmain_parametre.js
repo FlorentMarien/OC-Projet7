@@ -318,12 +318,12 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 					<div id="parametre_modifname">
 						<p>Modification nom / prénom</p>
 						<form id="modifname_form" className='form-Parametre'>
-						<ThemeProvider theme={theme}>
-							<TextField className="parametre_inputtext" color="neutral" type="text" id="formoldname" label="Name" variant="outlined" value={profilData.name} disabled/>
-							<TextField className="parametre_inputtext" color="neutral" type="text" id="formoldprename" label="Prename" variant="outlined" value={profilData.prename} disabled/>
+						<ThemeProvider key="200" theme={theme}>
+							<TextField key="201" className="parametre_inputtext" color="neutral" type="text" id="formoldname" label="Name" variant="outlined" value={profilData.name} disabled/>
+							<TextField key="202" className="parametre_inputtext" color="neutral" type="text" id="formoldprename" label="Prename" variant="outlined" value={profilData.prename} disabled/>
 							
-							<TextField className={"parametre_inputtext "+stateprofilName} color="neutral" type="text" id="formnewname" label="New Name" variant="outlined" defaultValue={profilName.name} onBlur={(e)=>setprofilName({...profilName,name:e.target.value})}/>
-							<TextField className={"parametre_inputtext "+stateprofilName} color="neutral" type="text" id="formnewprename" label="New Prename" variant="outlined" defaultValue={profilName.prename} onBlur={(e)=>setprofilName({...profilName,prename:e.target.value})}/>
+							<TextField key="203" className={"parametre_inputtext "+stateprofilName} color="neutral" type="text" id="formnewname" label="New Name" variant="outlined" defaultValue={profilName.name} onBlur={(e)=>setprofilName({...profilName,name:e.target.value})}/>
+							<TextField key="204" className={"parametre_inputtext "+stateprofilName} color="neutral" type="text" id="formnewprename" label="New Prename" variant="outlined" defaultValue={profilName.prename} onBlur={(e)=>setprofilName({...profilName,prename:e.target.value})}/>
 
 							<Button variant="contained" onClick={(e)=>{submitmodifname(e)}}>Modification</Button>
 						</ThemeProvider>
@@ -334,12 +334,12 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 					<div id="parametre_modifmdp">
 						<p>Changement mot de passe</p>
 						
-						<ThemeProvider theme={theme}>
+						<ThemeProvider key="210" theme={theme}>
 						<form id="modifmdp_form"className='form-Parametre' autoComplete="off">
-							<TextField color="neutral" type="email" id="formEmail" label="Email" variant="outlined" value={profilData.email} disabled/>
-							<TextField className={statePassword} color="neutral" type="password" id="formPassword" label="Password" variant="outlined" onBlur={(e)=>setbackPassword(e.target.value)}/>
-							<TextField className={statePassword} color="neutral" type="password" id="confirmformPassword" label="Confirm-Password" variant="outlined" onBlur={(e)=>setconfirmbackPassword(e.target.value)}/>
-							<TextField color="neutral" type="password" id="newformPassword" label="New Password" variant="outlined" onBlur={(e)=>setnewbackPassword(e.target.value)}/>
+							<TextField key="211" color="neutral" type="email" id="formEmail" label="Email" variant="outlined" value={profilData.email} disabled/>
+							<TextField key="212" className={statePassword} color="neutral" type="password" id="formPassword" label="Password" variant="outlined" onBlur={(e)=>setbackPassword(e.target.value)}/>
+							<TextField key="213" className={statePassword} color="neutral" type="password" id="confirmformPassword" label="Confirm-Password" variant="outlined" onBlur={(e)=>setconfirmbackPassword(e.target.value)}/>
+							<TextField key="214" color="neutral" type="password" id="newformPassword" label="New Password" variant="outlined" onBlur={(e)=>setnewbackPassword(e.target.value)}/>
 							<Button variant="contained" onClick={(e)=>{submitmodifpass(e)}}>Modification mots de passe</Button>
 						</form>		
 						</ThemeProvider>
@@ -349,10 +349,10 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 					<div id="parametre_modifmdp">
 					<p>Changement adresse email</p>
 					
-					<ThemeProvider theme={theme}>
+					<ThemeProvider key="220" theme={theme}>
 					<form id="modifmdp_form"className='form-Parametre' autoComplete="off">
-						<TextField color="neutral" type="email" id="formEmail" label="Email" variant="outlined" value={profilData.email} disabled/>
-						<TextField className={stateprofilEmail} color="neutral" type="email" id="newformEmail" label="new Email" variant="outlined" defaultValue={profilEmail.oldemail} onBlur={(e)=>{setprofilEmail({...profilEmail,newemail:e.target.value})}}/>
+						<TextField key="221" color="neutral" type="email" id="formEmail" label="Email" variant="outlined" value={profilData.email} disabled/>
+						<TextField key="222" className={stateprofilEmail} color="neutral" type="email" id="newformEmail" label="new Email" variant="outlined" defaultValue={profilEmail.oldemail} onBlur={(e)=>{setprofilEmail({...profilEmail,newemail:e.target.value})}}/>
 						
 						<Button variant="contained" onClick={(e)=>{submitmodifemail(e)}}>Modification email</Button>
 					</form>
