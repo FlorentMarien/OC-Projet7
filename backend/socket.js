@@ -18,8 +18,10 @@ wss.on("connection", (socket, req) => {
   socket.on("close", () => { delete users[id]; });
   // (B3) FORWARD MESSAGE TO ALL ON RECEIVING MESSAGE
   socket.on("message", (msg) => {
+    console.log(msg);
     let message = msg.toString();
-    let objectmessage=JSON.parse(message);
+    //let objectmessage=message.toString();
+    let objectmessage= JSON.parse(message);
     if(objectmessage.imageUrl !== ""){
       //GESTION IMAGE
       

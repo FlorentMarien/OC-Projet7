@@ -8,9 +8,11 @@
     margin-right: auto;
     border-radius: 15px;
     background: #17273f;
+    border:1px solid transparent;
 }
 .message:hover{
-    border:1px solid #1565c0;
+    transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    border: 1px solid #1565c0;
 }
 .replylevel1, .replylevel2{
     width:70%;

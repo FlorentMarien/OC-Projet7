@@ -1,9 +1,9 @@
 .sectionmain_aside{
     width:20%;
-    height:80%;
+    height:80vh;
     box-sizing: border-box;
-    position: fixed;
-    margin-left: 80%;
+    position: sticky;
+    top: 10%;
     border-left: 2px solid gray;
 }
 .aside_recherche{

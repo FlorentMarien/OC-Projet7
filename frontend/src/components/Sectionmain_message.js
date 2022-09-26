@@ -31,6 +31,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
     name : null, // USER'S NAME
     userId: null,
     destuserId: null,
+    imageUrl:null,
     socket : null, // CHAT WEBSOCKET
     ewrap : null, // HTML CHAT HISTORY
     emsg : null, // HTML CHAT MESSAGE
@@ -89,13 +90,27 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
         msg = chat.emsg.value;
         chat.emsg.value = "";
       }
+      /*
+      let objectForm= new FormData();
+      
+      objectForm.append('message',JSON.stringify({
+        name: chat.name,
+        userId: chat.userId,
+        destuserId: chat.destuserId,
+        msg: msg,
+      })); */
+      //objectForm.append('image',chat.imageUrl);
+      
       chat.socket.send(JSON.stringify({
         name: chat.name,
         userId: chat.userId,
         destuserId: chat.destuserId,
         msg: msg,
-        imageUrl: formFile,
+        imageUrl: chat.imageUrl,
       }));
+      
+      //console.log(objectForm);
+      //chat.socket.send(objectForm);
       return false;
     },
   
@@ -240,9 +255,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
 		  });
 	}
   useEffect(() => {
-    if(targetRechercheUser.userid !==undefined){
-      
-    }
+    chat.imageUrl=formFile;
   }, [formFile])
   useEffect(() => {
     if(targetRechercheUser.userid!==undefined){

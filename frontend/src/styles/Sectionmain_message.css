@@ -31,6 +31,7 @@
     height: calc(100% - 46.5px);
     border-right: #17273f solid 2px;
     border-left: #17273f solid 2px;
+    overflow-y: scroll;
 }
 .lastprivateMessage_user{
     width: 100%;

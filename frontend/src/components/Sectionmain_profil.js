@@ -336,7 +336,6 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		}
 	}, [auth])
 	useEffect(() => {
-		console.log("load new answer");
 		getmes().then(()=>{
 			lazyload();
 		});

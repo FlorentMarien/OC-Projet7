@@ -75,7 +75,7 @@ function Bodymain({auth,setAuth}) {
 	}, [targetRechercheUser]);
 
 	return (
-		<div id="main_container">
+		<div id="main_container">	
 			<Nav auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData} settargetRechercheUser={settargetRechercheUser}/>
 			{
 				indexPage.index === 0 ?

@@ -1,10 +1,11 @@
 nav{
     width: 20%;
-    position: fixed;
+    position: sticky;
     color: white;
     border-right: 2px solid gray;
     box-sizing: border-box;
-    height: 80%;
+    height: 80vh;
+    top: 10%;
 }
 nav ul{
     list-style: none;
