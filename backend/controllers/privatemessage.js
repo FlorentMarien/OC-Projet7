@@ -17,6 +17,13 @@ exports.getMessages = (req, res) => {
                     })
                     .catch((err)=>res.status(400).json({err}))
 };
+function indexOfArray(val, array) {
+    var hash = {};
+    for (var i = 0; i < array.length; i++) {
+      hash[array[i]] = i;
+    }
+    return (hash.hasOwnProperty(val)) ? hash[val] : -1;
+  };
 exports.getAllLastMessageofuser = (req, res) => {
     Privatemessage.find({userId: req.body.userId})
                     .then((result)=>{
@@ -31,19 +38,19 @@ exports.getAllLastMessageofuser = (req, res) => {
                                             array.reverse();
                                             let arrayReturn=[];
                                             let doublonArray=[];
-                                            let parametre;
-                                            array.forEach((element)=>{
-                                                if(element.userId===req.auth.userId) parametre=element.destuserId;
-                                                else if(element.destuserId===req.auth.destuserId) parametre=element.userId;
 
-                                                if(doublonArray.includes(parametre)){
-                                                    //Doublon
-                                                }else{
-                                                    
-                                                    doublonArray.push(parametre);
+                                            array.forEach((element)=>{
+                                                let doublon=false;
+                                                if(indexOfArray([[element.userId,element.destuserId]],doublonArray)!==-1){
+                                                    doublon=true;
+                                                }
+                                                if(doublon===false){
+                                                    doublonArray.push([element.userId,element.destuserId]);
+                                                    doublonArray.push([element.destuserId,element.userId]);
                                                     arrayReturn.push(element);
                                                 }
                                             })
+                                            console.log(doublonArray);
                                             getuserinfo(arrayReturn,req).then((array)=>{
                                                 res.status(200).json({conversation:array});
                                             });
