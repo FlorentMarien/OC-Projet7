@@ -17,13 +17,19 @@ section .sectionmain_aside .aside_recherche_result button{
     margin-right: 10px;
 }
 .buttonback_nav{
-    position: fixed !important;
-    top: 25px;
-    width: 10%;
-    left: 5%;
+    position: sticky !important;
+    top: 34vh;
+    width: 10px;
+    height: 10px;
+    height: 10px;
+    margin-left: 20px !important;
 }
 #section_recherche button{
     margin: 0;
     width: 30%;
     margin: 10px;
+}
+
+#section_recherche .sectionmain_aside{
+    display: block;
 }

@@ -304,26 +304,28 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
           :
           <>
           <section>
-            <IconButton className="buttonback_nav" onClick={(e)=>settargetRechercheUser({...targetRechercheUser,userid:undefined})} color="primary" aria-label="Back" component="label">
-              <KeyboardBackspaceIcon />
-            </IconButton>
+            
             
             <div id="chatShow">
               {getBackMessage()}
             </div>
             <form id="chatForm" onSubmit={(e)=>{e.preventDefault(); if(chat!==undefined) return chat.send()}}>
+              
               <ThemeProvider theme={theme}>
-              <div className='sendreply_uploadimg'>
-									{
-									formFile === "" ?
-										<IconButton color="primary" aria-label="upload picture" component="label">
-											<input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files[0])} type="file" id="formFile"/>
-											<PhotoCamera />
-										</IconButton>
-									: 
-										getimgpreview()
-									}
-              </div>
+                <IconButton onClick={(e)=>settargetRechercheUser({...targetRechercheUser,userid:undefined})} color="primary" aria-label="Back" component="label">
+                  <KeyboardBackspaceIcon />
+                </IconButton>
+                <div className='sendreply_uploadimg'>
+                    {
+                    formFile === "" ?
+                      <IconButton color="primary" aria-label="upload picture" component="label">
+                        <input hidden accept="image/*" onChange={(e)=>setformFile(e.target.files[0])} type="file" id="formFile"/>
+                        <PhotoCamera />
+                      </IconButton>
+                    : 
+                      getimgpreview()
+                    }
+                </div>
                 <TextField className="message_inputtext" color="neutral" type="text" id="chatMsg" label="Message" variant="filled" defaultValue="Votre Message?"/>
                 <Button variant="contained" id="chatGo" type="submit" value="Go">Go</Button>
 
