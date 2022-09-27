@@ -1,5 +1,5 @@
 nav{
-    width: 20%;
+    width: 22.5%;
     position: sticky;
     color: white;
     border-right: 2px solid gray;
@@ -18,8 +18,8 @@ nav ul{
     justify-content: space-between;
     align-items: center;
     padding-top: 10px;
-padding-bottom: 10px;
-box-sizing: border-box;
+    padding-bottom: 10px;
+    box-sizing: border-box;
 }
 nav ul div {
     width: 100%;
@@ -67,21 +67,31 @@ nav ul div li button img,nav ul li button img{
     height: 60%;
     width: 100%;
 }
-#main_container nav div *{
-    width: calc(100% - 40px) !important;
-    padding-left: 20px !important;
+#main_container nav div{
+    width: calc(100% - 20px) !important;
     padding-right: 20px !important;
-    height: 50px !important;
     margin-left: auto;
     margin-right: auto;
 }
 #nav_button_UserInfo{
-    width: calc(100% - 40px) !important;
-    padding-left: 20px !important;
+    width: calc(100% - 20px) !important;
     padding-right: 20px !important;
-    margin-left: auto;
-    margin-right: auto;
+
+    overflow: hidden;
 }
 .nav-left div button{
     background-color: #17273f;
+}
+.--textbutton{
+    /*display: none;*/
+}
+.css-1d6wzja-MuiButton-startIcon{
+    margin: 0 !important;
+}
+.nav-left div button{
+    height: 50px;
+    display: flex;
+    justify-content: start;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

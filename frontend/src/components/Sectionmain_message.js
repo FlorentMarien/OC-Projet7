@@ -284,7 +284,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
               {
               (listPreviewMessage.length > 0 && listPreviewMessage[0] !== null) &&
               <>
-              <div id="privatemessage_previewmessage">
+              <div id="privatemessage_previewmessage" className={targetPage === 1 && "grow0_4 paddingright10"}>
               <div className='previewmessage_addbutton'>
               <Button className='message_buttonrechercheuser' onClick={(e)=>{let open=0; if(targetPage===0){open=1;}else{open=0;}settargetPage(open)}}>+</Button>
               </div>
@@ -293,7 +293,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
               </div>
               </>
               }
-              <div id="privatemessage_rechercheuser">
+              <div id="privatemessage_rechercheuser" className={targetPage === 1 && "grow0_6 paddingleft10"}>
                 {
                 targetPage===1 &&
                 <Sectionmain_aside key={10} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} targetRechercheUser={targetRechercheUser} settargetRechercheUser={settargetRechercheUser}/>

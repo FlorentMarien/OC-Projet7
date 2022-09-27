@@ -23,7 +23,7 @@ const theme = createTheme({
 
 function Sectionmain_aside({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,targetRechercheUser,settargetRechercheUser}) {
 	const [userList,setuserList] = useState([null]);
-	const [formuserRecherche,setformuserRecherche] = useState("Qui recherchez vous?");
+	const [formuserRecherche,setformuserRecherche] = useState("");
 	function getRechercheuser(e,value){
 		//Recherche nom prénom ->
 		let objData={
@@ -80,7 +80,7 @@ function Sectionmain_aside({auth,setAuth,indexPage,setindexPage,profilData,setpr
 		<aside className='sectionmain_aside'>
 			<div className='aside_recherche'>
 				<ThemeProvider theme={theme}>
-					<TextField variant="filled" color="neutral" type="text" id="formAsideRecherche" label="Nom" defaultValue={formuserRecherche} onChange={(e)=>{getRechercheuser(e,e.target.value)}}/>
+					<TextField variant="filled" color="neutral" type="text" id="formAsideRecherche" label="Recherche" defaultValue={formuserRecherche} onChange={(e)=>{getRechercheuser(e,e.target.value)}}/>
 				</ThemeProvider>
 				<div className='aside_recherche_result'>
 					{

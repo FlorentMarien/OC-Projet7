@@ -1,7 +1,11 @@
 #main_container{
     width:75%;
     display: flex;
-    min-width: 750px;
+    min-width: 600px;
+}
+.nav-left div button{
+    padding-left: 5px !important;
+    padding-right: 5px !important;
 }
 /* tablette */ 
 @media all and (max-width: 992px) {
@@ -13,5 +17,80 @@
     }
     #main_container .nav-left{
         flex-grow: 0.2;
+    }
+    #section_privatemessage #privatemessage_rechercheuser .sectionmain_aside{
+        display: block;
+    }
+    #privatemessage_rechercheuser button.recherche_user {
+        width: 80%;
+      }
+}
+@media all and (max-width: 700px) {
+    .nav-left div .MuiButtonBase-root{
+        text-overflow: ellipsis;
+    }
+    #main_container{
+        min-width: 350px;
+    }
+    aside.sectionmain_aside{
+        display: none;
+    }
+    #main_container section{
+        width: 100%;
+    }
+    #main_container .nav-left{
+        width: 100%;
+    }
+    .nav-left{
+        flex-direction: unset !important;
+        top: 0 !important;
+        width: 100%;
+        z-index: 10;
+        border-right: 0;
+    }
+    .nav-left div{
+        flex-direction: unset !important;
+    }
+    #nav_button_UserInfo{
+        display: none !important;
+    }
+    .nav-left div button span{
+        display: flex;
+    }
+    .nav-left div button p{
+        display: none !important;
+    }
+    #main_container{
+        flex-direction: column;
+    }
+    #main_container nav div, nav{
+        height: 50px !important;
+    }
+    .replylevel0{
+        top:50px !important;
+    }
+    #section_privatemessage{
+        display: flex;
+        flex-direction: column;
+    }
+    
+    #privatemessage_previewmessage #privatemessage_previewmessage,#privatemessage_previewmessage #privatemessage_rechercheuser{
+        width: 100% !important;
+        padding: 0 !important;
+    }
+    .grow0_4,.grow0_6{
+        width: 100% !important;
+    }
+    .grow0_4 .message_historique{
+        display: none;
+    }
+    #main_container nav div{
+        justify-content: center !important;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .nav-left div button{
+        display: flex !important;
+        justify-content: center !important;
     }
 }

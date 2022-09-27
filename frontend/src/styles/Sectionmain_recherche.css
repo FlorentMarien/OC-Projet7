@@ -4,13 +4,10 @@ section .sectionmain_aside{
     height: 100%;
     border-left: 0;
 }
-section .sectionmain_aside .aside_recherche{
-    overflow-y: auto;
-}
 section .sectionmain_aside .aside_recherche_result{
 display: flex;
 flex-wrap: wrap;
-justify-content: space-between;
+justify-content: space-around;
 }
 section .sectionmain_aside .aside_recherche_result button{
     margin-left: 10px;
@@ -24,6 +21,10 @@ section .sectionmain_aside .aside_recherche_result button{
     height: 10px;
     margin-left: 20px !important;
 }
+#section_recherche{
+    display: flex;
+    flex-grow: 1;
+}
 #section_recherche button{
     margin: 0;
     width: 30%;
@@ -32,4 +33,7 @@ section .sectionmain_aside .aside_recherche_result button{
 
 #section_recherche .sectionmain_aside{
     display: block;
+}
+.aside_recherche div.MuiFormControl-root{
+    width: 100%;
 }

@@ -28,7 +28,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: calc(100% - 46.5px);
+    height: calc(80vh - 46.5px);
     border-right: #17273f solid 2px;
     border-left: #17273f solid 2px;
     overflow-y: scroll;
@@ -68,15 +68,20 @@
 }
 #section_privatemessage{
     display: flex;
+    flex-grow: 1;
 }
 #privatemessage_previewmessage{
-    width: calc(40% - 10px);
     text-align: center;
-    padding-right: 10px;
+    
+    width: calc(100% - 10px);
+    
+    /*flex-grow: 1;*/
 }
 #privatemessage_rechercheuser{
-    width: calc(60% - 10px);
-    padding-left: 10px;
+    display: none;
+    /*width: calc(60% - 10px);
+     padding-left: 10px; 
+    /*flex-grow: 0;*/
 }
 .message_buttonrechercheuser{
     
@@ -92,8 +97,11 @@
 .previewmessage_addbutton:hover{
     background-color: #1565c0;
 }
+#privatemessage{
+    flex-grow: 1;
+}
 #privatemessage_rechercheuser button.recherche_user{
-    width: 40% !important;
+    width: 40%;
 }
 #privatemessage_rechercheuser .aside_recherche div.MuiFormControl-root{
     width: 100%;
@@ -102,4 +110,17 @@
     width: calc(100% - 70px);
     text-align: left;
 
+}
+#privatemessage_previewmessage.grow0_4{
+    width: 40%;
+}
+#privatemessage_rechercheuser.grow0_6{
+    width: 60%;
+    display: block !important;
+}
+.paddingleft10{
+    padding-left: 10px;
+}
+.paddingright10{
+    padding-right: 10px;
 }

@@ -91,7 +91,7 @@ function Bodymain({auth,setAuth}) {
 				: null
 			}
 			{
-				indexPage.index !== 2 &&
+				(indexPage.index !== 2 && indexPage.index !== 3) &&
 				<Sectionmain_aside auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData} setprofilData={setprofilData} targetRechercheUser={targetRechercheUser} settargetRechercheUser={settargetRechercheUser}/>
 			}
 		</div>
