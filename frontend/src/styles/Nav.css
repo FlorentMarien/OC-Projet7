@@ -68,30 +68,32 @@ nav ul div li button img,nav ul li button img{
     width: 100%;
 }
 #main_container nav div{
-    width: calc(100% - 20px) !important;
-    padding-right: 20px !important;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
 #nav_button_UserInfo{
-    width: calc(100% - 20px) !important;
-    padding-right: 20px !important;
-
+    width: 100% !important;
     overflow: hidden;
 }
 .nav-left div button{
     background-color: #17273f;
-}
-.--textbutton{
-    /*display: none;*/
-}
-.css-1d6wzja-MuiButton-startIcon{
-    margin: 0 !important;
-}
-.nav-left div button{
     height: 50px;
-    display: flex;
-    justify-content: start;
+    
     overflow: hidden;
     text-overflow: ellipsis;
+    position: relative;
+    display: inline-flex !important;
+    margin:0px !important
+}
+.nav-left div button span{
+    padding: 10px;
+}
+.--textbutton{
+    width: calc(100% - 40px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.css-1d6wzja-MuiButton-startIcon{
+    margin: auto !important;
 }

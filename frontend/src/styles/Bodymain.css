@@ -11,13 +11,13 @@
 @media all and (max-width: 992px) {
     aside.sectionmain_aside{
         display: none;
-    }
+    }/*
     #main_container section{
         flex-grow: 0.8;
     }
     #main_container .nav-left{
         flex-grow: 0.2;
-    }
+    }*/
     #section_privatemessage #privatemessage_rechercheuser .sectionmain_aside{
         display: block;
     }
@@ -54,9 +54,6 @@
     #nav_button_UserInfo{
         display: none !important;
     }
-    .nav-left div button span{
-        display: flex;
-    }
     .nav-left div button p{
         display: none !important;
     }
@@ -86,11 +83,20 @@
     }
     #main_container nav div{
         justify-content: center !important;
-        padding-left: 5px;
-        padding-right: 5px;
+        padding:0 !important;
+        width: 100% !important;
     }
-    .nav-left div button{
-        display: flex !important;
-        justify-content: center !important;
+    
+    .css-iajp3t-MuiButtonGroup-root .MuiButtonGroup-grouped{
+        width: 100%;
+    }
+    #section_recherche button{
+        width: 90% !important;
+    }
+    #privatemessage_rechercheuser button.recherche_user{
+        width: 90% !important;
+    }
+    .paddingleft10{
+        padding-left: 0 !important;
     }
 }

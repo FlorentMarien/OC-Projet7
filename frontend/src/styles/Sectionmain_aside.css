@@ -55,7 +55,7 @@
 }
 .aside_recherche_result{
     height: calc(80vh - 73px);
-    overflow: scroll;
+    overflow-y: scroll;
 }
 .css-1v8k8xx-MuiInputBase-root-MuiFilledInput-root{
     background-color: transparent !important;
