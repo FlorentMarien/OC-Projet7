@@ -50,7 +50,6 @@ exports.getAllLastMessageofuser = (req, res) => {
                                                     arrayReturn.push(element);
                                                 }
                                             })
-                                            console.log(doublonArray);
                                             getuserinfo(arrayReturn,req).then((array)=>{
                                                 res.status(200).json({conversation:array});
                                             });

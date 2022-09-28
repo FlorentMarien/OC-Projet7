@@ -124,3 +124,6 @@
 .paddingright10{
     padding-right: 10px;
 }
+#iswrite{
+    display: none;
+}

@@ -22,6 +22,7 @@ wss.on("connection", (socket, req) => {
     let message = msg.toString();
     //let objectmessage=message.toString();
     let objectmessage= JSON.parse(message);
+    
     if(objectmessage.imageUrl !== ""){
       //GESTION IMAGE
       
@@ -34,9 +35,14 @@ wss.on("connection", (socket, req) => {
     for (let u in users) { 
         if(u === objectmessage.destuserId || u === objectmessage.userId){
             if(objectmessage.msg!=="Joined the chat room." && u === objectmessage.userId){
-              Privatemessage.sendMessage(objectmessage);
+              if(objectmessage.state==="send") Privatemessage.sendMessage(objectmessage);
             }
-            users[u].send(message);
+            if(objectmessage.state==="isWrite" && u===objectmessage.destuserId /* Seulement destuserid a ajouter*/){
+              console.log(objectmessage);
+              users[u].send(message);
+            }else if(objectmessage.state==="send"){
+              users[u].send(message);
+            }
         }
     }
   });

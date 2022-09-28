@@ -83,7 +83,17 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
         chat.ego.disabled = true;
       }
     },
-  
+    isWrite : (bool) =>{
+      chat.socket.send(JSON.stringify({
+        state:"isWrite",
+        isWrite: bool.isWrite,
+        userId: chat.userId,
+        destuserId: chat.destuserId,
+        msg: "",
+      }));
+
+      return false;
+    },
     // (C) SEND MESSAGE TO CHAT SERVER
     send : (msg) => {
       if (msg === undefined) {
@@ -102,6 +112,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
       //objectForm.append('image',chat.imageUrl);
       
       chat.socket.send(JSON.stringify({
+        state:"send",
         name: chat.name,
         userId: chat.userId,
         destuserId: chat.destuserId,
@@ -118,13 +129,24 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
     draw : (msg) => {
       // (D1) PARSE JSON
       msg = JSON.parse(msg);
-      
+      if(msg.state==="send"){
+        let row = document.createElement("div");
+        row.className = msg['userId']===auth[1] ? 'privateMessage_user' : 'privateMessage_destuser';
+        row.innerHTML = `<div class="chatName">${msg["name"]}</div> <div class="chatMsg">${msg["msg"]}</div>`;
+        chat.ewrap.appendChild(row);
+        document.getElementById("iswrite").style.display="none";
+      }
+      if(msg.state==="isWrite"){
+        console.log(msg.isWrite);
+        if(msg.isWrite === true){
+          document.getElementById("iswrite").style.display="block";
+        }else{
+          document.getElementById("iswrite").style.display="none";
+        }
+      }
       // (D2) CREATE NEW ROW
-      let row = document.createElement("div");
-      row.className = msg['userId']===auth[1] ? 'privateMessage_user' : 'privateMessage_destuser';
-      row.innerHTML = `<div class="chatName">${msg["name"]}</div> <div class="chatMsg">${msg["msg"]}</div>`;
-      chat.ewrap.appendChild(row);
-  
+      
+      
       // AUTO SCROLL TO BOTTOM MAY NOT BE THE BEST...
       window.scrollTo(0, document.body.scrollHeight);
     }
@@ -308,7 +330,9 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
             
             <div id="chatShow">
               {getBackMessage()}
+              
             </div>
+            <div id="iswrite" className='privateMessage_destuser'><p>L'utilisateur est en train d'écrire...</p></div>
             <form id="chatForm" onSubmit={(e)=>{e.preventDefault(); if(chat!==undefined) return chat.send()}}>
               
               <ThemeProvider theme={theme}>
@@ -326,7 +350,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
                       getimgpreview()
                     }
                 </div>
-                <TextField className="message_inputtext" color="neutral" type="text" id="chatMsg" label="Message" variant="filled" defaultValue="Votre Message?"/>
+                <TextField className="message_inputtext" color="neutral" type="text" id="chatMsg" label="Message" variant="filled" defaultValue="Votre Message?" onChange={(e)=>{e.target.value.length > 0 ? chat.isWrite({isWrite:true}) : chat.isWrite({isWrite:false})}}/>
                 <Button variant="contained" id="chatGo" type="submit" value="Go">Go</Button>
 
               </ThemeProvider>
