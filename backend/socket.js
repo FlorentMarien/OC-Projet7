@@ -18,11 +18,9 @@ wss.on("connection", (socket, req) => {
   socket.on("close", () => { delete users[id]; });
   // (B3) FORWARD MESSAGE TO ALL ON RECEIVING MESSAGE
   socket.on("message", (msg) => {
-    console.log(msg);
     let message = msg.toString();
     //let objectmessage=message.toString();
     let objectmessage= JSON.parse(message);
-    
     if(objectmessage.imageUrl !== ""){
       //GESTION IMAGE
       
@@ -31,14 +29,18 @@ wss.on("connection", (socket, req) => {
       ...objectmessage,
       dateTime:Date.now(),
     }
-    //console.log(objectmessage.name);
     for (let u in users) { 
         if(u === objectmessage.destuserId || u === objectmessage.userId){
-            if(objectmessage.msg!=="Joined the chat room." && u === objectmessage.userId){
-              if(objectmessage.state==="send") Privatemessage.sendMessage(objectmessage);
+            if(objectmessage.state==="open" ){
+              users[u].send(message);
+            }
+            if(u === objectmessage.destuserId && objectmessage.state==="close" ){
+              users[u].send(message);
+            }
+            if(objectmessage.state==="send" && u===objectmessage.userId){
+              Privatemessage.sendMessage(objectmessage);
             }
             if(objectmessage.state==="isWrite" && u===objectmessage.destuserId /* Seulement destuserid a ajouter*/){
-              console.log(objectmessage);
               users[u].send(message);
             }else if(objectmessage.state==="send"){
               users[u].send(message);
