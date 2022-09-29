@@ -350,7 +350,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 	
 
 	return (
-		<section>
+		<section className="section--mid">
 			{
 				(profilTarget === 0 ) ?
 				<p>Load...</p>

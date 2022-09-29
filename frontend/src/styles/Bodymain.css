@@ -7,6 +7,16 @@
     padding-left: 5px !important;
     padding-right: 5px !important;
 }
+.section--alone{
+    width: calc(77.5% - 40px);
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.section--mid{
+    width: calc(57.5% - 40px);
+    padding-left: 20px;
+    padding-right: 20px;
+}
 /* tablette */ 
 @media all and (max-width: 992px) {
     #main_container > section{

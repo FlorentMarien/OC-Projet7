@@ -299,7 +299,7 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 		  });
 	}
 	return (
-	<section>
+	<section className="section--mid">
 		<p>Parametre</p>
 		<ButtonGroup className="nav-Parametre"variant="outlined" aria-label="outlined button group" >
 			<Button onClick={(e)=>{if(targetPage!==0){settargetPage(0)}}}>Information</Button>

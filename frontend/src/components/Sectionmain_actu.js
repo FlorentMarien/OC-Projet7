@@ -413,7 +413,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			replyLevel:0,
 		};
 		return (
-			<section ref={containerRef}>
+			<section ref={containerRef} className="section--mid">
 			{
 			targetMessage.messageid === "" ?
 				listMessage.length>0 ?
