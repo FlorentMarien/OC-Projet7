@@ -114,6 +114,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
     draw : (msg) => {
       // (D1) PARSE JSON
       // AVOIR
+      let verif=false;
       msg = JSON.parse(msg);
       let target = document.getElementById("chatShow");
       if(target!==undefined && target !== null){
@@ -132,10 +133,16 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
               document.getElementById("iswrite").style.display="none";
             }
           }
+        }else{
+          //In discution privatemessage mais pas le même user
+          verif=true;
         }
+      }else{
+        //Hors discution privatemessage
+        verif=true;
       }
-      else{
-        //Reception message autre destinataire
+      if(verif===true){
+        //Reception message
           if(msg.state !== "isWrite"){
             //let row = document.getElementById("notifprivatemessage");
             let row = document.createElement("div");

@@ -73,7 +73,7 @@
 #privatemessage_previewmessage{
     text-align: center;
     
-    width: calc(100% - 10px);
+    width: 100%;
     
     /*flex-grow: 1;*/
 }

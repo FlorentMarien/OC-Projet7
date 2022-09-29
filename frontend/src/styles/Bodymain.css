@@ -9,15 +9,12 @@
 }
 /* tablette */ 
 @media all and (max-width: 992px) {
+    #main_container > section{
+        width: 80%;
+    }
     aside.sectionmain_aside{
         display: none;
-    }/*
-    #main_container section{
-        flex-grow: 0.8;
     }
-    #main_container .nav-left{
-        flex-grow: 0.2;
-    }*/
     #section_privatemessage #privatemessage_rechercheuser .sectionmain_aside{
         display: block;
     }
@@ -98,5 +95,8 @@
     }
     .paddingleft10{
         padding-left: 0 !important;
+    }
+    .paddingright10{
+        padding-right: 0 !important;
     }
 }
