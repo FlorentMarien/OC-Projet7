@@ -24,7 +24,8 @@ const theme = createTheme({
 		},
 	},
   });
-function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
+function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,chat}) {
+  /*
   let [chat,setchat]=useState(({
     // (A) INIT CHAT
     name : null, // USER'S NAME
@@ -174,6 +175,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
       window.scrollTo(0, document.body.scrollHeight);
     }
   }));
+  */
 	const [targetRechercheUser,settargetRechercheUser]=useState({userid:undefined});
   const [targetPage,settargetPage]=useState(0);
   const [listMessage,setlistMessage]=useState([null]);
@@ -323,12 +325,6 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
       }
     }
 	}, [targetRechercheUser])
-  useEffect(() => {
-      chat.init();
-      return() => {
-        chat.socket.close();
-      }
-  }, [indexPage])
   return (
         <>
         {
