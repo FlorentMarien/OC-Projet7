@@ -98,7 +98,6 @@ function Bodymain({auth,setAuth}) {
 		draw : (msg) => {
 		  // (D1) PARSE JSON
 		  // AVOIR
-		  console.log(chat);
 		  let verif=false;
 		  msg = JSON.parse(msg);
 		  let target = document.getElementById("chatShow");

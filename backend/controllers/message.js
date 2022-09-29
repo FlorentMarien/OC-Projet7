@@ -256,9 +256,8 @@ exports.sendLike = (req, res) => {
             result.arrayLike.push(objectReq.userId);
         } else if (objectReq.like == 0) {
             // Retrait like ou retrait dislike
-            if (result.arrayLike.includes(objectReq.userId))
-                result.arrayLike.splice(objectReq.userId, 1);
-            else result.arrayDislike.splice(objectReq.userId, 1);
+            if (result.arrayLike.includes(objectReq.userId)) result.arrayLike.splice(result.arrayLike.indexOf(objectReq.userId), 1);
+            else result.arrayDislike.splice(result.arrayDislike.indexOf(objectReq.userId), 1);
         }
         const returnLikeDislike = {
             Like: result.arrayLike.length,

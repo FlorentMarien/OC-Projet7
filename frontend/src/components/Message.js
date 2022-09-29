@@ -25,7 +25,9 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 	const [formText,setformText] = useState("");
 	const [openReply,setopenReply] = useState(0);
 	const [openParametre,setopenParametre] = useState(0);
-
+	console.log(elementMessage.arrayLike);
+	console.log(auth[1]);
+	console.log(elementMessage.arrayLike.includes(auth[1]));
 	disableButtonLike=elementMessage.arrayDislike.includes(auth[1]);
 	disableButtonDislike=elementMessage.arrayLike.includes(auth[1]);
 
@@ -362,6 +364,8 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 		};
 		sendLikeApi(JSON.stringify(formData)).then((result)=>{
 			// Like: 1
+			console.log(result);
+			/*
 			if(parametre.replyLevel===0){
 				for(let x=0; x<listMessage.length;x++){
 					let targetelementmessage;
@@ -396,7 +400,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 					}
 				}
 			}
-			else{
+			else{*/
 				setelementMessage({...elementMessage,...result});
 				if(listMessage[0]._id === undefined){
 					//Page profil
@@ -412,7 +416,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 										...listMessage[x].answerArray[1][y],
 										...result,
 									};
-									setListMessage(listMessage);
+									setListMessage({...listMessage});
 									endbool=true;
 									break;
 								}
@@ -426,7 +430,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 													...listMessage[x].answerArray[y+2][z],
 													...result,
 												};
-												setListMessage(listMessage);
+												setListMessage({...listMessage});
 												endbool=true;
 												break;
 											}
@@ -437,7 +441,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 						}
 					}
 				}
-			}
+			//}
 			/*
 			if(likevalue===1) {
 				e.target.closest("div.container_information").children[1].textContent=result.Like;
