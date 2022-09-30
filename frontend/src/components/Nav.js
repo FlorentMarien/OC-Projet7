@@ -11,61 +11,37 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 function Nav({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,settargetRechercheUser}) {
 	let buttonVariant="contained";
-	let ASUPRIMER=0;
+	function redirectPage(e,index){
+		setindexPage({index:index,emetteur:"navbar"});
+	}
 	return (
 		<nav className='nav-left'>
 			<>
-			{
-			ASUPRIMER===1 ?
-			<ul>
-				<div>
-				<li><button onClick={()=>setindexPage({index:0,emetteur:"navbar"})}>Profil</button></li>
-				<li><button onClick={()=>setindexPage({index:1,emetteur:"navbar"})}>Actualité</button></li>
-				<li><button onClick={()=>setindexPage({index:2,emetteur:"navbar"})}>Recherche</button></li>
-				<li><button onClick={()=>setindexPage({index:3,emetteur:"navbar"})}>Messages</button></li>
-				<li><button onClick={()=>setindexPage({index:4,emetteur:"navbar"})}>Paramétres</button></li>
-				<li><button onClick={()=>setAuth([0])}>Déconnection</button></li>
-				</div>
-				{
-				profilData[0]!==0 ?
-				<li>
-					<button id="nav_button_UserInfo" onClick={()=>setindexPage({index:0})}>
-					<img src={ profilData.imageUrl } alt={profilData.name}/>
-					<p>{ profilData.name } { profilData.prename }</p>
-					</button>
-				</li>
-				:null
-				}
-			</ul>
-			:
-			<>
 			<ButtonGroup>
-			<Button color="primary" variant={buttonVariant} startIcon={<AccountCircleIcon />} onClick={(e)=>setindexPage({index:0,emetteur:"navbar"})}>
+			<Button color="primary" variant={buttonVariant} startIcon={<AccountCircleIcon />} onClick={(e)=>redirectPage(e,0)}>
 				<p className='--textbutton'>Profil</p>
 			</Button>
-			<Button color="primary" variant={buttonVariant} startIcon={<DvrIcon />} onClick={(e)=>setindexPage({index:1,emetteur:"navbar"})}>
+			<Button color="primary" variant={buttonVariant} startIcon={<DvrIcon />} onClick={(e)=>redirectPage(e,1)}>
 				<p className='--textbutton'>Actualité</p>
 			</Button>
-			<Button color="primary" variant={buttonVariant} startIcon={<SearchIcon />} onClick={(e)=>setindexPage({index:2,emetteur:"navbar"})}>
+			<Button color="primary" variant={buttonVariant} startIcon={<SearchIcon />} onClick={(e)=>redirectPage(e,2)}>
 				<p className='--textbutton'>Recherche</p>
 			</Button>
-			<Button color="primary" variant={buttonVariant} startIcon={<MessageIcon />} onClick={(e)=>setindexPage({index:3,emetteur:"navbar"})}>
+			<Button color="primary" variant={buttonVariant} startIcon={<MessageIcon />} onClick={(e)=>redirectPage(e,3)}>
 				<p className='--textbutton'>Messages</p>
 			</Button>
-			<Button color="primary" variant={buttonVariant} startIcon={<TuneIcon />} onClick={(e)=>setindexPage({index:4,emetteur:"navbar"})}>
+			<Button color="primary" variant={buttonVariant} startIcon={<TuneIcon />} onClick={(e)=>redirectPage(e,4)}>
 				<p className='--textbutton'>Paramétres</p>
 			</Button>
 			<Button color="primary" variant={buttonVariant} startIcon={<LogoutIcon />} onClick={(e)=>setAuth([0])}>
 				<p className='--textbutton'>Déconnection</p>
 			</Button>
 			</ButtonGroup>
-			<Button variant={buttonVariant} id="nav_button_UserInfo" onClick={{index:0,emetteur:"navbar"}}>
+			<Button variant={buttonVariant} id="nav_button_UserInfo" onClick={(e)=>{redirectPage(e,0)}}>
 				<img src={ profilData.imageUrl } alt={profilData.name}/>
 				<p>{ profilData.name } { profilData.prename }</p>
 			</Button>
 			</>
-		}
-		</>
 		</nav>
 	)
 }

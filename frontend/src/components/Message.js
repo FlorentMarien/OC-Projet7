@@ -25,9 +25,6 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 	const [formText,setformText] = useState("");
 	const [openReply,setopenReply] = useState(0);
 	const [openParametre,setopenParametre] = useState(0);
-	console.log(elementMessage.arrayLike);
-	console.log(auth[1]);
-	console.log(elementMessage.arrayLike.includes(auth[1]));
 	disableButtonLike=elementMessage.arrayDislike.includes(auth[1]);
 	disableButtonDislike=elementMessage.arrayLike.includes(auth[1]);
 
@@ -364,43 +361,6 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 		};
 		sendLikeApi(JSON.stringify(formData)).then((result)=>{
 			// Like: 1
-			console.log(result);
-			/*
-			if(parametre.replyLevel===0){
-				for(let x=0; x<listMessage.length;x++){
-					let targetelementmessage;
-					// Verif page profil / actu
-					if(listMessage[x]._id === undefined) targetelementmessage=listMessage[x].answerArray[0][0];
-					else targetelementmessage=listMessage[x];
-
-					if(targetelementmessage._id===target.target.closest("div.message").attributes["messageid"].value){
-						targetelementmessage={
-						...targetelementmessage,
-						...result,
-						};
-						setelementMessage({...targetelementmessage});
-						for(let x=0;x<listMessage.length;x++){
-							if(listMessage[x]._id === undefined){
-								//Page profil
-								if(listMessage[x].answerArray[0][0]._id===targetelementmessage._id){
-									listMessage[x].answerArray[0][0]=targetelementmessage;
-									break;
-								}
-							}
-							else{
-								// Actu page
-								if(listMessage[x]._id===targetelementmessage._id){
-									listMessage[x]=targetelementmessage;
-									break;
-								}
-							}
-						}
-						setListMessage(listMessage);
-						break;
-					}
-				}
-			}
-			else{*/
 				setelementMessage({...elementMessage,...result});
 				if(listMessage[0]._id === undefined){
 					//Page profil
@@ -441,31 +401,6 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 						}
 					}
 				}
-			//}
-			/*
-			if(likevalue===1) {
-				e.target.closest("div.container_information").children[1].textContent=result.Like;
-				elementMessage.arrayLike.push(auth[1]);
-				elementMessage.Like=result.Like;
-				setdisableButtonDislike(true);
-			}
-			if(likevalue===-1){ 
-				e.target.closest("div.container_information").children[1].textContent=result.Dislike;
-				elementMessage.arrayDislike.push(auth[1]);
-				elementMessage.Dislike=result.Dislike;;
-				setdisableButtonLike(true);
-			}
-			if(likevalue===0) {
-				e.target.closest("div.MuiButtonGroup-root").children[0].children[0].children[1].textContent=result.Like;
-				e.target.closest("div.MuiButtonGroup-root").children[0].children[1].children[1].textContent=result.Dislike;
-				elementMessage.Like=result.Like;
-				elementMessage.Dislike=result.Dislike
-				if(elementMessage.arrayLike.includes(auth[1])) elementMessage.arrayLike.splice(auth[1],1);
-				if(elementMessage.arrayDislike.includes(auth[1])) elementMessage.arrayDislike.splice(auth[1],1);
-				
-				setdisableButtonLike(false);
-				setdisableButtonDislike(false);
-			}*/
 		});
 	}
 	async function sendLikeApi(formData){
