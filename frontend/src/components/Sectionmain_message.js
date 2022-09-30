@@ -76,7 +76,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
           reply=
             <>
             {reply}
-            <div className={parametre}>
+            <div className={parametre.toString()}>
               <div>
                 {element.name}
               </div>
@@ -123,7 +123,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
           reply=
             <>
             {reply}
-            <div className={parametre} destuserid={auth[1]===element.userId ? element.destuserId : element.userId} onClick={(e)=>
+            <div className={parametre.toString()} destuserid={auth[1]===element.userId ? element.destuserId : element.userId} onClick={(e)=>
               {
                 if(auth[1]===element.userId){
                   settargetRechercheUser({...targetRechercheUser,userid:element.destuserId});
@@ -204,7 +204,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
               {
               (listPreviewMessage.length > 0 && listPreviewMessage[0] !== null) &&
               <>
-              <div id="privatemessage_previewmessage" className={targetPage === 1 && "grow0_4 paddingright10"}>
+              <div id="privatemessage_previewmessage" className={targetPage === 1 ? "grow0_4 paddingright10" : ""}>
               <div className='previewmessage_addbutton'>
               <Button className='message_buttonrechercheuser' onClick={(e)=>{let open=0; if(targetPage===0){open=1;}else{open=0;}settargetPage(open)}}>+</Button>
               </div>
@@ -212,7 +212,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
               </div>
               </>
               }
-              <div id="privatemessage_rechercheuser" className={targetPage === 1 && "grow0_6 paddingleft10"}>
+              <div id="privatemessage_rechercheuser" className={targetPage === 1 ? "grow0_6 paddingleft10" : ""}>
                 {
                 targetPage===1 &&
                 <Sectionmain_aside key={10} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} targetRechercheUser={targetRechercheUser} settargetRechercheUser={settargetRechercheUser}/>
@@ -247,7 +247,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
                       getimgpreview()
                     }
                 </div>
-                <TextField className={stateInput}  color="neutral" type="text" id="chatMsg" label="Message" variant="filled" defaultValue="Votre Message?" onChange={(e)=>{e.target.value.length > 0 ? chat.isWrite({isWrite:true}) : chat.isWrite({isWrite:false})}}/>
+                <TextField className={stateInput.toString()}  color="neutral" type="text" id="chatMsg" label="Message" variant="filled" defaultValue="Votre Message?" onChange={(e)=>{e.target.value.length > 0 ? chat.isWrite({isWrite:true}) : chat.isWrite({isWrite:false})}}/>
                 <Button variant="contained" id="chatGo" type="submit" value="Go" onClick={
                   (e)=>{
                     e.preventDefault();
