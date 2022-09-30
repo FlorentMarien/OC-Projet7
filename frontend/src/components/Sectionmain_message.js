@@ -181,6 +181,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
   const [listMessage,setlistMessage]=useState([null]);
   const [listPreviewMessage,setlistPreviewMessage]=useState([null]);
   const [formFile,setformFile]=useState("");
+  const [stateInput,setstateInput]=useState("");
   let objectUser={ userId:auth[1], destuserId:targetRechercheUser.userid};
   function getimgpreview(){
 		let urlFile = URL.createObjectURL(formFile);
@@ -305,7 +306,6 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
     chat.imageUrl=formFile;
   }, [formFile])
   useEffect(() => {
-    let tampon = targetRechercheUser.userid;
     if(targetRechercheUser.userid!==undefined){
       getPrivatemessage(JSON.stringify(objectUser)).then((res)=>{
         setlistMessage([...res.conversation]);
@@ -352,7 +352,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
 
           :
           <>
-          <section>
+          <section className="section--alone">
             <div id="notifprivatemessage"></div>
             <div id="chatShow" userId={auth[1]} destuserId={targetRechercheUser.userid}>
               {getBackMessage()}
@@ -377,11 +377,26 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
                       getimgpreview()
                     }
                 </div>
-                <TextField className="message_inputtext" color="neutral" type="text" id="chatMsg" label="Message" variant="filled" defaultValue="Votre Message?" onChange={(e)=>{e.target.value.length > 0 ? chat.isWrite({isWrite:true}) : chat.isWrite({isWrite:false})}}/>
+                <TextField className={"message_inputtext "+stateInput}  color="neutral" type="text" id="chatMsg" label="Message" variant="filled" defaultValue="Votre Message?" onChange={(e)=>{e.target.value.length > 0 ? chat.isWrite({isWrite:true}) : chat.isWrite({isWrite:false})}}/>
                 <Button variant="contained" id="chatGo" type="submit" value="Go" onClick={
                   (e)=>{
                     e.preventDefault();
-                    chat.send(document.getElementById("chatMsg").value,"send");
+                    let verif=0;
+                    if(formFile !== ""){
+                      chat.msg=document.getElementById("chatMsg").value;
+                      chat.send(formFile,"sendfile");
+                      setformFile("");
+                      verif = 1;
+                    }
+
+                    if(document.getElementById("chatMsg").value !== ""){
+                      chat.send(document.getElementById("chatMsg").value,"send");
+                      setstateInput("");
+                      verif = 1;
+                    }
+
+                    if(verif===0) setstateInput("errorinput");
+
                   }}
                 >Go</Button>
 

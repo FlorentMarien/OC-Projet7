@@ -8,6 +8,7 @@ import Sectionmain_parametre from './Sectionmain_parametre'
 import Sectionmain_aside from './Sectionmain_aside'
 import Sectionmain_recherche from './Sectionmain_recherche'
 import Sectionmain_message from './Sectionmain_message'
+import { Buffer } from "buffer";
 function Bodymain({auth,setAuth}) {
 	let [chat,setchat]=useState(({
 		// (A) INIT CHAT
@@ -43,7 +44,6 @@ function Bodymain({auth,setAuth}) {
 		},
 		initPrivate : () => {
 		  // (A1) GET HTML ELEMENTS
-		  
 		  chat.ewrap = document.getElementById("chatShow");
 		  chat.emsg = document.getElementById("chatMsg");
 		  chat.ego = document.getElementById("chatGo");
@@ -83,15 +83,43 @@ function Bodymain({auth,setAuth}) {
 			msg = chat.emsg.value;
 			chat.emsg.value = "";
 		  }
-		  chat.socket.send(JSON.stringify({
-			state:state,
-			name: chat.name,
-			userId: chat.userId,
-			destuserId: chat.destuserId,
-			msg: msg,
-			imageUrl: chat.imageUrl,
-		  }));
-		  return false;
+		  if(state==="sendfile"){
+			return new Promise(resolve => {
+				let objectcontact={
+					name:chat.name,
+					userId:chat.userId,
+					destuserId:chat.destuserId,
+					dateTime:Date.now(),
+					msg:chat.msg,
+				};
+				let baseURL = "";
+				// Make new FileReader
+				let reader = new FileReader();
+				// Convert the file to base64 text
+				reader.readAsDataURL(msg);
+				
+				// on reader load somthing...
+				reader.onload = () => {
+				  // Make a fileInfo Object
+				  baseURL = reader.result;
+				  chat.socket.send(JSON.stringify({state:"sendfile",img:baseURL,...objectcontact}));
+				  resolve(baseURL);
+				};
+				//console.log(fileInfo);
+			});
+		  }else{
+			if(msg !== undefined && msg!==""){
+				chat.socket.send(JSON.stringify({
+					state:state,
+					name: chat.name,
+					userId: chat.userId,
+					destuserId: chat.destuserId,
+					msg: msg,
+				}));
+			}
+		}
+		return false;
+		
 		},
 	  
 		// (D) DRAW MESSAGE IN HTML
@@ -103,10 +131,42 @@ function Bodymain({auth,setAuth}) {
 		  let target = document.getElementById("chatShow");
 		  if(target!==undefined && target !== null){
 			if((target.attributes['userid'].value===msg.userId || target.attributes['userid'].value===msg.destuserId) && (target.attributes['destuserid'].value===msg.userId || target.attributes['destuserid'].value===msg.destuserId)){
-			  if(msg.state==="send" || msg.state==="open" || msg.state==="close"){
+			  if(msg.state==="send" || msg.state==="open" || msg.state==="close" || msg.state==="sendfile"){
 				let row = document.createElement("div");
 				row.className = msg['userId']===auth[1] ? 'privateMessage_user' : 'privateMessage_destuser';
-				row.innerHTML = `<div class="chatName">${msg["name"]}</div> <div class="chatMsg">${msg["msg"]}</div>`;
+				if(msg.state!=="sendfile") row.innerHTML = `<div class="chatName">${msg["name"]}</div> <div class="chatMsg"><p>${msg["msg"]}<p></div>`;
+				else {
+					//let reader = new FileReader();
+					// Convert the file to base64 text
+					
+					let img = document.createElement("img");
+					//let file = new File(base64ToStringNew,"img");
+					let arr = msg.img.split(','),
+					mime = arr[0].match(/:(.*?);/)[1],
+					bstr = atob(arr[1]), 
+					n = bstr.length, 
+					u8arr = new Uint8Array(n);
+					while(n--){
+						u8arr[n] = bstr.charCodeAt(n);
+					}
+					
+					let file = new File([u8arr], "img", {type:mime});
+					img.src=URL.createObjectURL(file);
+					//img.src=URL.createObjectURL(base64ToStringNew);
+					let firstdiv = document.createElement("div");
+					firstdiv.className="chatName";
+					firstdiv.textContent=msg['name'];
+					let seconddiv = document.createElement("div");
+					seconddiv.className="chatMsg";
+					if(msg['msg'] !== "" && msg['msg']!==null){
+					let p=document.createElement("p");
+					p.textContent=msg['msg'];
+					seconddiv.appendChild(p);
+					}
+					seconddiv.appendChild(img);
+					row.appendChild(firstdiv);
+					row.appendChild(seconddiv);
+				}
 				chat.ewrap.appendChild(row);
 				document.getElementById("iswrite").style.display="none";
 			  }
