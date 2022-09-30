@@ -25,157 +25,6 @@ const theme = createTheme({
 	},
   });
 function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,chat}) {
-  /*
-  let [chat,setchat]=useState(({
-    // (A) INIT CHAT
-    name : null, // USER'S NAME
-    userId: null,
-    destuserId: null,
-    imageUrl:null,
-    socket : null, // CHAT WEBSOCKET
-    ewrap : null, // HTML CHAT HISTORY
-    emsg : null, // HTML CHAT MESSAGE
-    ego : null, // HTML CHAT GO BUTTON
-    init : () => {
-      chat.userId = auth[1];
-      chat.destuserId = targetRechercheUser.userid;
-
-      // (A3) CONNECT TO CHAT SERVER
-      chat.socket = new WebSocket("ws://localhost:8086?id="+auth[1]);
-  
-      // (A4) ON CONNECT - ANNOUNCE "I AM HERE" TO THE WORLD
-  
-      // (A5) ON RECEIVE MESSAGE - DRAW IN HTML
-      chat.socket.addEventListener("message", (evt) => {
-        chat.draw(evt.data);
-      });
-      
-      // (A6) ON ERROR & CONNECTION LOST
-      
-      chat.socket.addEventListener("error", (err) => {
-        chat.controls();
-        console.log(err);
-        alert("Websocket connection error!");
-      });
-    },
-    initPrivate : () => {
-      // (A1) GET HTML ELEMENTS
-      
-      chat.ewrap = document.getElementById("chatShow");
-      chat.emsg = document.getElementById("chatMsg");
-      chat.ego = document.getElementById("chatGo");
-  
-      // (A2) USER'S NAME
-      //chat.name = profilData.name + " " +profilData.prename;
-      // ID
-      //chat.destuserId = targetRechercheUser.userid;
-
-      chat.controls(1);
-      chat.send("Joined the chat room.","open");
-    },
-    // (B) TOGGLE HTML CONTROLS
-    controls : (enable) => {
-      if (enable) {
-        chat.emsg.disabled = false;
-        chat.ego.disabled = false;
-      } else {
-        chat.emsg.disabled = true;
-        chat.ego.disabled = true;
-      }
-    },
-    isWrite : (bool) =>{
-      chat.socket.send(JSON.stringify({
-        state:"isWrite",
-        isWrite: bool.isWrite,
-        userId: chat.userId,
-        destuserId: chat.destuserId,
-        msg: "",
-      }));
-
-      return false;
-    },
-    // (C) SEND MESSAGE TO CHAT SERVER
-    send : (msg,state) => {
-      if (msg === undefined) {
-        msg = chat.emsg.value;
-        chat.emsg.value = "";
-      }
-      chat.socket.send(JSON.stringify({
-        state:state,
-        name: chat.name,
-        userId: chat.userId,
-        destuserId: chat.destuserId,
-        msg: msg,
-        imageUrl: chat.imageUrl,
-      }));
-      return false;
-    },
-  
-    // (D) DRAW MESSAGE IN HTML
-    draw : (msg) => {
-      // (D1) PARSE JSON
-      // AVOIR
-      let verif=false;
-      msg = JSON.parse(msg);
-      let target = document.getElementById("chatShow");
-      if(target!==undefined && target !== null){
-        if((target.attributes['userid'].value===msg.userId || target.attributes['userid'].value===msg.destuserId) && (target.attributes['destuserid'].value===msg.userId || target.attributes['destuserid'].value===msg.destuserId)){
-          if(msg.state==="send" || msg.state==="open" || msg.state==="close"){
-            let row = document.createElement("div");
-            row.className = msg['userId']===auth[1] ? 'privateMessage_user' : 'privateMessage_destuser';
-            row.innerHTML = `<div class="chatName">${msg["name"]}</div> <div class="chatMsg">${msg["msg"]}</div>`;
-            chat.ewrap.appendChild(row);
-            document.getElementById("iswrite").style.display="none";
-          }
-          if(msg.state==="isWrite"){
-            if(msg.isWrite === true){
-              document.getElementById("iswrite").style.display="block";
-            }else{
-              document.getElementById("iswrite").style.display="none";
-            }
-          }
-        }else{
-          //In discution privatemessage mais pas le même user
-          verif=true;
-        }
-      }else{
-        //Hors discution privatemessage
-        verif=true;
-      }
-      if(verif===true){
-        //Reception message
-          if(msg.state !== "isWrite"){
-            //let row = document.getElementById("notifprivatemessage");
-            let row = document.createElement("div");
-            row.className="notifprivatemessage";
-            row.innerHTML=`<ul class="list_notif"><li>${msg["name"]}</li><li>${msg["msg"]}</li>`;
-            
-            row.style.transitionDuration="2s";
-            row.style.transitionProperty="opacity";
-            document.getElementById("notifprivatemessage").appendChild(row);
-            let size = document.getElementsByClassName("notifprivatemessage").length;
-            let target = document.getElementsByClassName("notifprivatemessage")[size-1];
-            
-            window.setTimeout( function(){ 
-              target.style.opacity="1";
-              window.setTimeout( function(){
-                target.style.opacity="0";
-                window.setTimeout( function(){
-                  window.setTimeout( function(){
-                    target.remove();
-                  } , (50));
-                } , (2000));
-              } , (2000));
-            } , (50));
-            
-          }
-      }
-      // (D2) CREATE NEW ROW
-      // AUTO SCROLL TO BOTTOM MAY NOT BE THE BEST...
-      window.scrollTo(0, document.body.scrollHeight);
-    }
-  }));
-  */
 	const [targetRechercheUser,settargetRechercheUser]=useState({userid:undefined});
   const [targetPage,settargetPage]=useState(0);
   const [listMessage,setlistMessage]=useState([null]);
@@ -197,6 +46,18 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
 		</div>
 		)
 	}
+  function convertBase64toFile(img){
+    let arr = img.split(','),
+		mime = arr[0].match(/:(.*?);/)[1],
+		bstr = atob(arr[1]), 
+		n = bstr.length, 
+		u8arr = new Uint8Array(n);
+		while(n--){
+			u8arr[n] = bstr.charCodeAt(n);
+		}
+		let file = new File([u8arr], "img", {type:mime});
+		return URL.createObjectURL(file);
+  }
   function getIntervalDate(dateTime){
 		dateTime=Math.round((new Date(Date.now()) - new Date(dateTime).getTime())/1000);
 		if(dateTime<60) return "Posté il y a "+dateTime+" secondes";
@@ -216,7 +77,16 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
             <>
             {reply}
             <div className={parametre}>
+              <div>
+                {element.name}
+              </div>
+              <div>
               <p>{element.message}</p>
+              {
+                element.img &&
+                <img src={convertBase64toFile(element.img)}></img>
+              }
+              </div>
             </div>
             </>;
       });
@@ -253,7 +123,7 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
           reply=
             <>
             {reply}
-            <div className={parametre} destuserId={auth[1]===element.userId ? element.destuserId : element.userId} onClick={(e)=>
+            <div className={parametre} destuserid={auth[1]===element.userId ? element.destuserId : element.userId} onClick={(e)=>
               {
                 if(auth[1]===element.userId){
                   settargetRechercheUser({...targetRechercheUser,userid:element.destuserId});
@@ -354,13 +224,13 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
           <>
           <section className="section--alone">
             <div id="notifprivatemessage"></div>
-            <div id="chatShow" userId={auth[1]} destuserId={targetRechercheUser.userid}>
+            <div id="chatShow" userid={auth[1]} destuserid={targetRechercheUser.userid}>
               {getBackMessage()}
             </div>
             <div id="iswrite" className='privateMessage_destuser'>
               <p>L'utilisateur est en train d'écrire...</p>
             </div>
-            <form id="chatForm" /*onSubmit={(e)=>{e.preventDefault(); if(chat!==undefined) return chat.send()}}*/>
+            <form id="chatForm">
               
               <ThemeProvider theme={theme}>
                 <IconButton onClick={(e)=>settargetRechercheUser({...targetRechercheUser,userid:undefined})} color="primary" aria-label="Back" component="label">
@@ -377,25 +247,22 @@ function Sectionmain_message({auth,setAuth,indexPage,setindexPage,profilData,set
                       getimgpreview()
                     }
                 </div>
-                <TextField className={"message_inputtext "+stateInput}  color="neutral" type="text" id="chatMsg" label="Message" variant="filled" defaultValue="Votre Message?" onChange={(e)=>{e.target.value.length > 0 ? chat.isWrite({isWrite:true}) : chat.isWrite({isWrite:false})}}/>
+                <TextField className={stateInput}  color="neutral" type="text" id="chatMsg" label="Message" variant="filled" defaultValue="Votre Message?" onChange={(e)=>{e.target.value.length > 0 ? chat.isWrite({isWrite:true}) : chat.isWrite({isWrite:false})}}/>
                 <Button variant="contained" id="chatGo" type="submit" value="Go" onClick={
                   (e)=>{
                     e.preventDefault();
-                    let verif=0;
                     if(formFile !== ""){
+                      setstateInput("");
                       chat.msg=document.getElementById("chatMsg").value;
                       chat.send(formFile,"sendfile");
                       setformFile("");
-                      verif = 1;
                     }
-
-                    if(document.getElementById("chatMsg").value !== ""){
+                    else if(document.getElementById("chatMsg").value !== ""){
                       chat.send(document.getElementById("chatMsg").value,"send");
                       setstateInput("");
-                      verif = 1;
                     }
 
-                    if(verif===0) setstateInput("errorinput");
+                    else setstateInput("errorinput");
 
                   }}
                 >Go</Button>

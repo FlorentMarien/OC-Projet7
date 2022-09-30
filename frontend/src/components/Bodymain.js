@@ -105,7 +105,6 @@ function Bodymain({auth,setAuth}) {
 				  chat.socket.send(JSON.stringify({state:"sendfile",img:baseURL,...objectcontact}));
 				  resolve(baseURL);
 				};
-				//console.log(fileInfo);
 			});
 		  }else{
 			if(msg !== undefined && msg!==""){
@@ -193,8 +192,10 @@ function Bodymain({auth,setAuth}) {
 
 				let row = document.createElement("div");
 				row.className="notifprivatemessage";
+				if(msg.state==="sendfile" && msg.msg===""){
+					msg.msg="Vous avez reçu une photo";
+				}
 				row.innerHTML=`<ul class="list_notif"><li>${msg["name"]}</li><li>${msg["msg"]}</li>`;
-				
 				row.style.transitionDuration="2s";
 				row.style.transitionProperty="opacity";
 				if(document.getElementById("notifprivatemessage")===null || document.getElementById("notifprivatemessage")===undefined){
@@ -217,12 +218,8 @@ function Bodymain({auth,setAuth}) {
 					} , (2000));
 				  } , (2000));
 				} , (50));
-				
 			  }
 		  }
-		  // (D2) CREATE NEW ROW
-		  // AUTO SCROLL TO BOTTOM MAY NOT BE THE BEST...
-		  
 		}
 	  }));
 	let [indexPage,setindexPage] = useState({index:1,emetteur:"navbar"});
