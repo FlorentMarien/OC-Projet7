@@ -377,12 +377,20 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		  });
 	}
 	function lazyload(){
+		if(document.getElementById("loadspinnerlazyload")!==null){
+			document.getElementById("loadspinnerlazyload").style.display="none";
+		}
 		window.onscroll = function(ev) {
 			let headerheight=document.getElementsByTagName("header")[0].offsetHeight;
 			let mainheight=document.getElementById("main_container").offsetHeight;
-			let pageheight=mainheight; // + headerheight
-			if ((window.innerHeight + window.scrollY ) >= pageheight){
+			let pageheight=mainheight+headerheight; // + headerheight
+			if (Math.ceil(window.visualViewport.height + window.scrollY ) >= pageheight){
 				window.onscroll = null;
+				if(document.getElementById("loadspinnerlazyload")!==null){
+					if(document.getElementById("loadspinnerlazyload").style.display!=="block"){
+						document.getElementById("loadspinnerlazyload").style.display="block";
+					}
+				}
 				setlimitmessage({...limitmessage,skipmessage:limitmessage.skipmessage+limitmessage.nbrmessage,nbrmessage:limitmessage.nbrmessage});
 			}
 		};
@@ -424,7 +432,12 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			{
 			targetMessage.messageid === "" ?
 				listMessage.length>0 ?
-				getuserMessage("all",0)
+				<>
+				{getuserMessage("all",0)}
+				<div id="loadspinnerlazyload">
+					<CircularProgress/>
+				</div>
+				</>
 				: <CircularProgress className='loadspinneranimation'/>
 			: listMessage.length>0 ?
 				getuserMessage("one",0)
