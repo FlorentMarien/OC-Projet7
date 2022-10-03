@@ -379,7 +379,6 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			let headerheight=document.getElementsByTagName("header")[0].offsetHeight;
 			let mainheight=document.getElementById("main_container").offsetHeight;
 			let pageheight=mainheight; // + headerheight
-			console.log((window.innerHeight + window.scrollY) + " >= " + pageheight )
 			if ((window.innerHeight + window.scrollY ) >= pageheight){
 				window.onscroll = null;
 				setlimitmessage({...limitmessage,skipmessage:limitmessage.skipmessage+limitmessage.nbrmessage,nbrmessage:limitmessage.nbrmessage});
