@@ -254,52 +254,6 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 					}
 				}
 			}
-			/*if(parametre.replyLevel===0){
-				for(let x=0; x<listMessage.length;x++){
-					if(listMessage[x]._id===target.attributes["messageid"].value){
-						listMessage=listMessage.splice(x,1);
-						break;
-					}
-				}
-			}
-			else if(parametre.replyLevel===1){
-				let deletemessageid;
-				if(target.closest("div.listMessage").children[0].children[1].attributes["messageid"] !== undefined){
-					deletemessageid=target.closest("div.listMessage").children[0].children[1].attributes["messageid"].value;
-				}
-				else{
-					deletemessageid=target.closest("div.listMessage").children[0].attributes["messageid"].value;
-				}
-				for(let x=0; x<listMessage.length;x++){
-					if(listMessage[x]._id===deletemessageid){
-						for(let y=0 ; y<listMessage[x].answer.length ; y++)
-							if(listMessage[x].answer[y]===target.attributes["messageid"].value){
-								listMessage[x].answer.splice(y,1);
-							}
-						break;
-					}
-				}
-			}
-
-			if(target.closest("div.listMessage")!==null){
-				//Delete page profil
-				if(objectSend.replyLevel === 0 ) target.closest("div.listMessage").style.display="none";
-				else if(objectSend.replyLevel===1) target.parentNode.style.display="none";
-				else target.style.display="none";
-				
-			}
-			else{
-				//Delete page actu
-				if(target.parentNode.className === "listAnswer" && objectSend.replyLevel===1) target.parentNode.style.display="none";
-				else target.style.display="none";
-			}
-
-			if(parametre.replyLevel===0 && targetMessage.messageid!==""){
-				settargetMessage({messageid:"",replyLevel:0});
-			}
-			setopenParametre(0);
-			setchangeUpdate(changeUpdate+1);
-			*/
 		})
 	}
 	async function senddelMessage(formData){
@@ -376,7 +330,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 										...listMessage[x].answerArray[1][y],
 										...result,
 									};
-									setListMessage({...listMessage});
+									setListMessage([...listMessage]);
 									endbool=true;
 									break;
 								}
@@ -390,7 +344,7 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 													...listMessage[x].answerArray[y+2][z],
 													...result,
 												};
-												setListMessage({...listMessage});
+												setListMessage([...listMessage]);
 												endbool=true;
 												break;
 											}
