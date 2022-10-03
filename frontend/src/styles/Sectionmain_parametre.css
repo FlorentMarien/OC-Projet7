@@ -30,3 +30,12 @@
 .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
     -webkit-text-fill-color: gray !important;
 }
+.buttonParametre{
+    background-color: #17273f !important;
+    height: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.buttonParametre:hover{
+    background-color: #1565c0 !important;   
+}

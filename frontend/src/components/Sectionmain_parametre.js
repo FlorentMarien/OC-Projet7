@@ -298,21 +298,24 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 			return err.json();
 		  });
 	}
+	let buttonVariant="contained";
 	return (
 	<section className="section--mid">
 		<p>Parametre</p>
 		<ButtonGroup className="nav-Parametre"variant="outlined" aria-label="outlined button group" >
-			<Button onClick={(e)=>{if(targetPage!==0){settargetPage(0)}}}>Information</Button>
-			<Button onClick={(e)=>{if(targetPage!==1){settargetPage(1)}}}>Gallery</Button>
+			<Button variant={buttonVariant} onClick={(e)=>{if(targetPage!==0){settargetPage(0)}}}>Information</Button>
+			<Button variant={buttonVariant} onClick={(e)=>{if(targetPage!==1){settargetPage(1)}}}>Gallery</Button>
 		</ButtonGroup>
 		{
 		targetPage===0 &&
 			<>
+			<ThemeProvider key="210" theme={theme}>
 			<ButtonGroup className="nav-Parametre"variant="outlined" aria-label="outlined button group" >
-				<Button onClick={(e)=>{if(secondtargetPage!==0){setsecondtargetPage(0)}}}>Nom/Prénom</Button>
-				<Button onClick={(e)=>{if(secondtargetPage!==1){setsecondtargetPage(1)}}}>Mots de passe</Button>
-				<Button onClick={(e)=>{if(secondtargetPage!==2){setsecondtargetPage(2)}}}>Adresse email</Button>
+				<Button className="buttonParametre" variant={buttonVariant} onClick={(e)=>{if(secondtargetPage!==0){setsecondtargetPage(0)}}}>Nom/Prénom</Button>
+				<Button className="buttonParametre" variant={buttonVariant} onClick={(e)=>{if(secondtargetPage!==1){setsecondtargetPage(1)}}}>Mots de passe</Button>
+				<Button className="buttonParametre" variant={buttonVariant} onClick={(e)=>{if(secondtargetPage!==2){setsecondtargetPage(2)}}}>Adresse email</Button>
 			</ButtonGroup>
+			</ThemeProvider>
 			{
 				secondtargetPage === 0 ?
 					<div id="parametre_modifname">
