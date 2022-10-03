@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import AddCommentIcon from '@mui/icons-material/AddComment';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,targetRechercheUser,settargetRechercheUser}) {
 	const [targetMessage,settargetMessage] = useState({messageid:"",replyLevel:0});
@@ -359,7 +360,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		<section className="section--mid">
 			{
 				(profilTarget === 0 ) ?
-				<p>Load...</p>
+				<CircularProgress className='loadspinneranimation'/>
 				:
 				<>
 				<div id="blockprofil">
@@ -417,7 +418,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 					{	targetMessage.messageid === "" ?
 							(listMessage.length > 0) ?
 							getuserMessage("all")
-							: <p>Load all message...</p>
+							: <CircularProgress className='loadspinneranimation'/>
 						: getuserMessage("one")
 					}
 				</div>

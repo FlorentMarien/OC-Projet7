@@ -17,6 +17,13 @@
     padding-left: 20px;
     padding-right: 20px;
 }
+.loadspinneranimation{
+    width: 60px !important;
+    height: 60px !important;
+    position: absolute;
+    left: calc(50% - 30px);
+    top: calc(50% - 30px);  
+}
 /* tablette */ 
 @media all and (max-width: 992px) {
     #main_container > section{

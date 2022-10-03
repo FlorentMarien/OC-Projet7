@@ -12,6 +12,8 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import DeleteIcon from '@mui/icons-material/Delete';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import Slide from '@mui/material/Slide';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 library.add(fas)
 const theme = createTheme({
@@ -423,10 +425,10 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			targetMessage.messageid === "" ?
 				listMessage.length>0 ?
 				getuserMessage("all",0)
-				: <p>Load...</p>
+				: <CircularProgress className='loadspinneranimation'/>
 			: listMessage.length>0 ?
 				getuserMessage("one",0)
-				: <p>Load...</p>
+				: <CircularProgress className='loadspinneranimation'/>
 			}
 			</section>
 		);
