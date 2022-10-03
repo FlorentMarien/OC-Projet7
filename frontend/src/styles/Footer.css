@@ -2,4 +2,9 @@ footer{
     height: 10%;
     border-top: solid 2px gray;
     box-sizing: border-box;
+
+    /*
+
+    */
+    display: none;
 }

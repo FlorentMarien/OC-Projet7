@@ -101,8 +101,10 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 						//[0] Parent // [1] Reponse if lenght = 2 // [2] Sous reponse de [1][0] // [3] Sous reponse de [1][1]
 						let listparentmessageprofil;
 						let listparent;
+						let nbranswer;
 						for(let y=0;y<2;y++){
 							if(y===1){
+								nbranswer=listMessage[x].answerArray[y].length;
 								for(let z=0;z<listMessage[x].answerArray[y].length;z++){
 										//Recupere une réponse avec les réponses associées
 										let verif=false;
@@ -141,10 +143,12 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 												</>
 											);
 								}
+								let classwithanswer="";
+								if(nbranswer > 0 )  classwithanswer="--withanswer";
 								listmessageprofil=(
 									<>
 									{listmessageprofil}
-									<div key={listMessage[x].answerArray[0][0]._id} className='listMessage' >
+									<div key={listMessage[x].answerArray[0][0]._id} className={'listMessage '+ classwithanswer} >
 										{listparent}
 									</div>
 									</>
@@ -174,6 +178,8 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			parametre.getCommentaire=false;
 			for(let a=0;a<listMessage.length;a++){
 				if(listMessage[a].answerArray[0][0]._id === targetMessage.messageid){
+					let classwithanswer="";
+					if(listMessage[a].answerArray[0][0].answer.length > 0 )  classwithanswer="--withanswer";
 					reply=(
 						<>
 						<div className='displayfocusMessage'>
@@ -219,7 +225,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 					}
 					reply=(
 						<>
-						<div className="listMessage">
+						<div className={"listMessage "+classwithanswer}>
 						{reply}
 						</div>
 						</>
@@ -267,7 +273,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		window.onscroll = function(ev) {
 			let headerheight=document.getElementsByTagName("header")[0].offsetHeight;
 			let mainheight=document.getElementById("main_container").offsetHeight;
-			let pageheight=headerheight+mainheight;
+			let pageheight=mainheight; // + headerheight
 			if ((window.innerHeight + window.scrollY ) >= pageheight){
 				window.onscroll = null;
 				setlimitmessage({...limitmessage,skipmessage:limitmessage.skipmessage+limitmessage.nbrmessage,nbrmessage:limitmessage.nbrmessage});

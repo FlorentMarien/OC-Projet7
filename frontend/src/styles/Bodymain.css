@@ -109,4 +109,7 @@
     .paddingright10{
         padding-right: 0 !important;
     }
+    .displayfocusMessage{
+        top:50px !important;
+    }
 }

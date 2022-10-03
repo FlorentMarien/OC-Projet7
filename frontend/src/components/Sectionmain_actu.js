@@ -141,6 +141,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			parametre.replyLevel=targetMessage.replyLevel;
 			parametre.messageFocus="messageAll";
 			parametre.getCommentaire=false;
+			let nbranswer=0;
 			for(let a=0;a<listMessage.length;a++){
 				if(listMessage[a].answerArray[0][0]._id === targetMessage.messageid){
 					reply=(
@@ -154,6 +155,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 						</>
 					);
 					if(listMessage[a].answerArray[0][0].answer.length>0){
+						nbranswer=listMessage[a].answerArray[0][0].answer.length;
 						let replylvl1,replylvl2;
 						for(let x=0;x<listMessage[a].answerArray[1].length;x++){
 							replylvl1="";
@@ -174,6 +176,7 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 									);					
 								}
 							}
+							
 							reply=(
 								<>
 								{reply}
@@ -186,9 +189,11 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 							);
 						}
 					}
+					let classwithanswer="";
+					if(nbranswer > 0 )  classwithanswer="--withanswer";
 					reply=(
 						<>
-						<div className="listMessage">
+						<div className={"listMessage "+classwithanswer}>
 						{reply}
 						</div>
 						</>
@@ -373,7 +378,8 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		window.onscroll = function(ev) {
 			let headerheight=document.getElementsByTagName("header")[0].offsetHeight;
 			let mainheight=document.getElementById("main_container").offsetHeight;
-			let pageheight=headerheight+mainheight;
+			let pageheight=mainheight; // + headerheight
+			console.log((window.innerHeight + window.scrollY) + " >= " + pageheight )
 			if ((window.innerHeight + window.scrollY ) >= pageheight){
 				window.onscroll = null;
 				setlimitmessage({...limitmessage,skipmessage:limitmessage.skipmessage+limitmessage.nbrmessage,nbrmessage:limitmessage.nbrmessage});

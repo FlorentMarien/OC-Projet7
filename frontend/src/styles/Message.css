@@ -180,5 +180,10 @@
 }
 .replylevel0{
     margin-top: 20px;
-    margin-bottom: 20px;
+    /*
+    margin-bottom: 20px;*/
+}
+.--withanswer div.replylevel0{
+    width: calc(100% - 45px);
+    margin-right: 0px;
 }
