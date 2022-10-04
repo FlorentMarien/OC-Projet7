@@ -33,7 +33,7 @@ function Nav({auth,setAuth,indexPage,setindexPage,profilData,setprofilData,setta
 			<Button color="primary" variant={buttonVariant} startIcon={<TuneIcon />} onClick={(e)=>redirectPage(e,4)}>
 				<p className='--textbutton'>Paramétres</p>
 			</Button>
-			<Button color="primary" variant={buttonVariant} startIcon={<LogoutIcon />} onClick={(e)=>setAuth([0])}>
+			<Button color="error" variant={buttonVariant} startIcon={<LogoutIcon />} onClick={(e)=>setAuth([0])}>
 				<p className='--textbutton'>Déconnection</p>
 			</Button>
 			</ButtonGroup>

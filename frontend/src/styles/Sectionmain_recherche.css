@@ -35,3 +35,8 @@ section .sectionmain_aside .aside_recherche_result button{
 .aside_recherche div.MuiFormControl-root{
     width: 100%;
 }
+#getBack{
+    position: sticky;
+    top: 10%;
+    height: 45px;
+}
