@@ -52,6 +52,8 @@ function Sectionmain_aside({auth,setAuth,indexPage,setindexPage,profilData,setpr
 				</>
 			);
 		});
+		if(userList.length>0) document.getElementsByClassName("aside_recherche_result")[0].style.overflowY="scroll";
+		else document.getElementsByClassName("aside_recherche_result")[0].style.overflowY="hidden";
 		return reply;
 	}
 	async function getRechercheuserApi(objData){

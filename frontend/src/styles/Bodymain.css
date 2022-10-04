@@ -8,13 +8,13 @@
     padding-right: 5px !important;
 }
 .section--alone{
-    width: calc(77.5% - 40px);
+    width: calc(77.5%);
     padding-left: 20px;
     padding-right: 20px;
 }
 .section--mid{
     position: relative;
-    width: calc(57.5% - 40px);
+    width: calc(57.5%);
     padding-left: 20px;
     padding-right: 20px;
 }
@@ -45,9 +45,8 @@
     #privatemessage_rechercheuser button.recherche_user {
         width: 80%;
     }
-    .loadspinneranimation{
-        
-       /* left: calc(72.5% - 30px) !important; */
+    .nav-left div button p{
+        display: none !important;
     }
 }
 @media all and (max-width: 700px) {

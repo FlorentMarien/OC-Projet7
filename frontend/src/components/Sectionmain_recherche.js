@@ -15,6 +15,7 @@ function Sectionmain_recherche({auth,setAuth,indexPage,setindexPage,profilData,s
 			:
 			<>
 			<Sectionmain_profil key={20} targetRechercheUser={targetRechercheUser} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} profilData={profilData}/>
+			<Sectionmain_aside key={21} auth={auth} setAuth={setAuth} indexPage={indexPage} setindexPage={setindexPage} targetRechercheUser={targetRechercheUser} settargetRechercheUser={settargetRechercheUser}/>
 			</>
 			}
 		</>

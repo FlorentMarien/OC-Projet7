@@ -60,3 +60,6 @@
 .css-1v8k8xx-MuiInputBase-root-MuiFilledInput-root{
     background-color: transparent !important;
 }
+.aside_recherche_result{
+    overflow-y: hidden;
+}
