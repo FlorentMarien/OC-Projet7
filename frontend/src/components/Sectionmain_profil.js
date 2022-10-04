@@ -263,11 +263,17 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		return await getuserMessageApi(JSON.stringify({...targetRechercheUser,limitmessage:limitmessage})).then((result)=>{
 			if(result.length===0){
 				if(listMessage.length>0){
-					window.onscroll = null;
+					return result;
 				}
-				else setListMessage([-1]);
+				else {
+					setListMessage([-1]);
+					return result;
+				}
 			}
-			else setListMessage([...listMessage,...result]);
+			else {
+				setListMessage([...listMessage,...result]);
+				return result;
+			}
 		});
 	}
 	function lazyload(){
@@ -350,8 +356,12 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 		}
 	}, [auth])
 	useEffect(() => {
-		getmes().then(()=>{
-			lazyload();
+		getmes().then((result)=>{
+			if(result.length<limitmessage.nbrmessage){
+				window.onscroll = null;
+			}else{
+				lazyload();
+			}
 		});
 	}, [limitmessage])
 	useEffect(() => {
