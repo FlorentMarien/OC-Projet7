@@ -37,7 +37,6 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 	const [targetMessage,settargetMessage] = useState({messageid:"",replyLevel:0});
 	const [formText,setformText] = useState("Votre message ");
 	const [formFile,setformFile] = useState("");
-	const [openActuSend,setopenActuSend] = useState(0);
 	let timerNewMessage;
 	let containerRef = useRef();
 	function getimgpreview(){
@@ -333,27 +332,6 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			}
 		});
 	}
-	async function getNbrMessageApi(){
-		return await fetch("http://localhost:3000/api/message/getNbrMessage",{
-			headers: {
-				'Authorization': "Bearer "+auth[2],
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-			},
-			method: 'GET',
-		  })
-		  .then(function(res) { 
-			if (res.ok) {
-			  return res.json();
-			}
-		  })
-		  .then(function(result) {
-			return result;
-		  })
-		  .catch(function(err) {
-			// Une erreur est survenue
-		  });
-	}
 	async function getNbrNewMessageApi(indexId){
 		return await fetch("http://localhost:3000/api/message/getNbrNewMessage",{
 			headers: {
@@ -424,9 +402,6 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 			clearInterval(timerNewMessage);
 		};
 	}, [nbrmessageapi])
-		let parametre={
-			replyLevel:0,
-		};
 		return (
 			<section ref={containerRef} className="section--mid">
 			{

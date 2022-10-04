@@ -42,31 +42,6 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 			}*/
 		},
 	});
-	function exitOnBlur(e){
-		if(e.target.closest("div.message") !== undefined){
-			if(openParametre!==0) setopenParametre(0);
-			if(openReply!==0) setopenReply(0);
-		}
-	}
-	async function getuserMessageApi(){
-		return await fetch("http://localhost:3000/api/message/getuserMessage",{
-			headers: {
-				'Authorization': "Bearer "+auth[2]
-			},
-			method: 'GET',
-		  })
-		  .then(function(res) { 
-			if (res.ok) {
-			  return res.json();
-			}
-		  })
-		  .then(function(result) {
-			return result;
-		  })
-		  .catch(function(err) {
-			// Une erreur est survenue
-		  });
-	}
 	function modifAnswer(e,replyLevel=0){
 		e.preventDefault();
 		let target=e;
@@ -316,37 +291,45 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 		sendLikeApi(JSON.stringify(formData)).then((result)=>{
 			// Like: 1
 				setelementMessage({...elementMessage,...result});
-				if(listMessage[0]._id === undefined){
-					//Page profil
 					let endbool=false;
 					for(let x=0;x<listMessage.length;x++){
 						if(endbool===true) break;
-						if(listMessage[x].answerArray[1].length>0){
-							for(let y=0;y<listMessage[x].answerArray[1].length;y++){
-								if(endbool===true) break;
-								if(listMessage[x].answerArray[1][y]._id===target.target.closest("div.message").attributes["messageid"].value){
-									//replylevel1 correspondance
-									listMessage[x].answerArray[1][y]={
-										...listMessage[x].answerArray[1][y],
-										...result,
-									};
-									setListMessage([...listMessage]);
-									endbool=true;
-									break;
-								}
-								else{
-									//recherche replylevel2
-									if(listMessage[x].answerArray[y+2].length>0){
-										for(let z=0;z<listMessage[x].answerArray[y+2].length;z++){
-											if(listMessage[x].answerArray[y+2][z]._id===target.target.closest("div.message").attributes["messageid"].value){
-												//replylevel1 correspondance
-												listMessage[x].answerArray[y+2][z]={
-													...listMessage[x].answerArray[y+2][z],
-													...result,
-												};
-												setListMessage([...listMessage]);
-												endbool=true;
-												break;
+						if(listMessage[x].answerArray[0][0]._id===target.target.closest("div.message").attributes["messageid"].value){
+							listMessage[x].answerArray[0][0]={
+								...listMessage[x].answerArray[0][0],
+								...result,
+							};
+							setListMessage([...listMessage]);
+							endbool=true;
+							break;
+						}else{
+							if(listMessage[x].answerArray[1].length>0){
+								for(let y=0;y<listMessage[x].answerArray[1].length;y++){
+									if(endbool===true) break;
+									if(listMessage[x].answerArray[1][y]._id===target.target.closest("div.message").attributes["messageid"].value){
+										//replylevel1 correspondance
+										listMessage[x].answerArray[1][y]={
+											...listMessage[x].answerArray[1][y],
+											...result,
+										};
+										setListMessage([...listMessage]);
+										endbool=true;
+										break;
+									}
+									else{
+										//recherche replylevel2
+										if(listMessage[x].answerArray[y+2].length>0){
+											for(let z=0;z<listMessage[x].answerArray[y+2].length;z++){
+												if(listMessage[x].answerArray[y+2][z]._id===target.target.closest("div.message").attributes["messageid"].value){
+													//replylevel1 correspondance
+													listMessage[x].answerArray[y+2][z]={
+														...listMessage[x].answerArray[y+2][z],
+														...result,
+													};
+													setListMessage([...listMessage]);
+													endbool=true;
+													break;
+												}
 											}
 										}
 									}
@@ -354,7 +337,6 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 							}
 						}
 					}
-				}
 		});
 	}
 	async function sendLikeApi(formData){
@@ -472,56 +454,6 @@ function Message({parametre,changeUpdate,setchangeUpdate,element,auth,setListMes
 		  .catch(function(err) {
 			// Une erreur est survenue
 		  });
-	}
-	async function getMessageApi(){
-		return await fetch("http://localhost:3000/api/message/get",{
-			headers: {
-				'Authorization': "Bearer "+auth[2]
-			},
-			method: 'POST',
-		  })
-		  .then(function(res) { 
-			if (res.ok) {
-			  return res.json();
-			}
-		  })
-		  .then(function(result) {
-			return result;
-		  })
-		  .catch(function(err) {
-			// Une erreur est survenue
-		  });
-	}
-	async function getAnswerApi(){
-		return await fetch("http://localhost:3000/api/answer/get",{
-			headers: {
-				'Authorization': "Bearer "+auth[2]
-			},
-			method: 'POST',
-		})
-		.then(function(res) { 
-			if (res.ok) {
-			  return res.json();
-			}
-		})
-		.then(function(result) {
-			return result;
-		})
-		.catch(function(err) {
-			// Une erreur est survenue
-		});
-	}
-	async function getmes(message,answer){
-		if(message===1){
-			return getMessageApi().then((result)=>{
-			setListMessage(result);
-		});
-		}
-		if(answer===1){
-			return getAnswerApi().then((result)=>{
-			setListAnswer(result);
-		});
-		}
 	}
 	function getCommentaire(e){
 		if(openReply===1) setopenReply(0);

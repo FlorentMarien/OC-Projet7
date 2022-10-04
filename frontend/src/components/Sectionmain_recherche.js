@@ -2,8 +2,6 @@ import '../styles/Sectionmain_recherche.css'
 import Sectionmain_aside from './Sectionmain_aside'
 import Sectionmain_profil from './Sectionmain_profil'
 import { useState,useEffect } from 'react'
-import IconButton from '@mui/material/IconButton'
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 
 function Sectionmain_recherche({auth,setAuth,indexPage,setindexPage,profilData,setprofilData}) {
 	let [targetRechercheUser,settargetRechercheUser] = useState({userid:undefined});

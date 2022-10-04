@@ -287,6 +287,7 @@ function Bodymain({auth,setAuth}) {
 		}
 	}, [indexPage]);
 	useEffect(() => {
+		//	Force actualisation si recherche user
 		if(indexPage.index!==0 && targetRechercheUser.userid!==undefined){
 			setindexPage({index:0,emetteur:"navbar-aside"});
 		}

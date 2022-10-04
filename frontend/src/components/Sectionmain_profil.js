@@ -306,7 +306,6 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 			clearInterval(timer);
 		};
 	}, [profilTarget])
-
 	useEffect(() => {
 		if(targetRechercheUser.userid!==undefined){
 			async function getUser(objData){
