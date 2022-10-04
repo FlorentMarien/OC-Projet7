@@ -312,9 +312,12 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 		return await getMessageApi(JSON.stringify({userid:"all",limitmessage:limitmessage,index:nbrmessageapi.firstmessage})).then((result)=>{
 			if(result.message.length===0){
 				if(listMessage.length>0){
-					window.onscroll = null;
+					return result;
 				}
-				else setListMessage([-1]);
+				else {
+					setListMessage([-1]);
+					return result;
+				}
 			}
 			else {
 				let firstmessage;
@@ -327,8 +330,8 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 				else if(nbrmessageapi.nbrmessage<result.nbrmessage){
 					let nbrnewmessage=result.nbrmessage-nbrmessageapi.nbrmessage;
 					setnbrmessageapi({nbrmessage:nbrmessageapi.nbrmessage,nbrnewmessage:nbrnewmessage,firstmessage:firstmessage});
-					
 				}
+				return result;
 			}
 		});
 	}
@@ -375,8 +378,12 @@ function Sectionmain_actu({auth,setAuth,indexPage,setindexPage,profilData,setpro
 	}
 	
 	useEffect(() => {
-		getmes().then(()=>{
-			lazyload();
+		getmes().then((result)=>{
+			if(result.length<limitmessage.nbrmessage){
+				window.onscroll = null;
+			}else{
+				lazyload();
+			}
 		});
 	}, [limitmessage])
 
