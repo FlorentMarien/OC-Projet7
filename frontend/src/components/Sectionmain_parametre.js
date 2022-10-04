@@ -301,7 +301,6 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 	let buttonVariant="contained";
 	return (
 	<section className="section--mid">
-		<p>Parametre</p>
 		<ButtonGroup className="nav-Parametre"variant="outlined" aria-label="outlined button group" >
 			<Button variant={buttonVariant} onClick={(e)=>{if(targetPage!==0){settargetPage(0)}}}>Information</Button>
 			<Button variant={buttonVariant} onClick={(e)=>{if(targetPage!==1){settargetPage(1)}}}>Gallery</Button>

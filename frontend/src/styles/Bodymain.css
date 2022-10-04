@@ -132,4 +132,7 @@
     .displayfocusMessage{
         top:50px !important;
     }
+    section{
+        margin-top: 20px;
+    }
 }
