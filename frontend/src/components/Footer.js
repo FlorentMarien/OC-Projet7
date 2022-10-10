@@ -1,11 +1,11 @@
-import '../styles/Footer.css'
+import '../styles/Footer.css';
 
 function Footer() {
-	return (
-		<footer>
+    return (
+        <footer>
             <h2>Footer:</h2>
         </footer>
-	)
+    );
 }
 
-export default Footer
+export default Footer;
