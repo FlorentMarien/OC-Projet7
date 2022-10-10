@@ -50,3 +50,9 @@ form > *{
 .formlogin label svg{
     fill: gray;
 }
+.blockauth form button {
+    background-color: #17273f;
+}
+.blockauth form button:hover{
+    background-color: #1565c0;
+}

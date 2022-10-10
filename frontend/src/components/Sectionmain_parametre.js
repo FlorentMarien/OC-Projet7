@@ -172,6 +172,7 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 		e.preventDefault();
 		if(backPassword !== confirmbackPassword){
 			setstatePassword("errorinput");
+			document.getElementById("modifmdp_notif").textContent="Erreur lors de la confirmation du mots de passe";
 		}
 		else{
 			setstatePassword("");
@@ -179,7 +180,10 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 				backPassword:backPassword,
 				newPassword:newbackPassword
 			}
-			sendmodifpass(JSON.stringify(objData)).then((result)=>result).catch((error)=>error);
+			sendmodifpass(JSON.stringify(objData)).then((result)=>{
+				if(result==="Erreur de l'ancien mots de passe") document.getElementById("modifmdp_notif").textContent=result;
+				else document.getElementById("modifmdp_notif").textContent="Modification faite";
+			}).catch((error)=>console.log(error));
 		}
 	}
 	function submitmodifname(e){
@@ -241,15 +245,15 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 			body: objData
 		  })
 		  .then(function(res) { 
-			if (res.ok) {
+		
 			  return res.json();
-			}
+			
 		  })
 		  .then(function(result) {
 			return result;
 		  })
 		  .catch(function(err) {
-			// Une erreur est survenue
+			return err;
 		  });
 	}
 	async function sendmodifname(objData){
@@ -343,7 +347,8 @@ function Sectionmain_parametre({auth,setAuth,indexPage,setindexPage,profilData,s
 							<TextField key="213" className={statePassword} color="neutral" type="password" id="confirmformPassword" label="Confirm-Password" variant="outlined" onBlur={(e)=>setconfirmbackPassword(e.target.value)}/>
 							<TextField key="214" color="neutral" type="password" id="newformPassword" label="New Password" variant="outlined" onBlur={(e)=>setnewbackPassword(e.target.value)}/>
 							<Button variant="contained" onClick={(e)=>{submitmodifpass(e)}}>Modification mots de passe</Button>
-						</form>		
+						</form>	
+						<span id="modifmdp_notif"></span>		
 						</ThemeProvider>
 		
 					</div>

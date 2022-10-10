@@ -66,16 +66,16 @@ exports.login = (req, res) => {
 async function getnbrmessageanswer(userid) {
     let nbrmessage;
     let nbranswer;
-    await Message.find({userId:userid}).then((res)=>{
-        nbrmessage=res.length;
-    })
-    await Answer.find({userId:userid}).then((res)=>{
-        nbranswer=res.length;
-    })
-    let objectRes={
-        nbrmessage:nbrmessage,
-        nbranswer:nbranswer,
-    }
+    await Message.find({ userId: userid }).then((res) => {
+        nbrmessage = res.length;
+    });
+    await Answer.find({ userId: userid }).then((res) => {
+        nbranswer = res.length;
+    });
+    let objectRes = {
+        nbrmessage: nbrmessage,
+        nbranswer: nbranswer,
+    };
     return objectRes;
 }
 exports.getlogin = (req, res) => {
@@ -87,7 +87,7 @@ exports.getlogin = (req, res) => {
                     message: 'Utilisateur introuvable',
                 });
             }
-            getnbrmessageanswer(req.body.userid).then((result)=>{
+            getnbrmessageanswer(req.body.userid).then((result) => {
                 res.status(200).json({
                     name: user.name,
                     prename: user.prename,
@@ -146,25 +146,27 @@ exports.modifpassword = (req, res) => {
     });
 };
 exports.modifname = (req, res) => {
-    let newname=req.body.newname;
-    let newprename=req.body.newprename;
-    User.updateOne({ _id: req.auth.userId }, { name: newname,prename:newprename })
+    let newname = req.body.newname;
+    let newprename = req.body.newprename;
+    User.updateOne(
+        { _id: req.auth.userId },
+        { name: newname, prename: newprename }
+    )
         .then(() => res.status(200).json('Nom / Prenom modifié'))
         .catch((error) => res.status(500).json(error));
-
 };
 exports.modifemail = (req, res) => {
-    let newemail=req.body.newemail;
-    User.find({email:newemail}).then((result)=>{
-        if(result.length===0){
+    let newemail = req.body.newemail;
+    User.find({ email: newemail }).then((result) => {
+        if (result.length === 0) {
             User.updateOne({ _id: req.auth.userId }, { email: newemail })
-                .then(() => res.status(200).json({msg:'Email modifié'}))
+                .then(() => res.status(200).json({ msg: 'Email modifié' }))
                 .catch((error) => res.status(500).json(error));
-        }else{
-            res.status(400).json({msg:"Adresse email déjà enregistré"});
-            // return 1 for Doublon 
+        } else {
+            res.status(400).json({ msg: 'Adresse email déjà enregistré' });
+            // return 1 for Doublon
         }
-    })
+    });
 };
 exports.deletegallery = (req, res) => {
     User.findOne({ _id: req.auth.userId }).then((user) => {

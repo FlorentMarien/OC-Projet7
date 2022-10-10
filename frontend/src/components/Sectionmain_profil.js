@@ -404,7 +404,7 @@ function Sectionmain_profil({auth,setAuth,indexPage,setindexPage,profilData,setp
 									formFile !==0 &&
 									<Button onClick={(e)=>{sendImg(e)}}>Envoyer</Button>
 								}
-								<Button onClick={(e)=>{setindexPage(4)}}>Parcourir</Button>
+								<Button onClick={(e)=>{setindexPage({index:4,emetteur:"navbar"})}}>Parcourir</Button>
 							</ButtonGroup>
 						</div>
 						}
