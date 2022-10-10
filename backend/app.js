@@ -6,13 +6,16 @@ const path = require('path');
 const answerRoute = require('./routes/answer');
 const privatemessageRoute = require('./routes/privatemessage');
 const socket = require('./socket');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
 mongoose
-    .connect(
-        'mongodb+srv://Florent62350:IH2qlX4kk4Ek9XsG@cluster0.u1t8c.mongodb.net/?retryWrites=true&w=majority',
-        { useNewUrlParser: true, useUnifiedTopology: true, dbName: 'Project7' }
-    )
+    .connect(process.env.MONGODB_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        dbName: 'Project7',
+    })
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 

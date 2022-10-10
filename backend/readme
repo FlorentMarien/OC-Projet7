@@ -1,0 +1,3 @@
+Create .env
+with
+MONGODB_URL='YOURURL',
