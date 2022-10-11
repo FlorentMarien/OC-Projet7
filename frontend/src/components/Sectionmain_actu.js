@@ -1,7 +1,7 @@
 import '../styles/Sectionmain_actu.css';
 import { useState, useEffect, useRef } from 'react';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faRefresh, fas } from '@fortawesome/free-solid-svg-icons';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 import Message from './Message';
 import Message_reply from './Message_reply';
 import TextField from '@mui/material/TextField';
@@ -53,7 +53,7 @@ function Sectionmain_actu({
     const [formText, setformText] = useState('Votre message ');
     const [formFile, setformFile] = useState('');
     let timerNewMessage;
-    let containerRef = useRef();
+    let divRef = useRef();
     function getimgpreview() {
         let urlFile = URL.createObjectURL(formFile);
         return (
@@ -564,11 +564,26 @@ function Sectionmain_actu({
             document.getElementById('loadspinnerlazyload').style.display =
                 'none';
         }
+
         window.onscroll = function (ev) {
-            let headerheight =
+            /*
+            let target = document.getElementsByTagName('section')[0];
+            let heightpage = window.innerHeight;
+            let headpage =
                 document.getElementsByTagName('header')[0].offsetHeight;
-            let mainheight =
-                document.getElementById('main_container').offsetHeight;
+            let scroll = window.scrollY;
+
+            let maxscroll = target.offsetHeight - heightpage + headpage;
+            console.log('scroll: ' + Math.ceil(window.scrollY));
+            console.log('scroll: ' + scroll + ' / ' + 'maxscroll:' + maxscroll);
+            */
+
+            let headerheight = Math.ceil(
+                document.getElementsByTagName('header')[0].offsetHeight
+            );
+            let mainheight = Math.ceil(
+                document.getElementById('main_container').offsetHeight
+            );
             let pageheight = mainheight + headerheight; // + headerheight
             if (
                 Math.ceil(window.visualViewport.height + window.scrollY) >=
@@ -636,7 +651,7 @@ function Sectionmain_actu({
         };
     }, [nbrmessageapi]);
     return (
-        <section ref={containerRef} className="section--mid">
+        <section className="section--mid" ref={divRef}>
             {targetMessage.messageid === '' ? (
                 listMessage.length > 0 ? (
                     <>

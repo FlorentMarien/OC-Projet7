@@ -583,13 +583,16 @@ function Sectionmain_profil({
                 'none';
         }
         window.onscroll = function (ev) {
-            let headerheight =
-                document.getElementsByTagName('header')[0].offsetHeight;
-            let mainheight =
-                document.getElementById('main_container').offsetHeight;
+            let headerheight = Math.ceil(
+                document.getElementsByTagName('header')[0].offsetHeight
+            );
+            let mainheight = Math.ceil(
+                document.getElementById('main_container').offsetHeight
+            );
             let pageheight = mainheight + headerheight; // + headerheight
             if (
-                Math.ceil(window.visualViewport.height + window.scrollY) >=
+                Math.ceil(window.scrollY) +
+                    Math.ceil(window.visualViewport.height) >=
                 pageheight
             ) {
                 window.onscroll = null;

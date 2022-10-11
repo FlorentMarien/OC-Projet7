@@ -1,16 +1,16 @@
-h2{
+h2 {
     width: 100%;
     text-align: center;
     margin: 0;
     padding: 0;
 }
-header{
+header {
     height: 10%;
     box-sizing: border-box;
     display: flex;
     justify-content: center;
 }
-header img{
+header img {
     width: 250px;
     height: 100%;
 }
