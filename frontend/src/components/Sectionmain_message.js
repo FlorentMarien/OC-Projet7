@@ -31,10 +31,9 @@ function Sectionmain_message({
     profilData,
     setprofilData,
     chat,
+    targetRechercheUserPrivateMessage,
+    settargetRechercheUserPrivateMessage,
 }) {
-    const [targetRechercheUser, settargetRechercheUser] = useState({
-        userid: undefined,
-    });
     const [targetPage, settargetPage] = useState(0);
     const [listMessage, setlistMessage] = useState([null]);
     const [listPreviewMessage, setlistPreviewMessage] = useState([null]);
@@ -42,7 +41,7 @@ function Sectionmain_message({
     const [stateInput, setstateInput] = useState('');
     let objectUser = {
         userId: auth[1],
-        destuserId: targetRechercheUser.userid,
+        destuserId: targetRechercheUserPrivateMessage.userid,
     };
     function getimgpreview() {
         let urlFile = URL.createObjectURL(formFile);
@@ -164,13 +163,13 @@ function Sectionmain_message({
                         }
                         onClick={(e) => {
                             if (auth[1] === element.userId) {
-                                settargetRechercheUser({
-                                    ...targetRechercheUser,
+                                settargetRechercheUserPrivateMessage({
+                                    ...targetRechercheUserPrivateMessage,
                                     userid: element.destuserId,
                                 });
                             } else {
-                                settargetRechercheUser({
-                                    ...targetRechercheUser,
+                                settargetRechercheUserPrivateMessage({
+                                    ...targetRechercheUserPrivateMessage,
                                     userid: element.userId,
                                 });
                             }
@@ -224,11 +223,11 @@ function Sectionmain_message({
         chat.imageUrl = formFile;
     }, [formFile]);
     useEffect(() => {
-        if (targetRechercheUser.userid !== undefined) {
+        if (targetRechercheUserPrivateMessage.userid !== undefined) {
             getPrivatemessage(JSON.stringify(objectUser)).then((res) => {
                 setlistMessage([...res.conversation]);
                 chat.name = profilData.name + ' ' + profilData.prename;
-                chat.destuserId = targetRechercheUser.userid;
+                chat.destuserId = targetRechercheUserPrivateMessage.userid;
                 chat.initPrivate();
             });
         } else {
@@ -242,10 +241,10 @@ function Sectionmain_message({
                 chat.send('Exit the chat room.', 'close');
             }
         };
-    }, [targetRechercheUser]);
+    }, [targetRechercheUserPrivateMessage]);
     return (
         <>
-            {targetRechercheUser.userid === undefined ? (
+            {targetRechercheUserPrivateMessage.userid === undefined ? (
                 <section id="section_privatemessage">
                     <div id="notifprivatemessage"></div>
                     {listPreviewMessage.length > 0 &&
@@ -292,8 +291,12 @@ function Sectionmain_message({
                                 setAuth={setAuth}
                                 indexPage={indexPage}
                                 setindexPage={setindexPage}
-                                targetRechercheUser={targetRechercheUser}
-                                settargetRechercheUser={settargetRechercheUser}
+                                targetRechercheUser={
+                                    targetRechercheUserPrivateMessage
+                                }
+                                settargetRechercheUser={
+                                    settargetRechercheUserPrivateMessage
+                                }
                             />
                         )}
                     </div>
@@ -305,7 +308,9 @@ function Sectionmain_message({
                         <div
                             id="chatShow"
                             userid={auth[1]}
-                            destuserid={targetRechercheUser.userid}
+                            destuserid={
+                                targetRechercheUserPrivateMessage.userid
+                            }
                         >
                             {getBackMessage()}
                         </div>
@@ -316,8 +321,8 @@ function Sectionmain_message({
                             <ThemeProvider theme={theme}>
                                 <IconButton
                                     onClick={(e) =>
-                                        settargetRechercheUser({
-                                            ...targetRechercheUser,
+                                        settargetRechercheUserPrivateMessage({
+                                            ...targetRechercheUserPrivateMessage,
                                             userid: undefined,
                                         })
                                     }

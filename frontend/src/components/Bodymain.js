@@ -223,7 +223,16 @@ function Bodymain({ auth, setAuth }) {
                     if (msg.state === 'sendfile' && msg.msg === '') {
                         msg.msg = 'Vous avez reçu une photo';
                     }
-                    row.innerHTML = `<ul class="list_notif"><li>${msg['name']}</li><li>${msg['msg']}</li>`;
+                    let ul = document.createElement('ul');
+                    ul.className = 'list_notif';
+                    ul.innerHTML = `<li>${msg['name']}</li><li>${msg['msg']}</li>`;
+                    ul.onclick = (e) => {
+                        e.preventDefault();
+                        settargetRechercheUserPrivateMessage({
+                            userid: msg.userId,
+                        });
+                    };
+                    row.appendChild(ul);
                     row.style.transitionDuration = '2s';
                     row.style.transitionProperty = 'opacity';
                     if (
@@ -266,6 +275,12 @@ function Bodymain({ auth, setAuth }) {
     let [indexPage, setindexPage] = useState({ index: 1, emetteur: 'navbar' });
     const [profilData, setprofilData] = useState(0);
     let [targetRechercheUser, settargetRechercheUser] = useState({
+        userid: undefined,
+    });
+    const [
+        targetRechercheUserPrivateMessage,
+        settargetRechercheUserPrivateMessage,
+    ] = useState({
         userid: undefined,
     });
     useEffect(() => {
@@ -335,6 +350,12 @@ function Bodymain({ auth, setAuth }) {
             setindexPage({ index: 0, emetteur: 'navbar-aside' });
         }
     }, [targetRechercheUser]);
+    useEffect(() => {
+        //	Force actualisation si recherche user
+        if (indexPage.index !== 3 && targetRechercheUser.userid !== undefined) {
+            setindexPage({ index: 3, emetteur: 'navbar-aside' });
+        }
+    }, [targetRechercheUserPrivateMessage]);
 
     return (
         <div id="main_container">
@@ -398,6 +419,12 @@ function Bodymain({ auth, setAuth }) {
                     profilData={profilData}
                     setprofilData={setprofilData}
                     chat={chat}
+                    targetRechercheUserPrivateMessage={
+                        targetRechercheUserPrivateMessage
+                    }
+                    settargetRechercheUserPrivateMessage={
+                        settargetRechercheUserPrivateMessage
+                    }
                 />
             ) : null}
             {indexPage.index !== 2 && indexPage.index !== 3 && (
