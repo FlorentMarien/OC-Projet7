@@ -350,6 +350,7 @@ function Sectionmain_parametre({
             >
                 <Button
                     variant={buttonVariant}
+                    className={targetPage === 0 && 'activeNav'}
                     onClick={(e) => {
                         if (targetPage !== 0) {
                             settargetPage(0);
@@ -360,6 +361,7 @@ function Sectionmain_parametre({
                 </Button>
                 <Button
                     variant={buttonVariant}
+                    className={targetPage === 1 && 'activeNav'}
                     onClick={(e) => {
                         if (targetPage !== 1) {
                             settargetPage(1);
@@ -378,7 +380,11 @@ function Sectionmain_parametre({
                             aria-label="outlined button group"
                         >
                             <Button
-                                className="buttonParametre"
+                                className={
+                                    secondtargetPage === 0
+                                        ? 'buttonParametre activeNav'
+                                        : 'buttonParametre'
+                                }
                                 variant={buttonVariant}
                                 onClick={(e) => {
                                     if (secondtargetPage !== 0) {
@@ -389,7 +395,11 @@ function Sectionmain_parametre({
                                 Nom/Prénom
                             </Button>
                             <Button
-                                className="buttonParametre"
+                                className={
+                                    secondtargetPage === 1
+                                        ? 'buttonParametre activeNav'
+                                        : 'buttonParametre'
+                                }
                                 variant={buttonVariant}
                                 onClick={(e) => {
                                     if (secondtargetPage !== 1) {
@@ -400,7 +410,11 @@ function Sectionmain_parametre({
                                 Mots de passe
                             </Button>
                             <Button
-                                className="buttonParametre"
+                                className={
+                                    secondtargetPage === 2
+                                        ? 'buttonParametre activeNav'
+                                        : 'buttonParametre'
+                                }
                                 variant={buttonVariant}
                                 onClick={(e) => {
                                     if (secondtargetPage !== 2) {

@@ -33,7 +33,7 @@
     -webkit-text-fill-color: gray !important;
 }
 .buttonParametre {
-    background-color: #17273f !important;
+    /*background-color: #17273f !important;*/
     height: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
