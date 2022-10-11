@@ -8,6 +8,7 @@ import Sectionmain_parametre from './Sectionmain_parametre';
 import Sectionmain_aside from './Sectionmain_aside';
 import Sectionmain_recherche from './Sectionmain_recherche';
 import Sectionmain_message from './Sectionmain_message';
+import NotifSound from '../assets/sound/simple_notification.mp3';
 function Bodymain({ auth, setAuth }) {
     let [chat, setchat] = useState({
         // (A) INIT CHAT
@@ -155,14 +156,15 @@ function Bodymain({ auth, setAuth }) {
                             msg['userId'] === auth[1]
                                 ? 'privateMessage_user'
                                 : 'privateMessage_destuser';
-                        if (msg.state !== 'sendfile')
-                            row.innerHTML = `<div class="chatName">${msg['name']}</div> <div class="chatMsg"><p>${msg['msg']}<p></div>`;
-                        else {
-                            //let reader = new FileReader();
-                            // Convert the file to base64 text
+                        if (row.className === 'privateMessage_destuser') {
+                            let mySound = new Audio(NotifSound);
+                            mySound.play();
+                        }
 
+                        if (msg.state !== 'sendfile') {
+                            row.innerHTML = `<div class="chatName">${msg['name']}</div> <div class="chatMsg"><p>${msg['msg']}<p></div>`;
+                        } else {
                             let img = document.createElement('img');
-                            //let file = new File(base64ToStringNew,"img");
                             let arr = msg.img.split(','),
                                 mime = arr[0].match(/:(.*?);/)[1],
                                 bstr = atob(arr[1]),
@@ -174,7 +176,6 @@ function Bodymain({ auth, setAuth }) {
 
                             let file = new File([u8arr], 'img', { type: mime });
                             img.src = URL.createObjectURL(file);
-                            //img.src=URL.createObjectURL(base64ToStringNew);
                             let firstdiv = document.createElement('div');
                             firstdiv.className = 'chatName';
                             firstdiv.textContent = msg['name'];
@@ -215,7 +216,8 @@ function Bodymain({ auth, setAuth }) {
                 //Reception message
                 if (msg.state !== 'isWrite') {
                     //let row = document.getElementById("notifprivatemessage");
-
+                    let mySound = new Audio(NotifSound);
+                    mySound.play();
                     let row = document.createElement('div');
                     row.className = 'notifprivatemessage';
                     if (msg.state === 'sendfile' && msg.msg === '') {
