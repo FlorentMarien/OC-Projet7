@@ -1,41 +1,43 @@
-.errorinput div fieldset.MuiOutlinedInput-notchedOutline{
+.errorinput div fieldset.MuiOutlinedInput-notchedOutline {
     border-color: red !important;
 }
-.errorinput label{
-    color:red;
+.errorinput label {
+    color: red;
 }
-.nav-Parametre{
+.nav-Parametre {
     justify-content: center;
 }
-.form-Parametre{
+.nav-Parametre + .nav-Parametre {
+    margin-top: 10px;
+}
+.form-Parametre {
     display: flex;
     flex-direction: column;
 }
-.parametre_imgparametre{
+.parametre_imgparametre {
     visibility: hidden;
 }
-.parametre_img{
+.parametre_img {
     display: flex;
     justify-content: center;
 }
-.parametre_img div.parametre_imgparametre{
+.parametre_img div.parametre_imgparametre {
     line-height: 115px;
 }
-.parametre_inputtext{
+.parametre_inputtext {
     color: gray;
 }
-#parametre_modifname *{
-
+#parametre_modifname * {
 }
-.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
     -webkit-text-fill-color: gray !important;
 }
-.buttonParametre{
+.buttonParametre {
     background-color: #17273f !important;
     height: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.buttonParametre:hover{
-    background-color: #1565c0 !important;   
+.buttonParametre:hover {
+    background-color: #1565c0 !important;
 }

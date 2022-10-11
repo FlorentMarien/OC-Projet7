@@ -193,7 +193,7 @@ function Sectionmain_parametre({
     }
     function submitmodifpass(e) {
         e.preventDefault();
-        if (backPassword !== confirmbackPassword) {
+        if (newbackPassword !== confirmbackPassword) {
             setstatePassword('errorinput');
             document.getElementById('modifmdp_notif').textContent =
                 'Erreur lors de la confirmation du mots de passe';
@@ -205,10 +205,11 @@ function Sectionmain_parametre({
             };
             sendmodifpass(JSON.stringify(objData))
                 .then((result) => {
-                    if (result === "Erreur de l'ancien mots de passe")
+                    if (result === "Erreur de l'ancien mots de passe") {
                         document.getElementById('modifmdp_notif').textContent =
                             result;
-                    else
+                        setstatePassword('errorinput');
+                    } else
                         document.getElementById('modifmdp_notif').textContent =
                             'Modification faite';
                 })
@@ -531,7 +532,7 @@ function Sectionmain_parametre({
                                         color="neutral"
                                         type="password"
                                         id="confirmformPassword"
-                                        label="Confirm-Password"
+                                        label="New Password"
                                         variant="outlined"
                                         onBlur={(e) =>
                                             setconfirmbackPassword(
@@ -541,10 +542,11 @@ function Sectionmain_parametre({
                                     />
                                     <TextField
                                         key="214"
+                                        className={statePassword}
                                         color="neutral"
                                         type="password"
                                         id="newformPassword"
-                                        label="New Password"
+                                        label="Confirm New Password"
                                         variant="outlined"
                                         onBlur={(e) =>
                                             setnewbackPassword(e.target.value)
