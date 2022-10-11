@@ -12,7 +12,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import DeleteIcon from '@mui/icons-material/Delete';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import NotifSound from '../assets/sound/simple_notification.mp3';
 library.add(fas);
 const theme = createTheme({
     palette: {
@@ -53,6 +53,7 @@ function Sectionmain_actu({
     const [formText, setformText] = useState('Votre message ');
     const [formFile, setformFile] = useState('');
     let timerNewMessage;
+    let Backupnewmessage = useRef(0);
     let divRef = useRef();
     function getimgpreview() {
         let urlFile = URL.createObjectURL(formFile);
@@ -470,6 +471,7 @@ function Sectionmain_actu({
     }
     async function getNewMessage(e) {
         e.preventDefault();
+        Backupnewmessage.current = 0;
         document.getElementById('notifnewmessage_button').style.display =
             'none';
         getMessageApi(
@@ -634,6 +636,11 @@ function Sectionmain_actu({
                 JSON.stringify({ indexId: nbrmessageapi.firstmessage })
             ).then((res) => {
                 if (res.newmessage > 0) {
+                    if (Backupnewmessage.current !== res.newmessage) {
+                        Backupnewmessage.current = res.newmessage;
+                        let mySound = new Audio(NotifSound);
+                        mySound.play();
+                    }
                     document.getElementById(
                         'notifnewmessage_button'
                     ).style.display = 'inline';
