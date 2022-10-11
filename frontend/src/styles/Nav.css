@@ -1,4 +1,4 @@
-nav{
+nav {
     width: 22.5%;
     position: sticky;
     color: white;
@@ -7,7 +7,7 @@ nav{
     height: 80vh;
     top: 10%;
 }
-nav ul{
+nav ul {
     list-style: none;
     padding: 0;
     text-align: center;
@@ -24,18 +24,19 @@ nav ul{
 nav ul div {
     width: 100%;
 }
-nav ul div li{
+nav ul div li {
     border: 1px solid white;
     border-radius: 5px;
     margin: auto;
     margin-bottom: 15px;
 }
-nav ul li{
+nav ul li {
     border: 1px solid white;
     border-radius: 5px;
     width: 70%;
 }
-nav ul div li button, nav ul li button{
+nav ul div li button,
+nav ul li button {
     padding: 10px;
     background-color: transparent;
     width: 100%;
@@ -43,57 +44,62 @@ nav ul div li button, nav ul li button{
     border: none;
     color: white;
 }
-nav ul div li button:hover,nav ul li button:hover{
+nav ul div li button:hover,
+nav ul li button:hover {
     background-color: darkslategray;
 }
-nav ul div li button img,nav ul li button img{
+nav ul div li button img,
+nav ul li button img {
     width: 50px;
     height: 50px;
 }
-#nav_button_UserInfo{
+#nav_button_UserInfo {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-#main_container nav{
+#main_container nav {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
-#main_container nav div{
+#main_container nav div {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 60%;
     width: 100%;
 }
-#main_container nav div{
+#main_container nav div {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
-#nav_button_UserInfo{
+#nav_button_UserInfo {
     width: 100% !important;
     overflow: hidden;
 }
-.nav-left div button{
+.nav-left div button {
     background-color: #17273f;
     height: 50px;
-    
+
     overflow: hidden;
     text-overflow: ellipsis;
     position: relative;
     display: inline-flex !important;
-    margin:0px !important
+    margin: 0px !important;
 }
-.nav-left div button span{
+.nav-left div button span {
     padding: 10px;
 }
-.--textbutton{
+.--textbutton {
     width: calc(100% - 40px);
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.css-1d6wzja-MuiButton-startIcon{
+.css-1d6wzja-MuiButton-startIcon {
     margin: auto !important;
+}
+.activeNav {
+    background-color: #1976d2 !important;
 }

@@ -18,6 +18,7 @@ function Sectionmain_profil({
     setprofilData,
     targetRechercheUser,
     settargetRechercheUser,
+    parametre,
 }) {
     const [targetMessage, settargetMessage] = useState({
         messageid: '',
@@ -693,7 +694,11 @@ function Sectionmain_profil({
     }, [targetMessage]);
 
     return (
-        <section className="section--mid">
+        <section
+            className={
+                parametre === undefined ? 'section--mid' : parametre.section
+            }
+        >
             {profilTarget !== 0 && (
                 <>
                     <div id="blockprofil">

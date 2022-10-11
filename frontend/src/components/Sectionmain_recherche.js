@@ -13,6 +13,9 @@ function Sectionmain_recherche({
     profilData,
     setprofilData,
 }) {
+    let parametre = {
+        section: 'section--alone',
+    };
     let [targetRechercheUser, settargetRechercheUser] = useState({
         userid: undefined,
     });
@@ -51,15 +54,7 @@ function Sectionmain_recherche({
                         indexPage={indexPage}
                         setindexPage={setindexPage}
                         profilData={profilData}
-                    />
-                    <Sectionmain_aside
-                        key={21}
-                        auth={auth}
-                        setAuth={setAuth}
-                        indexPage={indexPage}
-                        setindexPage={setindexPage}
-                        targetRechercheUser={targetRechercheUser}
-                        settargetRechercheUser={settargetRechercheUser}
+                        parametre={parametre}
                     />
                 </>
             )}

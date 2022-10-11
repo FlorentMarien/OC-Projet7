@@ -28,6 +28,7 @@ function Nav({
                 <ButtonGroup>
                     <Button
                         color="primary"
+                        className={indexPage.index === 0 && 'activeNav'}
                         variant={buttonVariant}
                         startIcon={<AccountCircleIcon />}
                         onClick={(e) => redirectPage(e, 0)}
@@ -36,6 +37,7 @@ function Nav({
                     </Button>
                     <Button
                         color="primary"
+                        className={indexPage.index === 1 && 'activeNav'}
                         variant={buttonVariant}
                         startIcon={<DvrIcon />}
                         onClick={(e) => redirectPage(e, 1)}
@@ -44,6 +46,7 @@ function Nav({
                     </Button>
                     <Button
                         color="primary"
+                        className={indexPage.index === 2 && 'activeNav'}
                         variant={buttonVariant}
                         startIcon={<SearchIcon />}
                         onClick={(e) => redirectPage(e, 2)}
@@ -52,6 +55,7 @@ function Nav({
                     </Button>
                     <Button
                         color="primary"
+                        className={indexPage.index === 3 && 'activeNav'}
                         variant={buttonVariant}
                         startIcon={<MessageIcon />}
                         onClick={(e) => redirectPage(e, 3)}
@@ -60,6 +64,7 @@ function Nav({
                     </Button>
                     <Button
                         color="primary"
+                        className={indexPage.index === 4 && 'activeNav'}
                         variant={buttonVariant}
                         startIcon={<TuneIcon />}
                         onClick={(e) => redirectPage(e, 4)}
