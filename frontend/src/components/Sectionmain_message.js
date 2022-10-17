@@ -247,37 +247,36 @@ function Sectionmain_message({
             {targetRechercheUserPrivateMessage.userid === undefined ? (
                 <section id="section_privatemessage">
                     <div id="notifprivatemessage"></div>
-                    {listPreviewMessage.length > 0 &&
-                        listPreviewMessage[0] !== null && (
-                            <>
-                                <div
-                                    id="privatemessage_previewmessage"
-                                    className={
-                                        targetPage === 1
-                                            ? 'grow0_4 paddingright10'
-                                            : ''
-                                    }
+
+                    <>
+                        <div
+                            id="privatemessage_previewmessage"
+                            className={
+                                targetPage === 1 ? 'grow0_4 paddingright10' : ''
+                            }
+                        >
+                            <div className="previewmessage_addbutton">
+                                <Button
+                                    className="message_buttonrechercheuser"
+                                    onClick={(e) => {
+                                        let open = 0;
+                                        if (targetPage === 0) {
+                                            open = 1;
+                                        } else {
+                                            open = 0;
+                                        }
+                                        settargetPage(open);
+                                    }}
                                 >
-                                    <div className="previewmessage_addbutton">
-                                        <Button
-                                            className="message_buttonrechercheuser"
-                                            onClick={(e) => {
-                                                let open = 0;
-                                                if (targetPage === 0) {
-                                                    open = 1;
-                                                } else {
-                                                    open = 0;
-                                                }
-                                                settargetPage(open);
-                                            }}
-                                        >
-                                            +
-                                        </Button>
-                                    </div>
-                                    {getPreviewMessage()}
-                                </div>
-                            </>
-                        )}
+                                    +
+                                </Button>
+                            </div>
+                            {listPreviewMessage.length > 0 &&
+                                listPreviewMessage[0] !== null &&
+                                getPreviewMessage()}
+                        </div>
+                    </>
+
                     <div
                         id="privatemessage_rechercheuser"
                         className={
