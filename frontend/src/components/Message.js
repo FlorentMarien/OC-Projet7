@@ -260,8 +260,12 @@ function Message({
                                 nbrreplylevel1 -
                                 nbrreplylevel2;
                         listMessage.splice(x, 1);
-
-                        setListMessage(listMessage);
+                        // Tampon -1 = remise a zero si aucun message dispo
+                        let tampon = listMessage;
+                        if (listMessage.length === 0) {
+                            tampon = [-1];
+                        }
+                        setListMessage(tampon);
                         settargetMessage({ messageid: '', replyLevel: 0 });
                     } else {
                         for (

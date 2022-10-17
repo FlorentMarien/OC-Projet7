@@ -105,77 +105,77 @@ function Sectionmain_actu({
         let listmessageprofil;
         if (focusMessage === 'all') {
             parametre.messageFocus = 'messageAll';
-            if (listMessage.length > 0) {
-                let sendreply = (
-                    <div id="blockactu">
-                        <div id="blockactu_send">
-                            {
-                                <form>
-                                    <div>
-                                        <ThemeProvider theme={theme}>
-                                            <TextField
-                                                color="neutral"
-                                                className="formText"
-                                                label="Message"
-                                                onBlur={(e) =>
-                                                    setformText(e.target.value)
-                                                }
-                                                defaultValue={formText}
-                                                multiline
-                                            />
-                                            <div className="sendreply_uploadimg">
-                                                {formFile === '' ? (
-                                                    <IconButton
-                                                        color="primary"
-                                                        aria-label="upload picture"
-                                                        component="label"
-                                                    >
-                                                        <input
-                                                            hidden
-                                                            accept="image/*"
-                                                            onChange={(e) =>
-                                                                setformFile(
-                                                                    e.target
-                                                                        .files[0]
-                                                                )
-                                                            }
-                                                            type="file"
-                                                            id="formFile"
-                                                        />
-                                                        <PhotoCamera />
-                                                    </IconButton>
-                                                ) : (
-                                                    getimgpreview()
-                                                )}
-                                                <Button
+            let sendreply = (
+                <div id="blockactu">
+                    <div id="blockactu_send">
+                        {
+                            <form>
+                                <div>
+                                    <ThemeProvider theme={theme}>
+                                        <TextField
+                                            color="neutral"
+                                            className="formText"
+                                            label="Message"
+                                            onBlur={(e) =>
+                                                setformText(e.target.value)
+                                            }
+                                            defaultValue={formText}
+                                            multiline
+                                        />
+                                        <div className="sendreply_uploadimg">
+                                            {formFile === '' ? (
+                                                <IconButton
                                                     color="primary"
-                                                    variant="contained"
-                                                    onClick={(e) =>
-                                                        sendMessage(e, false)
-                                                    }
+                                                    aria-label="upload picture"
+                                                    component="label"
                                                 >
-                                                    Envoyer
-                                                </Button>
-                                            </div>
-                                        </ThemeProvider>
-                                    </div>
-                                </form>
-                            }
-                        </div>
-
-                        <div id="blockactu_notifnewmessage">
-                            <Button
-                                id="notifnewmessage_button"
-                                color="primary"
-                                variant="contained"
-                                onClick={(e) => getNewMessage(e)}
-                            >
-                                Il y a {nbrmessageapi.nbrnewmessage} nouveaux
-                                messages
-                            </Button>
-                        </div>
+                                                    <input
+                                                        hidden
+                                                        accept="image/*"
+                                                        onChange={(e) =>
+                                                            setformFile(
+                                                                e.target
+                                                                    .files[0]
+                                                            )
+                                                        }
+                                                        type="file"
+                                                        id="formFile"
+                                                    />
+                                                    <PhotoCamera />
+                                                </IconButton>
+                                            ) : (
+                                                getimgpreview()
+                                            )}
+                                            <Button
+                                                color="primary"
+                                                variant="contained"
+                                                onClick={(e) =>
+                                                    sendMessage(e, false)
+                                                }
+                                            >
+                                                Envoyer
+                                            </Button>
+                                        </div>
+                                    </ThemeProvider>
+                                </div>
+                            </form>
+                        }
                     </div>
-                );
+
+                    <div id="blockactu_notifnewmessage">
+                        <Button
+                            id="notifnewmessage_button"
+                            color="primary"
+                            variant="contained"
+                            onClick={(e) => getNewMessage(e)}
+                        >
+                            Il y a {nbrmessageapi.nbrnewmessage} nouveaux
+                            messages
+                        </Button>
+                    </div>
+                </div>
+            );
+            if (listMessage.length > 0 && listMessage[0] !== -1) {
                 for (let x = 0; x < listMessage.length; x++) {
                     //[0] Parent // [1] Reponse if lenght = 2 // [2] Sous reponse de [1][0] // [3] Sous reponse de [1][1]
                     for (let y = 0; y < 2; y++) {
@@ -206,16 +206,16 @@ function Sectionmain_actu({
                         }
                     }
                 }
-                listmessageprofil = (
-                    <>
-                        {sendreply}
-
-                        {listmessageprofil}
-                    </>
-                );
             } else {
-                listmessageprofil = <p>Aucun message de l'utilisateur...</p>;
+                listmessageprofil = <p>Aucun messages disponible</p>;
             }
+            listmessageprofil = (
+                <>
+                    {sendreply}
+
+                    {listmessageprofil}
+                </>
+            );
             return listmessageprofil;
         }
         if (focusMessage === 'one') {
@@ -481,7 +481,10 @@ function Sectionmain_actu({
                 index: nbrmessageapi.firstmessage,
             })
         ).then((res) => {
-            let tamponlistMessage = listMessage;
+            let tamponlistMessage = [];
+            if (listMessage.length > 0 && listMessage[0] !== -1) {
+                tamponlistMessage = listMessage;
+            }
             tamponlistMessage.unshift(...res.message);
             setnbrmessageapi({
                 ...nbrmessageapi,
@@ -502,11 +505,12 @@ function Sectionmain_actu({
                 index: nbrmessageapi.firstmessage,
             })
         ).then((result) => {
+            if (result.error === "Aucun message n'est enregistré") {
+                setListMessage([-1]);
+                return result;
+            }
             if (result.message.length === 0) {
                 if (listMessage.length > 0) {
-                    return result;
-                } else {
-                    setListMessage([-1]);
                     return result;
                 }
             } else {
@@ -614,8 +618,19 @@ function Sectionmain_actu({
 
     useEffect(() => {
         getmes().then((result) => {
-            if (result.length < limitmessage.nbrmessage) {
+            let tampon = 0;
+            if (result.message === undefined) {
+                tampon = 0;
+            } else {
+                tampon = result.message.length;
+            }
+            if (tampon < limitmessage.nbrmessage) {
                 window.onscroll = null;
+                if (document.getElementById('loadspinnerlazyload') !== null) {
+                    document.getElementById(
+                        'loadspinnerlazyload'
+                    ).style.display = 'none';
+                }
             } else {
                 lazyload();
             }
@@ -661,12 +676,16 @@ function Sectionmain_actu({
         <section className="section--mid" ref={divRef}>
             {targetMessage.messageid === '' ? (
                 listMessage.length > 0 ? (
-                    <>
-                        {getuserMessage('all', 0)}
-                        <div id="loadspinnerlazyload">
-                            <CircularProgress />
-                        </div>
-                    </>
+                    listMessage[0] === -1 ? (
+                        getuserMessage('all', 0)
+                    ) : (
+                        <>
+                            {getuserMessage('all', 0)}
+                            <div id="loadspinnerlazyload">
+                                <CircularProgress />
+                            </div>
+                        </>
+                    )
                 ) : (
                     <CircularProgress className="loadspinneranimation" />
                 )

@@ -68,45 +68,70 @@ async function getAnswerParent(message) {
 }
 exports.getMessages = (req, res) => {
     let firstmessage = req.body.index;
+
     let nbrmessage = 0;
     if (req.body.userid === 'allnewanswer') {
-        Message.find({ _id: { $gt: firstmessage } })
-            .sort({ dateTime: -1 })
-            .then((result) => {
-                Message.find().then((messages) => {
-                    nbrmessage = messages.length;
-                    getAnswerParent(result).then((result) => {
-                        getUser(result).then((finalresult) => {
-                            res.status(200).json({
-                                message: finalresult,
-                                nbrmessage: nbrmessage,
-                            });
-                        });
-                    });
-                });
-            });
-    } else if (firstmessage === '') {
-        Message.findOne()
-            .sort({ dateTime: -1 })
-            .then((idindex) => {
-                firstmessage = idindex._id;
-                Message.find({ _id: { $lte: firstmessage } })
-                    .sort({ dateTime: -1 })
-                    .skip(req.body.limitmessage.skipmessage)
-                    .limit(req.body.limitmessage.nbrmessage)
-                    .then((message) => {
-                        Message.find().then((messages) => {
-                            nbrmessage = messages.length;
-                            getAnswerParent(message).then((result) => {
-                                getUser(result).then((finalresult) => {
-                                    res.status(200).json({
-                                        message: finalresult,
-                                        nbrmessage: nbrmessage,
-                                    });
+        if (req.body.index === '') {
+            Message.find()
+                .sort({ dateTime: -1 })
+                .then((result) => {
+                    Message.find().then((messages) => {
+                        nbrmessage = messages.length;
+                        getAnswerParent(result).then((result) => {
+                            getUser(result).then((finalresult) => {
+                                res.status(200).json({
+                                    message: finalresult,
+                                    nbrmessage: nbrmessage,
                                 });
                             });
                         });
                     });
+                });
+        } else {
+            Message.find({ _id: { $gt: firstmessage } })
+                .sort({ dateTime: -1 })
+                .then((result) => {
+                    Message.find().then((messages) => {
+                        nbrmessage = messages.length;
+                        getAnswerParent(result).then((result) => {
+                            getUser(result).then((finalresult) => {
+                                res.status(200).json({
+                                    message: finalresult,
+                                    nbrmessage: nbrmessage,
+                                });
+                            });
+                        });
+                    });
+                });
+        }
+    } else if (firstmessage === '') {
+        Message.findOne()
+            .sort({ dateTime: -1 })
+            .then((idindex) => {
+                if (idindex === null)
+                    res.status(200).json({
+                        error: "Aucun message n'est enregistré",
+                    });
+                else {
+                    firstmessage = idindex._id;
+                    Message.find({ _id: { $lte: firstmessage } })
+                        .sort({ dateTime: -1 })
+                        .skip(req.body.limitmessage.skipmessage)
+                        .limit(req.body.limitmessage.nbrmessage)
+                        .then((message) => {
+                            Message.find().then((messages) => {
+                                nbrmessage = messages.length;
+                                getAnswerParent(message).then((result) => {
+                                    getUser(result).then((finalresult) => {
+                                        res.status(200).json({
+                                            message: finalresult,
+                                            nbrmessage: nbrmessage,
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                }
             });
     } else {
         Message.find({ _id: { $lte: firstmessage } })
@@ -169,12 +194,19 @@ exports.getNbrMessage = (req, res) => {
 };
 exports.getNbrNewMessage = (req, res) => {
     let indexId = req.body.indexId;
-
-    Message.find({ _id: { $gt: indexId } })
-        .sort({ dateTime: -1 })
-        .then((result) => {
-            res.status(200).json({ newmessage: result.length });
-        });
+    if (req.body.indexId === '') {
+        Message.find()
+            .sort({ dateTime: -1 })
+            .then((result) => {
+                res.status(200).json({ newmessage: result.length });
+            });
+    } else {
+        Message.find({ _id: { $gt: indexId } })
+            .sort({ dateTime: -1 })
+            .then((result) => {
+                res.status(200).json({ newmessage: result.length });
+            });
+    }
 };
 async function getParentAnswer(message, limitmessage) {
     let parentanswer = [];
@@ -330,12 +362,10 @@ exports.modifMessage = (req, res) => {
                     }
                 )
                     .then(() =>
-                        res
-                            .status(200)
-                            .json({
-                                msg: 'Modif Ok',
-                                imageUrl: messageObject.imageUrl,
-                            })
+                        res.status(200).json({
+                            msg: 'Modif Ok',
+                            imageUrl: messageObject.imageUrl,
+                        })
                     )
                     .catch((error) => error);
             }
