@@ -55,6 +55,7 @@ function Sectionmain_actu({
     let timerNewMessage;
     let Backupnewmessage = useRef(0);
     let divRef = useRef();
+    let focusMessage = useRef();
     function getimgpreview() {
         let urlFile = URL.createObjectURL(formFile);
         return (
@@ -570,20 +571,7 @@ function Sectionmain_actu({
             document.getElementById('loadspinnerlazyload').style.display =
                 'none';
         }
-
         window.onscroll = function (ev) {
-            /*
-            let target = document.getElementsByTagName('section')[0];
-            let heightpage = window.innerHeight;
-            let headpage =
-                document.getElementsByTagName('header')[0].offsetHeight;
-            let scroll = window.scrollY;
-
-            let maxscroll = target.offsetHeight - heightpage + headpage;
-            console.log('scroll: ' + Math.ceil(window.scrollY));
-            console.log('scroll: ' + scroll + ' / ' + 'maxscroll:' + maxscroll);
-            */
-
             let headerheight = Math.ceil(
                 document.getElementsByTagName('header')[0].offsetHeight
             );
@@ -615,7 +603,6 @@ function Sectionmain_actu({
             }
         };
     }
-
     useEffect(() => {
         getmes().then((result) => {
             let tampon = 0;
@@ -640,8 +627,34 @@ function Sectionmain_actu({
     useEffect(() => {
         if (targetMessage.messageid !== '') {
             window.onscroll = null;
+            focusMessage.current = targetMessage.messageid;
+            console.log(focusMessage.current);
         } else {
-            lazyload();
+            if (focusMessage.current !== undefined) {
+                if (
+                    document.querySelectorAll(
+                        "[messageid='" + focusMessage.current + "']"
+                    )[0] !== undefined
+                ) {
+                    document
+                        .querySelectorAll(
+                            "[messageid='" + focusMessage.current + "']"
+                        )[0]
+                        .scrollIntoView();
+                }
+            }
+            if (
+                window.onscroll === null &&
+                listMessage.length !== 0 &&
+                listMessage[0] !== -1 &&
+                listMessage.length % limitmessage.nbrmessage === 0
+            ) {
+                /*focusMessage = document.querySelectorAll(
+                    "[messageid='" + focusMessage.current + "']"
+                )[0];
+                focusMessage.current.scrollIntoView();*/
+                lazyload();
+            }
         }
     }, [targetMessage]);
 

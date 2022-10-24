@@ -32,6 +32,7 @@ function Sectionmain_profil({
     let timer = 0;
     const [formFile, setformFile] = useState(0);
     let [profilTarget, setprofilTarget] = useState(0);
+
     function sendImg(e) {
         e.preventDefault();
         let formData = new FormData();
@@ -680,8 +681,11 @@ function Sectionmain_profil({
         getmes().then((result) => {
             if (result.length < limitmessage.nbrmessage) {
                 window.onscroll = null;
-                document.getElementById('loadspinnerlazyload').style.display =
-                    'none';
+                if (document.getElementById('loadspinnerlazyload') !== null) {
+                    document.getElementById(
+                        'loadspinnerlazyload'
+                    ).style.display = 'none';
+                }
             } else {
                 lazyload();
             }
@@ -691,7 +695,14 @@ function Sectionmain_profil({
         if (targetMessage.messageid !== '') {
             window.onscroll = null;
         } else {
-            lazyload();
+            if (
+                window.onscroll === null &&
+                listMessage.length !== 0 &&
+                listMessage[0] !== -1 &&
+                listMessage.length % limitmessage.nbrmessage === 0
+            ) {
+                lazyload();
+            }
         }
     }, [targetMessage]);
 
