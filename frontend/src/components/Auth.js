@@ -1,5 +1,5 @@
 import '../styles/Auth.css';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -9,7 +9,13 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 function Auth({ auth, setAuth }) {
     const [state, setState] = useState(0);
     const [formFile, setformFile] = useState('');
-
+    const [stateSignupEmail, setstateSignupEmail] = useState('');
+    const [stateSignupPassword, setstateSignupPassword] = useState('');
+    const [stateSignupName, setstateSignupName] = useState('');
+    const [stateSignupPrename, setstateSignupPrename] = useState('');
+    const [stateSignupFile, setstateSignupFile] = useState('');
+    const [helperText, sethelperText] = useState('');
+    let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     const theme = createTheme({
         palette: {
             neutral: {
@@ -38,13 +44,63 @@ function Auth({ auth, setAuth }) {
             name: document.getElementById('formName').value,
             prename: document.getElementById('formPrename').value,
         };
-        formData.append('user', JSON.stringify(formContact));
-        formData.append('image', formFile);
-        sendUser(formData).then((result) => {
-            if (result !== undefined) {
-                setState(2);
+        if (
+            emailRegex.test(formContact.email) &&
+            formContact.password !== '' &&
+            formContact.name !== '' &&
+            formContact.prename !== '' &&
+            formFile !== ''
+        ) {
+            formData.append('user', JSON.stringify(formContact));
+            formData.append('image', formFile);
+            sendUser(formData).then((result) => {
+                if (result.error) {
+                    if (
+                        result.error.message.indexOf(
+                            'expected `email` to be unique.'
+                        ) !== -1
+                    ) {
+                        setstateSignupEmail('error');
+                        sethelperText('Email already use');
+                    }
+                } else {
+                    setState(2);
+                }
+            });
+        } else {
+            if (!emailRegex.test(formContact.email)) {
+                setstateSignupEmail('error');
+                sethelperText('Incorrect entry.');
+            } else {
+                if (stateSignupEmail === 'error') {
+                    setstateSignupEmail('');
+                }
             }
-        });
+            if (formContact.password === '') {
+                setstateSignupPassword('error');
+            } else {
+                if (stateSignupPassword === 'error') setstateSignupPassword('');
+            }
+            if (formContact.name === '') {
+                setstateSignupName('error');
+            } else {
+                if (stateSignupName === 'error') setstateSignupName('');
+            }
+            if (formContact.prename === '') {
+                setstateSignupPrename('error');
+            } else {
+                if (stateSignupPrename === 'error') setstateSignupPrename('');
+            }
+            if (formFile === '') {
+                document.getElementsByTagName('svg')[0].style.fill = 'red';
+            } else {
+                if (
+                    document.getElementsByTagName('svg')[0].style.fill === 'red'
+                ) {
+                    document.getElementsByTagName('svg')[0].style.fill = 'gray';
+                }
+            }
+        }
     }
     function loginUser(e) {
         e.preventDefault();
@@ -89,9 +145,7 @@ function Auth({ auth, setAuth }) {
             body: objectContact,
         })
             .then(function (res) {
-                if (res.ok) {
-                    return res.json();
-                }
+                return res.json();
             })
             .then(function (result) {
                 return result;
@@ -125,6 +179,7 @@ function Auth({ auth, setAuth }) {
                 <ThemeProvider theme={theme}>
                     {formFile === '' ? (
                         <IconButton
+                            error={stateSignupFile}
                             color="primary"
                             aria-label="upload picture"
                             component="label"
@@ -150,13 +205,27 @@ function Auth({ auth, setAuth }) {
                         </div>
                     )}
                     <TextField
+                        error={stateSignupEmail}
+                        helperText={helperText}
                         color="neutral"
                         type="email"
                         id="formEmail"
                         label="Email"
                         variant="outlined"
+                        onChange={(e) => {
+                            let msg = e.target.value;
+
+                            if (emailRegex.test(msg)) {
+                                setstateSignupEmail('');
+                                sethelperText('');
+                            } else {
+                                setstateSignupEmail('error');
+                                sethelperText('Incorrect entry.');
+                            }
+                        }}
                     />
                     <TextField
+                        error={stateSignupPassword}
                         color="neutral"
                         type="password"
                         id="formPassword"
@@ -164,6 +233,7 @@ function Auth({ auth, setAuth }) {
                         variant="outlined"
                     />
                     <TextField
+                        error={stateSignupName}
                         color="neutral"
                         type="text"
                         id="formName"
@@ -171,6 +241,7 @@ function Auth({ auth, setAuth }) {
                         variant="outlined"
                     />
                     <TextField
+                        error={stateSignupPrename}
                         color="neutral"
                         type="text"
                         id="formPrename"
