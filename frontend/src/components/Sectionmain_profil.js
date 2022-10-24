@@ -680,6 +680,8 @@ function Sectionmain_profil({
         getmes().then((result) => {
             if (result.length < limitmessage.nbrmessage) {
                 window.onscroll = null;
+                document.getElementById('loadspinnerlazyload').style.display =
+                    'none';
             } else {
                 lazyload();
             }
