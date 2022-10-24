@@ -70,10 +70,12 @@ function Auth({ auth, setAuth }) {
         } else {
             if (!emailRegex.test(formContact.email)) {
                 setstateSignupEmail('error');
-                sethelperText('Incorrect entry.');
+                if (helperText === 'Email already use')
+                    sethelperText('Incorrect entry.');
             } else {
                 if (stateSignupEmail === 'error') {
                     setstateSignupEmail('');
+                    sethelperText('');
                 }
             }
             if (formContact.password === '') {
