@@ -326,9 +326,6 @@ function Bodymain({ auth, setAuth }) {
             })
             .catch((err) => {
                 console.log(err);
-                if (err.error.name === 'TokenExpiredError') {
-                    //setAuth([0]);
-                }
                 localStorage.clear();
                 setAuth([0]); // TokenExpired/ProblemeToken
             });

@@ -1,3 +1,4 @@
 Create .env
 with
-MONGODB_URL='YOURURL',
+
+MONGODB_URL='mongodb+srv://YOURIDENTIFIANT@cluster0.u1t8c.mongodb.net/?retryWrites=true&w=majority',

@@ -3,6 +3,7 @@ import Header from './Header';
 import Footer from './Footer';
 import Auth from './Auth';
 import Bodymain from './Bodymain';
+import { Helmet } from 'react-helmet';
 import '../styles/App.css';
 function App() {
     const [auth, setAuth] = useState([
@@ -15,6 +16,10 @@ function App() {
     //[2]Bearer
     return (
         <>
+            <Helmet>
+                <title>Groupomania</title>
+                <link rel="icon" src="../assets/logo/favicon.svg" />
+            </Helmet>
             <Header auth={auth} setAuth={setAuth} />
             <main>
                 {auth[0] === 0 ? (
