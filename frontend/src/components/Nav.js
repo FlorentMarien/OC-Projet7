@@ -75,7 +75,10 @@ function Nav({
                         color="error"
                         variant={buttonVariant}
                         startIcon={<LogoutIcon />}
-                        onClick={(e) => setAuth([0])}
+                        onClick={(e) => {
+                            localStorage.clear();
+                            setAuth([0]);
+                        }}
                     >
                         <p className="--textbutton">Déconnection</p>
                     </Button>
