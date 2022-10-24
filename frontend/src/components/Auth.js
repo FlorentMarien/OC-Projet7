@@ -9,12 +9,15 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 function Auth({ auth, setAuth }) {
     const [state, setState] = useState(0);
     const [formFile, setformFile] = useState('');
+    const [stateLoginEmail, setstateLoginEmail] = useState('');
+    const [stateLoginPassword, setstateLoginPassword] = useState('');
     const [stateSignupEmail, setstateSignupEmail] = useState('');
     const [stateSignupPassword, setstateSignupPassword] = useState('');
     const [stateSignupName, setstateSignupName] = useState('');
     const [stateSignupPrename, setstateSignupPrename] = useState('');
     const [stateSignupFile, setstateSignupFile] = useState('');
     const [helperText, sethelperText] = useState('');
+    const [helperLoginText, sethelperLoginText] = useState('');
     let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     const theme = createTheme({
         palette: {
@@ -111,14 +114,23 @@ function Auth({ auth, setAuth }) {
             email: document.getElementById('loginEmail').value,
             password: document.getElementById('loginPassword').value,
         };
-        formData.append('user', JSON.stringify(formAuth));
-        sendloginUser(formAuth).then((result) => {
-            if (result !== undefined) {
-                localStorage.setItem('userid', result.userId);
-                localStorage.setItem('token', result.token);
-                setAuth([1, result.userId, result.token]);
-            }
-        });
+        if (formAuth.email !== '' && formAuth.password !== '') {
+            formData.append('user', JSON.stringify(formAuth));
+            sendloginUser(formAuth).then((result) => {
+                if (result.message) {
+                    setstateLoginEmail('error');
+                    setstateLoginPassword('error');
+                    sethelperLoginText(result.message);
+                } else {
+                    localStorage.setItem('userid', result.userId);
+                    localStorage.setItem('token', result.token);
+                    setAuth([1, result.userId, result.token]);
+                }
+            });
+        } else {
+            setstateLoginEmail('error');
+            setstateLoginPassword('error');
+        }
     }
     async function sendloginUser(formAuth) {
         return await fetch('http://localhost:3000/api/auth/login', {
@@ -130,9 +142,7 @@ function Auth({ auth, setAuth }) {
             body: JSON.stringify(formAuth),
         })
             .then(function (res) {
-                if (res.ok) {
-                    return res.json();
-                }
+                return res.json();
             })
             .then(function (result) {
                 return result;
@@ -265,6 +275,15 @@ function Auth({ auth, setAuth }) {
                 <h1>Login</h1>
                 <ThemeProvider theme={theme}>
                     <TextField
+                        error={stateLoginEmail}
+                        onChange={(e) => {
+                            let msg = e.target.value;
+                            if (emailRegex.test(msg)) {
+                                setstateLoginEmail('');
+                            } else {
+                                setstateLoginEmail('error');
+                            }
+                        }}
                         color="neutral"
                         type="text"
                         id="loginEmail"
@@ -272,6 +291,8 @@ function Auth({ auth, setAuth }) {
                         variant="outlined"
                     />
                     <TextField
+                        error={stateLoginPassword}
+                        helperText={helperLoginText}
                         color="neutral"
                         type="password"
                         id="loginPassword"
