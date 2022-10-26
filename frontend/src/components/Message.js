@@ -49,6 +49,7 @@ function Message({
     const [formText, setformText] = useState('');
     const [openReply, setopenReply] = useState(0);
     const [openParametre, setopenParametre] = useState(0);
+    const [errorSendAnswer, seterrorSendAnswer] = useState('');
     disableButtonLike = elementMessage.arrayDislike.includes(auth[1]);
     disableButtonDislike = elementMessage.arrayLike.includes(auth[1]);
 
@@ -513,6 +514,7 @@ function Message({
             });
     }
     function sendAnswer(e, replyLevel = 0) {
+        console.log('test');
         e.preventDefault();
         let target = e;
         let objectData = {
@@ -527,89 +529,94 @@ function Message({
                 .value,
             message: formText,
         };
-        let formData = new FormData();
-        formData.append('message', JSON.stringify(objectData));
-        if (formFile !== '') {
-            formData.append('image', formFile);
-        }
-        sendAnswerApi(formData).then((result) => {
-            let boolend = false;
-            if (listMessage[0]._id !== undefined) {
-                if (parametre.replyLevel === 0) {
-                    for (let x = 0; x < listMessage.length; x++) {
-                        if (
-                            listMessage[x]._id ===
-                            target.target.closest('div.message').attributes[
-                                'messageid'
-                            ].value
-                        ) {
-                            let array = listMessage[x].answer;
-                            array.push(result.answerId);
-                            listMessage[x] = {
-                                ...listMessage[x],
-                                answer: array,
-                            };
-                            setelementMessage(listMessage[x]);
-                            setchangeUpdate(changeUpdate + 1);
-                            break;
-                        }
-                    }
-                }
-            } else {
-                if (parametre.replyLevel === 0) {
-                    for (let x = 0; x < listMessage.length; x++) {
-                        if (
-                            listMessage[x].answerArray[0][0]._id ===
-                            elementMessage._id
-                        ) {
-                            listMessage[x].answerArray[0][0].answer.push(
-                                result.answerId
-                            );
-                            listMessage[x].answerArray[1].push(
-                                result.resultmessage
-                            );
-                            listMessage[x].answerArray.push([]);
-                            if (profilTarget !== undefined)
-                                profilTarget.nbranswer =
-                                    profilTarget.nbranswer + 1;
-                            setListMessage([...listMessage]);
-                            boolend = true;
-                            break;
-                        }
-                    }
-                } else if (parametre.replyLevel === 1) {
-                    for (let x = 0; x < listMessage.length; x++) {
-                        if (boolend === true) break;
-                        if (listMessage[x].answerArray[1].length > 0) {
-                            for (
-                                let y = 0;
-                                y < listMessage[x].answerArray[1].length;
-                                y++
+        if (formText === '') {
+            seterrorSendAnswer('error');
+        } else {
+            let formData = new FormData();
+            formData.append('message', JSON.stringify(objectData));
+            if (formFile !== '') {
+                formData.append('image', formFile);
+            }
+            sendAnswerApi(formData).then((result) => {
+                seterrorSendAnswer('');
+                let boolend = false;
+                if (listMessage[0]._id !== undefined) {
+                    if (parametre.replyLevel === 0) {
+                        for (let x = 0; x < listMessage.length; x++) {
+                            if (
+                                listMessage[x]._id ===
+                                target.target.closest('div.message').attributes[
+                                    'messageid'
+                                ].value
                             ) {
-                                if (
-                                    listMessage[x].answerArray[1][y]._id ===
-                                    elementMessage._id
+                                let array = listMessage[x].answer;
+                                array.push(result.answerId);
+                                listMessage[x] = {
+                                    ...listMessage[x],
+                                    answer: array,
+                                };
+                                setelementMessage(listMessage[x]);
+                                setchangeUpdate(changeUpdate + 1);
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    if (parametre.replyLevel === 0) {
+                        for (let x = 0; x < listMessage.length; x++) {
+                            if (
+                                listMessage[x].answerArray[0][0]._id ===
+                                elementMessage._id
+                            ) {
+                                listMessage[x].answerArray[0][0].answer.push(
+                                    result.answerId
+                                );
+                                listMessage[x].answerArray[1].push(
+                                    result.resultmessage
+                                );
+                                listMessage[x].answerArray.push([]);
+                                if (profilTarget !== undefined)
+                                    profilTarget.nbranswer =
+                                        profilTarget.nbranswer + 1;
+                                setListMessage([...listMessage]);
+                                boolend = true;
+                                break;
+                            }
+                        }
+                    } else if (parametre.replyLevel === 1) {
+                        for (let x = 0; x < listMessage.length; x++) {
+                            if (boolend === true) break;
+                            if (listMessage[x].answerArray[1].length > 0) {
+                                for (
+                                    let y = 0;
+                                    y < listMessage[x].answerArray[1].length;
+                                    y++
                                 ) {
-                                    listMessage[x].answerArray[1][
-                                        y
-                                    ].answer.push(result.answerId);
-                                    listMessage[x].answerArray[y + 2].push(
-                                        result.resultmessage
-                                    );
-                                    if (profilTarget !== undefined)
-                                        profilTarget.nbranswer =
-                                            profilTarget.nbranswer + 1;
-                                    setListMessage([...listMessage]);
-                                    boolend = true;
-                                    break;
+                                    if (
+                                        listMessage[x].answerArray[1][y]._id ===
+                                        elementMessage._id
+                                    ) {
+                                        listMessage[x].answerArray[1][
+                                            y
+                                        ].answer.push(result.answerId);
+                                        listMessage[x].answerArray[y + 2].push(
+                                            result.resultmessage
+                                        );
+                                        if (profilTarget !== undefined)
+                                            profilTarget.nbranswer =
+                                                profilTarget.nbranswer + 1;
+                                        setListMessage([...listMessage]);
+                                        boolend = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            setopenReply(0);
-        });
+                setopenReply(0);
+            });
+        }
     }
     async function sendAnswerApi(formData) {
         return await fetch('http://localhost:3000/api/answer/send', {
@@ -850,6 +857,7 @@ function Message({
                     <div className="sendreply">
                         <ThemeProvider theme={theme}>
                             <TextField
+                                error={errorSendAnswer}
                                 color="neutral"
                                 className="formText"
                                 label="Message"

@@ -43,7 +43,6 @@ function Sectionmain_parametre({
         oldemail: profilData.email,
         newemail: '',
     });
-    //const [stateprofilEmail, setstateprofilEmail] = useState('');
     const [targetPage, settargetPage] = useState(0);
     const [secondtargetPage, setsecondtargetPage] = useState(0);
     const [formFile, setformFile] = useState([]);
@@ -250,7 +249,6 @@ function Sectionmain_parametre({
         e.preventDefault();
         let verif = true;
         if (profilEmail.newemail === '') {
-            //setstateprofilEmail('errorinput');
             verif = false;
             setstateErrorEmail('error');
             document.getElementById('modifemail_notif').textContent =
@@ -281,7 +279,6 @@ function Sectionmain_parametre({
                         document.getElementById(
                             'modifemail_notif'
                         ).textContent = result.msg;
-                        //setstateprofilEmail('errorinput');
                     }
                 })
                 .catch((err) => console.log(err));
@@ -620,7 +617,6 @@ function Sectionmain_parametre({
                                     <TextField
                                         error={stateErrorEmail}
                                         key="222"
-                                        //className={stateprofilEmail}
                                         color="neutral"
                                         type="email"
                                         id="newformEmail"
