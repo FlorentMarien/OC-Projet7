@@ -52,6 +52,7 @@ function Sectionmain_actu({
     });
     const [formText, setformText] = useState('Votre message ');
     const [formFile, setformFile] = useState('');
+    const [stateErrorMessage, setstateErrorMessage] = useState('');
     let timerNewMessage;
     let Backupnewmessage = useRef(0);
     let divRef = useRef();
@@ -114,6 +115,7 @@ function Sectionmain_actu({
                                 <div>
                                     <ThemeProvider theme={theme}>
                                         <TextField
+                                            error={stateErrorMessage}
                                             color="neutral"
                                             className="formText"
                                             label="Message"
@@ -391,42 +393,19 @@ function Sectionmain_actu({
             messageId: Date.now(),
             dateTime: Date.now(),
         };
-        let formData = new FormData();
-        formData.append('message', JSON.stringify(objectData));
-        if (objectData.message !== '') {
+        if (objectData.message === '') {
+            setstateErrorMessage('error');
+        } else {
+            setstateErrorMessage('');
+            let formData = new FormData();
+            formData.append('message', JSON.stringify(objectData));
             formData.append('image', formFile);
+            sendMessageApi(formData).then((result) => {
+                setformFile('');
+                setformText('');
+                document.getElementsByTagName('textarea')[0].value = '';
+            });
         }
-
-        sendMessageApi(formData).then((result) => {
-            if (result.resultmessage !== undefined) {
-                /*let objectMessage={
-					parentArray:[result.resultmessage],
-					answerArray:[[result.resultmessage],[]],
-					dateTime:result.resultmessage.dateTime,
-				}
-				let list=[...listMessage];
-				list.unshift(objectMessage);
-				
-				limitmessage={
-					...limitmessage,
-					skipmessage:limitmessage.skipmessage+1,
-					refresh:false,
-				};
-				*/
-                /*
-				nbrmessageapi={
-					...nbrmessageapi,
-					nbrmessage:nbrmessageapi.nbrmessage+1,
-					firstmessage:result.resultmessage._id,
-				};
-				*/
-                /*setnbrmessageapi({
-					...nbrmessageapi,
-					nbrnewmessage:nbrmessageapi.nbrnewmessage+1,
-				});*/
-                //setListMessage([...list]);
-            }
-        });
     }
     async function sendMessageApi(formData) {
         return await fetch('http://localhost:3000/api/message/send', {
