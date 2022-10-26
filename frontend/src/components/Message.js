@@ -514,7 +514,6 @@ function Message({
             });
     }
     function sendAnswer(e, replyLevel = 0) {
-        console.log('test');
         e.preventDefault();
         let target = e;
         let objectData = {
