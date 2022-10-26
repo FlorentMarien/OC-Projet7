@@ -628,7 +628,6 @@ function Sectionmain_actu({
         if (targetMessage.messageid !== '') {
             window.onscroll = null;
             focusMessage.current = targetMessage.messageid;
-            console.log(focusMessage.current);
         } else {
             if (focusMessage.current !== undefined) {
                 if (

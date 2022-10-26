@@ -772,7 +772,7 @@ function Sectionmain_profil({
                                             onClick={(e) => {
                                                 setindexPage({
                                                     index: 4,
-                                                    emetteur: 'navbar',
+                                                    emetteur: 'lookgallery',
                                                 });
                                             }}
                                         >

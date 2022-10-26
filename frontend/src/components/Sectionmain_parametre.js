@@ -340,6 +340,12 @@ function Sectionmain_parametre({
                 return err.json();
             });
     }
+    useEffect(() => {
+        //Redirection button parcourir Profil
+        if (indexPage.emetteur === 'lookgallery') {
+            settargetPage(1);
+        }
+    }, [indexPage]);
     let buttonVariant = 'contained';
     return (
         <section className="section--mid">
