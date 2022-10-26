@@ -69,120 +69,129 @@ function Message({
     });
     function modifAnswer(e, replyLevel = 0) {
         e.preventDefault();
-        let target = e;
-        let message = e.target.closest('div.message');
+        if (formText === '') {
+            seterrorSendAnswer('error');
+        } else {
+            seterrorSendAnswer('');
+            let target = e;
+            let message = e.target.closest('div.message');
 
-        let objectData = {
-            messageId: elementMessage._id,
-            message: formText,
-            dateTime: elementMessage.dateTime,
-        };
-        let formData = new FormData();
-        formData.append('message', JSON.stringify(objectData));
-        if (typeof formFile === 'object') {
-            // Image modifié
-            formData.append('image', formFile);
-        } else if (formFile === '') {
-            // Ajout image vide pour reset
-            formData.append('image', '');
-        }
-        modifMessageApi(formData).then((result) => {
-            //if(parametre.replyLevel===0){
-            let boolend = false;
-            for (let x = 0; x < listMessage.length; x++) {
-                if (listMessage[x]._id !== undefined) {
-                    if (
-                        listMessage[x]._id ===
-                        target.target.closest('div.message').attributes[
-                            'messageid'
-                        ].value
-                    ) {
-                        listMessage[x] = {
-                            ...listMessage[x],
-                            message: objectData.message,
-                            imageUrl: result.imageUrl,
-                        };
-                        setopenReply(0);
-                        setelementMessage(listMessage[x]);
-                        break;
-                    }
-                } else {
-                    if (boolend === true) break;
-                    if (
-                        listMessage[x].answerArray[0][0]._id ===
-                        target.target.closest('div.message').attributes[
-                            'messageid'
-                        ].value
-                    ) {
-                        //Detect modif replylevel 0
-                        listMessage[x].answerArray[0][0] = {
-                            ...listMessage[x].answerArray[0][0],
-                            message: objectData.message,
-                            imageUrl: result.imageUrl,
-                        };
-                        setListMessage(listMessage);
-                        setelementMessage(listMessage[x].answerArray[0][0]);
-                    } else {
-                        for (
-                            let y = 0;
-                            y < listMessage[x].answerArray[1].length;
-                            y++
+            let objectData = {
+                messageId: elementMessage._id,
+                message: formText,
+                dateTime: elementMessage.dateTime,
+            };
+            let formData = new FormData();
+            formData.append('message', JSON.stringify(objectData));
+            if (typeof formFile === 'object') {
+                // Image modifié
+                formData.append('image', formFile);
+            } else if (formFile === '') {
+                // Ajout image vide pour reset
+                formData.append('image', '');
+            }
+            modifMessageApi(formData).then((result) => {
+                //if(parametre.replyLevel===0){
+                let boolend = false;
+                for (let x = 0; x < listMessage.length; x++) {
+                    if (listMessage[x]._id !== undefined) {
+                        if (
+                            listMessage[x]._id ===
+                            target.target.closest('div.message').attributes[
+                                'messageid'
+                            ].value
                         ) {
-                            if (boolend === true) break;
-                            if (
-                                listMessage[x].answerArray[1][y]._id ===
-                                target.target.closest('div.message').attributes[
-                                    'messageid'
-                                ].value
+                            listMessage[x] = {
+                                ...listMessage[x],
+                                message: objectData.message,
+                                imageUrl: result.imageUrl,
+                            };
+                            setopenReply(0);
+                            setelementMessage(listMessage[x]);
+                            break;
+                        }
+                    } else {
+                        if (boolend === true) break;
+                        if (
+                            listMessage[x].answerArray[0][0]._id ===
+                            target.target.closest('div.message').attributes[
+                                'messageid'
+                            ].value
+                        ) {
+                            //Detect modif replylevel 0
+                            listMessage[x].answerArray[0][0] = {
+                                ...listMessage[x].answerArray[0][0],
+                                message: objectData.message,
+                                imageUrl: result.imageUrl,
+                            };
+                            setListMessage(listMessage);
+                            setelementMessage(listMessage[x].answerArray[0][0]);
+                        } else {
+                            for (
+                                let y = 0;
+                                y < listMessage[x].answerArray[1].length;
+                                y++
                             ) {
-                                //Detect modif replylevel 1
-                                listMessage[x].answerArray[1][y] = {
-                                    ...listMessage[x].answerArray[1][y],
-                                    message: objectData.message,
-                                    imageUrl: result.imageUrl,
-                                };
-                                setListMessage(listMessage);
-                                setelementMessage(
-                                    listMessage[x].answerArray[1][y]
-                                );
-                                boolend = true;
-                                break;
-                            } else {
-                                for (
-                                    let z = 0;
-                                    z <
-                                    listMessage[x].answerArray[y + 2].length;
-                                    z++
+                                if (boolend === true) break;
+                                if (
+                                    listMessage[x].answerArray[1][y]._id ===
+                                    target.target.closest('div.message')
+                                        .attributes['messageid'].value
                                 ) {
-                                    if (
-                                        listMessage[x].answerArray[y + 2][z]
-                                            ._id ===
-                                        target.target.closest('div.message')
-                                            .attributes['messageid'].value
+                                    //Detect modif replylevel 1
+                                    listMessage[x].answerArray[1][y] = {
+                                        ...listMessage[x].answerArray[1][y],
+                                        message: objectData.message,
+                                        imageUrl: result.imageUrl,
+                                    };
+                                    setListMessage(listMessage);
+                                    setelementMessage(
+                                        listMessage[x].answerArray[1][y]
+                                    );
+                                    boolend = true;
+                                    break;
+                                } else {
+                                    for (
+                                        let z = 0;
+                                        z <
+                                        listMessage[x].answerArray[y + 2]
+                                            .length;
+                                        z++
                                     ) {
-                                        //Detect modif replylevel 2
-                                        listMessage[x].answerArray[y + 2][z] = {
-                                            ...listMessage[x].answerArray[
-                                                y + 2
-                                            ][z],
-                                            message: objectData.message,
-                                            imageUrl: result.imageUrl,
-                                        };
-                                        setListMessage(listMessage);
-                                        setelementMessage(
+                                        if (
                                             listMessage[x].answerArray[y + 2][z]
-                                        );
-                                        boolend = true;
-                                        break;
+                                                ._id ===
+                                            target.target.closest('div.message')
+                                                .attributes['messageid'].value
+                                        ) {
+                                            //Detect modif replylevel 2
+                                            listMessage[x].answerArray[y + 2][
+                                                z
+                                            ] = {
+                                                ...listMessage[x].answerArray[
+                                                    y + 2
+                                                ][z],
+                                                message: objectData.message,
+                                                imageUrl: result.imageUrl,
+                                            };
+                                            setListMessage(listMessage);
+                                            setelementMessage(
+                                                listMessage[x].answerArray[
+                                                    y + 2
+                                                ][z]
+                                            );
+                                            boolend = true;
+                                            break;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-            setopenReply(0);
-        });
+                setopenReply(0);
+            });
+        }
     }
     async function modifMessageApi(formData) {
         let adresse;
