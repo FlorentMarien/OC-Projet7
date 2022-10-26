@@ -43,10 +43,13 @@ function Sectionmain_parametre({
         oldemail: profilData.email,
         newemail: '',
     });
-    const [stateprofilEmail, setstateprofilEmail] = useState('');
+    //const [stateprofilEmail, setstateprofilEmail] = useState('');
     const [targetPage, settargetPage] = useState(0);
     const [secondtargetPage, setsecondtargetPage] = useState(0);
     const [formFile, setformFile] = useState([]);
+    const [stateErrorEmail, setstateErrorEmail] = useState('');
+
+    let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     function delpreviewimg(e, file) {
         e.preventDefault();
         let newformFile = [...formFile];
@@ -245,18 +248,27 @@ function Sectionmain_parametre({
     }
     function submitmodifemail(e) {
         e.preventDefault();
+        let verif = true;
         if (profilEmail.newemail === '') {
-            setstateprofilEmail('errorinput');
+            //setstateprofilEmail('errorinput');
+            verif = false;
+            setstateErrorEmail('error');
             document.getElementById('modifemail_notif').textContent =
                 "Vous n'avez pas tout saisie";
-        } else {
-            setstateprofilEmail('');
+        } else if (!emailRegex.test(profilEmail.newemail)) {
+            verif = false;
+            setstateErrorEmail('error');
+            document.getElementById('modifemail_notif').textContent =
+                "Votre adresse email n'est pas correct";
+        }
+        if (verif === true) {
             let objData = {
                 ...profilEmail,
             };
             sendmodifemail(JSON.stringify(objData))
                 .then((result) => {
                     if (result.msg === 'Email modifié') {
+                        setstateErrorEmail('');
                         setprofilData({
                             ...profilData,
                             email: profilEmail.newemail,
@@ -265,10 +277,11 @@ function Sectionmain_parametre({
                             'modifemail_notif'
                         ).textContent = 'Modification faite';
                     } else {
+                        setstateErrorEmail('error');
                         document.getElementById(
                             'modifemail_notif'
                         ).textContent = result.msg;
-                        setstateprofilEmail('errorinput');
+                        //setstateprofilEmail('errorinput');
                     }
                 })
                 .catch((err) => console.log(err));
@@ -605,8 +618,9 @@ function Sectionmain_parametre({
                                         disabled
                                     />
                                     <TextField
+                                        error={stateErrorEmail}
                                         key="222"
-                                        className={stateprofilEmail}
+                                        //className={stateprofilEmail}
                                         color="neutral"
                                         type="email"
                                         id="newformEmail"
