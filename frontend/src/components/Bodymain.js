@@ -2,12 +2,12 @@ import '../styles/Bodymain.css';
 
 import { useState, useEffect } from 'react';
 import Nav from './Nav';
-import Sectionmain_profil from './Sectionmain_profil';
-import Sectionmain_actu from './Sectionmain_actu';
-import Sectionmain_parametre from './Sectionmain_parametre';
-import Sectionmain_aside from './Sectionmain_aside';
-import Sectionmain_recherche from './Sectionmain_recherche';
-import Sectionmain_message from './Sectionmain_message';
+import SectionmainProfil from './Sectionmain_profil';
+import SectionmainActu from './Sectionmain_actu';
+import SectionmainParametre from './Sectionmain_parametre';
+import SectionmainAside from './Sectionmain_aside';
+import SectionmainRecherche from './Sectionmain_recherche';
+import SectionmainMessage from './Sectionmain_message';
 import NotifSound from '../assets/sound/simple_notification.mp3';
 function Bodymain({ auth, setAuth }) {
     let [chat, setchat] = useState({
@@ -129,7 +129,6 @@ function Bodymain({ auth, setAuth }) {
             }
             return false;
         },
-
         // (D) DRAW MESSAGE IN HTML
         draw: (msg) => {
             // (D1) PARSE JSON
@@ -366,7 +365,7 @@ function Bodymain({ auth, setAuth }) {
                 settargetRechercheUser={settargetRechercheUser}
             />
             {indexPage.index === 0 ? (
-                <Sectionmain_profil
+                <SectionmainProfil
                     key={targetRechercheUser.userid}
                     targetRechercheUser={targetRechercheUser}
                     auth={auth}
@@ -377,7 +376,7 @@ function Bodymain({ auth, setAuth }) {
                     setprofilData={setprofilData}
                 />
             ) : indexPage.index === 1 ? (
-                <Sectionmain_actu
+                <SectionmainActu
                     key={'section_actu'}
                     auth={auth}
                     setAuth={setAuth}
@@ -387,7 +386,7 @@ function Bodymain({ auth, setAuth }) {
                     setprofilData={setprofilData}
                 />
             ) : indexPage.index === 4 ? (
-                <Sectionmain_parametre
+                <SectionmainParametre
                     key={'section_parametre'}
                     auth={auth}
                     setAuth={setAuth}
@@ -397,7 +396,7 @@ function Bodymain({ auth, setAuth }) {
                     setprofilData={setprofilData}
                 />
             ) : indexPage.index === 2 ? (
-                <Sectionmain_recherche
+                <SectionmainRecherche
                     key={'section_recherche'}
                     auth={auth}
                     setAuth={setAuth}
@@ -407,7 +406,7 @@ function Bodymain({ auth, setAuth }) {
                     setprofilData={setprofilData}
                 />
             ) : indexPage.index === 3 ? (
-                <Sectionmain_message
+                <SectionmainMessage
                     key={'section_message'}
                     auth={auth}
                     setAuth={setAuth}
@@ -425,7 +424,7 @@ function Bodymain({ auth, setAuth }) {
                 />
             ) : null}
             {indexPage.index !== 2 && indexPage.index !== 3 && (
-                <Sectionmain_aside
+                <SectionmainAside
                     key={'section_aside'}
                     auth={auth}
                     setAuth={setAuth}

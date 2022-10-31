@@ -55,7 +55,6 @@ function Sectionmain_actu({
     const [stateErrorMessage, setstateErrorMessage] = useState('');
     let timerNewMessage;
     let Backupnewmessage = useRef(0);
-    let divRef = useRef();
     let focusMessage = useRef();
     function getimgpreview() {
         let urlFile = URL.createObjectURL(formFile);
@@ -664,7 +663,7 @@ function Sectionmain_actu({
         };
     }, [nbrmessageapi]);
     return (
-        <section className="section--mid" ref={divRef}>
+        <section className="section--mid">
             {targetMessage.messageid === '' ? (
                 listMessage.length > 0 ? (
                     listMessage[0] === -1 ? (
