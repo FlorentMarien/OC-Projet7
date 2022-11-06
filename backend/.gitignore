@@ -33,5 +33,4 @@ yarn-error.log
 Thumbs.db
 
 # Images
-images/*
 .env
